@@ -48,15 +48,11 @@
         .header-section { text-align: center; margin-bottom: 10px; }
         .emode-title { color: var(--secondary); font-weight: 900; font-size: 20px; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 8px;}
         .main-title { color: var(--primary); font-size: 26px; font-weight: 800; line-height: 1.2; margin-bottom: 5px;}
-        .subtitle { font-size: 14px; color: var(--text-muted); font-weight: 500; margin-bottom: 15px; }
+        .subtitle { font-size: 14px; color: var(--text-muted); font-weight: 500; }
 
-        /* --- BUTTONS --- */
-        .header-buttons { display: flex; flex-direction: column; gap: 8px; margin-bottom: 5px; }
-        .install-btn { width: 100%; background: linear-gradient(135deg, #388e3c 0%, #2e7d32 100%); color: white; border: none; padding: 14px; border-radius: 10px; font-size: 16px; font-weight: 700; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 6px rgba(46, 125, 50, 0.2); }
+        /* --- INSTALL BUTTONS PWA --- */
+        .install-btn { width: 100%; background: linear-gradient(135deg, #388e3c 0%, #2e7d32 100%); color: white; border: none; padding: 15px; border-radius: 10px; font-size: 16px; font-weight: 700; cursor: pointer; transition: all 0.2s; margin-bottom: 5px; box-shadow: 0 4px 6px rgba(46, 125, 50, 0.2); }
         .install-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 12px rgba(46, 125, 50, 0.3); }
-        
-        .terms-btn { width: 100%; background-color: #ffffff; color: #4a5568; border: 1px solid #cbd5e0; padding: 10px; border-radius: 10px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s; box-shadow: var(--shadow-sm); }
-        .terms-btn:hover { background-color: #f7fafc; color: var(--primary); border-color: #a0aec0; }
 
         /* --- CARDS --- */
         .card {
@@ -143,18 +139,12 @@
         .reset-btn:hover { background-color: #e2e8f0; color: var(--secondary); border-color: #feb2b2; }
         .footer { text-align: center; font-size: 12px; color: #a0aec0; margin-top: 10px; padding-bottom: 20px; font-style: italic;}
 
-        /* --- MODALS (JOKE & TERMS) --- */
+        /* --- JOKE MODAL --- */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(4px); display: none; justify-content: center; align-items: center; z-index: 9999; padding: 20px;}
-        .modal-content { background: white; padding: 35px 25px; border-radius: 20px; text-align: center; max-width: 500px; width: 100%; box-shadow: 0 20px 50px rgba(0,0,0,0.5); border: 4px solid var(--secondary); animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-        .modal-content p { font-size: 22px; font-weight: 800; color: var(--primary); line-height: 1.4; margin-bottom: 25px; }
-        
-        /* Specific override for terms text inside modal */
-        .modal-content .terms-text { text-align: justify; font-size: 14px; font-weight: 500; color: #4a5568; line-height: 1.6; margin-bottom: 25px; }
-        .modal-content .terms-text strong { color: var(--primary); }
-        
-        .modal-btn { background: var(--secondary); color: white; border: none; padding: 14px 40px; font-size: 18px; font-weight: bold; border-radius: 10px; cursor: pointer; transition: transform 0.2s; width: 100%;}
-        .modal-btn.primary-btn { background: var(--primary); }
-        .modal-btn:hover { transform: scale(1.02); opacity: 0.9; }
+        .modal-content { background: white; padding: 40px; border-radius: 20px; text-align: center; max-width: 500px; width: 100%; box-shadow: 0 20px 50px rgba(0,0,0,0.5); border: 4px solid var(--secondary); animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .modal-content p { font-size: 24px; font-weight: 800; color: var(--primary); line-height: 1.4; margin-bottom: 30px; }
+        .modal-btn { background: var(--secondary); color: white; border: none; padding: 15px 40px; font-size: 20px; font-weight: bold; border-radius: 10px; cursor: pointer; transition: transform 0.2s; width: 100%;}
+        .modal-btn:hover { transform: scale(1.02); background: #b71c1c;}
         
         @keyframes popIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 
@@ -173,14 +163,10 @@
         <div class="header-section">
             <div class="emode-title">13η Ε.ΜΟ.Δ.Ε</div>
             <h1 class="main-title">Υπολογιστής Ρεπό και Πενθημέρων Π.Σ.</h1>
-            <div class="subtitle">(Αποκλειστικά για Μόνιμο Προσωπικό και Π.Δ.Ε)</div>
+            <div class="subtitle" style="margin-bottom: 15px;">(Αποκλειστικά για Μόνιμο Προσωπικό και Π.Δ.Ε)</div>
             
-            <div class="header-buttons">
-                <button id="install-btn" class="install-btn" style="display: none;">📲 Εγκατάσταση Εφαρμογής</button>
-                <button class="terms-btn" onclick="openTermsModal()">📄 Όροι Χρήσης & Αποποίηση Ευθύνης</button>
-            </div>
-
-            <div id="ios-prompt" class="alert alert-info" style="display: none; text-align: center; margin-top: 10px; margin-bottom: 5px;">
+            <button id="install-btn" class="install-btn" style="display: none;">📲 Εγκατάσταση Εφαρμογής</button>
+            <div id="ios-prompt" class="alert alert-info" style="display: none; text-align: center; margin-bottom: 5px;">
                 🍏 <strong>Για iPhone/iPad:</strong> Πατήστε το εικονίδιο Κοινοποίησης (Share) του Safari και επιλέξτε <em>"Προσθήκη στην οθόνη έναρξης"</em> για να το κάνετε εφαρμογή.
             </div>
         </div>
@@ -311,17 +297,6 @@
         </div>
     </div>
 
-    <div id="terms-modal" class="modal-overlay">
-        <div class="modal-content" style="border-color: var(--primary);">
-            <p style="font-size: 20px; border-bottom: 2px solid #edf2f7; padding-bottom: 10px;">📄 Όροι Χρήσης & Αποποίηση Ευθύνης</p>
-            <div class="terms-text">
-                Η παρούσα εφαρμογή διατίθεται <strong>εντελώς δωρεάν</strong>, δεν συλλέγει απολύτως κανένα προσωπικό δεδομένο και <strong>δεν αποτελεί επίσημη εφαρμογή του Πυροσβεστικού Σώματος</strong>. Δημιουργήθηκε με αποκλειστικό σκοπό να βοηθήσει και να διευκολύνει τους υπαλλήλους στον υπολογισμό των ρεπό και των πενθημέρων τους.<br><br>
-                Τα παραγόμενα αποτελέσματα είναι <strong>καθαρά ενδεικτικά</strong>. Παρόλο που έχει καταβληθεί κάθε δυνατή προσπάθεια για την ακρίβεια των υπολογισμών, δεν μπορούμε να εγγυηθούμε ότι καλύπτονται απόλυτα όλες οι ειδικές υπηρεσιακές συνθήκες που μπορεί να προκύψουν και υπάρχει πάντοτε η πιθανότητα σφάλματος. Ο τελικός και επίσημος έλεγχος γίνεται πάντα από την εκάστοτε Υπηρεσία.
-            </div>
-            <button class="modal-btn primary-btn" onclick="closeTermsModal()">Κατανόηση & Κλείσιμο</button>
-        </div>
-    </div>
-
     <script>
         // --- ΑΡΧΙΚΟΠΟΙΗΣΗ ΕΤΟΥΣ & DROPDOWNS ---
         const currentYear = new Date().getFullYear();
@@ -346,7 +321,7 @@
             v24Select.appendChild(new Option(i, i));
         }
 
-        // --- JOKE MODAL LOGIC ---
+        // --- JOKE LOGIC ---
         function checkYearJoke() {
             if (document.getElementById('year').value === "2086") {
                 document.getElementById('joke-modal').style.display = 'flex';
@@ -356,15 +331,6 @@
         function closeJokeModal() {
             document.getElementById('joke-modal').style.display = 'none';
             location.reload(); 
-        }
-
-        // --- TERMS MODAL LOGIC ---
-        function openTermsModal() {
-            document.getElementById('terms-modal').style.display = 'flex';
-        }
-
-        function closeTermsModal() {
-            document.getElementById('terms-modal').style.display = 'none';
         }
 
         // --- TOGGLE YEAR ---
@@ -493,7 +459,6 @@
             return new Date(year, 2, 22 + (d + e) + 13, 12, 0, 0); 
         }
 
-        // Ημερομηνίες επίσημων αργιών
         function getHolidaysObjects(month, year) {
             const list = [];
             const add = (name, day) => list.push({ name, day });
@@ -541,7 +506,7 @@
 
                 holidays.forEach(h => {
                     let dateObj = new Date(year, month, h.day);
-                    let isSunday = (dateObj.getDay() === 0);
+                    let isSunday = (dateObj.getDay() === 0); // 0 = Κυριακή
                     let isUnderLeave = selectedDays.includes(h.day);
 
                     if (isSunday) {
@@ -560,12 +525,14 @@
                     noteHTML += `<span style="display: block; margin-top: 5px; font-size: 13px;">Ο υπάλληλος δικαιούται να του χορηγηθούν ρεπό αργίας μόνο αν η άδειά του δεν συμπίπτει με τις ημέρες εκείνες.</span>`;
                 }
                 
+                // Προσθήκη μηνυμάτων για αργίες που πέφτουν Κυριακή
                 if (sundayHolidaysText.length > 0) {
                     noteHTML += `<div style="color: #c53030; background: #fff5f5; padding: 10px; border-radius: 8px; margin-top: 10px; font-weight: 500; border: 1px solid #fed7d7; text-align: left;">
                         ${sundayHolidaysText.join('<br>')}
                     </div>`;
                 }
 
+                // Προειδοποίηση για απώλεια λόγω άδειας
                 let lostHolidays = holidays.filter(h => selectedDays.includes(h.day) && new Date(year, month, h.day).getDay() !== 0);
                 if (lostHolidays.length > 0) {
                     let lostNames = lostHolidays.map(h => `${h.name} (${h.day}/${month+1})`);
