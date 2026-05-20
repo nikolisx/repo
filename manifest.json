@@ -1,0 +1,17 @@
+{
+  "name": "Υπολογιστής Ρεπό Π.Σ.",
+  "short_name": "Υπολογιστής Π.Σ.",
+  "description": "Υπολογιστής Ρεπό και Πενθημέρων 13ης Ε.ΜΟ.Δ.Ε.",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#f4f7f9",
+  "theme_color": "#1a237e",
+  "icons": [
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
