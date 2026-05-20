@@ -3,105 +3,134 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Υπολογιστής Ρεπό Π.Σ.</title>
+    <title>Υπολογιστής Υπηρεσιών & Ρεπό Π.Σ.</title>
     
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#1a237e">
+    <meta name="theme-color" content="#1a237e" id="theme-color-meta">
     <link rel="apple-touch-icon" href="icon-512.png">
     
     <style>
         :root {
-            --primary: #1a237e;
-            --secondary: #d32f2f;
-            --success: #388e3c;
-            --holiday: #9c27b0;
-            --bg-color: #f4f7f9;
-            --card-bg: #ffffff;
-            --text-main: #333333;
-            --text-muted: #6c757d;
-            --border-radius: 16px;
-            --shadow-sm: 0 4px 6px rgba(0,0,0,0.05);
-            --shadow-md: 0 10px 25px rgba(0,0,0,0.1);
+            --primary: #1a237e; --secondary: #d32f2f; --success: #388e3c; --holiday: #9c27b0; --warning: #f57c00;
+            --bg-color: #f4f7f9; --card-bg: #ffffff; --text-main: #333333; --text-muted: #6c757d;
+            --border-radius: 16px; --shadow-sm: 0 4px 6px rgba(0,0,0,0.05); --shadow-md: 0 10px 25px rgba(0,0,0,0.1);
+            --border-color: #e2e8f0; --input-bg: #f8fafc; --shift-color: #1976d2; --repo-color: #388e3c; --rest-color: #d32f2f;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        
-        body { 
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
-            background-color: var(--bg-color); 
-            color: var(--text-main);
-            display: flex; justify-content: center; 
-            padding: 30px 15px; min-height: 100vh;
+        [data-theme="dark"] {
+            --primary: #5c6bc0; --secondary: #ef5350; --success: #66bb6a; --holiday: #ab47bc; --warning: #ffa726;
+            --bg-color: #121212; --card-bg: #1e1e1e; --text-main: #e0e0e0; --text-muted: #aaaaaa;
+            --shadow-sm: 0 4px 6px rgba(0,0,0,0.3); --shadow-md: 0 10px 25px rgba(0,0,0,0.5);
+            --border-color: #333333; --input-bg: #2c2c2c; --shift-color: #42a5f5; --repo-color: #81c784; --rest-color: #e57373;
         }
-        
-        .app-container { width: 100%; max-width: 600px; display: flex; flex-direction: column; gap: 20px; }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+        body { background-color: var(--bg-color); color: var(--text-main); display: flex; justify-content: center; padding: 20px 10px; min-height: 100vh; transition: background-color 0.3s; }
+        .app-container { width: 100%; max-width: 600px; display: flex; flex-direction: column; gap: 12px; }
 
         /* HEADER */
-        .header-section { text-align: center; margin-bottom: 10px; }
-        .emode-title { color: var(--secondary); font-weight: 900; font-size: 20px; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 8px;}
-        .main-title { color: var(--primary); font-size: 26px; font-weight: 800; line-height: 1.2; margin-bottom: 5px;}
-        .subtitle { font-size: 14px; color: var(--text-muted); font-weight: 500; margin-bottom: 15px; }
+        .header-section { text-align: center; margin-bottom: 5px; position: relative; }
+        .app-logo { width: 85px; height: auto; border-radius: 20px; box-shadow: var(--shadow-sm); margin-bottom: 10px; animation: fadeIn 0.5s ease; }
+        .theme-toggle { position: absolute; top: 0; right: 10px; background: var(--card-bg); border: 1px solid var(--border-color); color: var(--text-main); font-size: 20px; padding: 8px; border-radius: 50%; cursor: pointer; box-shadow: var(--shadow-sm); }
+        .emode-title { color: var(--secondary); font-weight: 900; font-size: 18px; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 5px;}
+        .main-title { color: var(--primary); font-size: 24px; font-weight: 800; line-height: 1.2; margin-bottom: 5px;}
+        .subtitle { font-size: 13px; color: var(--text-muted); font-weight: 500; margin-bottom: 10px; }
 
-        /* BUTTONS */
-        .header-buttons { display: flex; flex-direction: column; gap: 8px; margin-bottom: 5px; }
-        .install-btn { width: 100%; background: linear-gradient(135deg, #388e3c 0%, #2e7d32 100%); color: white; border: none; padding: 14px; border-radius: 10px; font-size: 16px; font-weight: 700; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 6px rgba(46, 125, 50, 0.2); display: none; }
-        .terms-btn { width: 100%; background-color: #ffffff; color: #4a5568; border: 1px solid #cbd5e0; padding: 10px; border-radius: 10px; font-size: 14px; font-weight: 600; cursor: pointer; box-shadow: var(--shadow-sm); }
-        .terms-btn:hover { background-color: #f7fafc; color: var(--primary); border-color: #a0aec0; }
+        .btn { width: 100%; border: none; padding: 12px; border-radius: 10px; font-size: 15px; font-weight: 700; cursor: pointer; transition: all 0.2s; box-shadow: var(--shadow-sm); }
+        .btn-green { background: linear-gradient(135deg, #388e3c 0%, #2e7d32 100%); color: white; }
+        .btn-outline { background-color: var(--card-bg); color: var(--text-main); border: 1px solid var(--border-color); }
 
-        /* CARDS & FORMS */
-        .card { background: var(--card-bg); border-radius: var(--border-radius); padding: 25px; box-shadow: var(--shadow-sm); border: 1px solid rgba(0,0,0,0.03); }
-        .card-header { font-size: 18px; font-weight: 700; color: var(--primary); margin-bottom: 15px; border-bottom: 2px solid #edf2f7; padding-bottom: 10px;}
+        /* ACCORDIONS */
+        .accordion { background: var(--card-bg); border-radius: var(--border-radius); box-shadow: var(--shadow-sm); border: 1px solid var(--border-color); overflow: hidden; }
+        .accordion-header { padding: 16px 20px; font-size: 16px; font-weight: 700; color: var(--primary); display: flex; justify-content: space-between; align-items: center; cursor: pointer; user-select: none; background: var(--card-bg); }
+        .accordion-content { padding: 0 20px 20px 20px; display: none; border-top: 1px solid var(--border-color); margin-top: 5px; padding-top: 15px; }
+        .accordion.open .accordion-content { display: block; animation: fadeIn 0.3s; }
+        .accordion.open .accordion-header { border-bottom: none; }
+        .arrow { transition: transform 0.3s; }
+        .accordion.open .arrow { transform: rotate(180deg); }
+
+        /* FORMS */
         .form-row { display: flex; gap: 15px; margin-bottom: 15px; }
         .form-group { flex: 1; display: flex; flex-direction: column; }
-        label { font-size: 14px; font-weight: 600; color: #4a5568; margin-bottom: 6px; line-height: 1.4; }
+        label { font-size: 13px; font-weight: 600; color: var(--text-muted); margin-bottom: 6px; }
+        select, input[type="number"] { width: 100%; padding: 12px; border: 1px solid var(--border-color); border-radius: 10px; font-size: 16px; background-color: var(--input-bg); color: var(--text-main); outline: none; }
+        select:disabled, input:disabled { opacity: 0.5; cursor: not-allowed; }
         
-        select, input[type="number"] { width: 100%; padding: 12px 15px; border: 1px solid #cbd5e0; border-radius: 10px; font-size: 16px; background-color: #f8fafc; outline: none; }
-        select:disabled, input:disabled { background-color: #e2e8f0; cursor: not-allowed; opacity: 0.7; }
-        
-        .checkbox-container { display: flex; align-items: center; gap: 8px; margin-top: 8px; cursor: pointer; user-select: none; }
-        .checkbox-container input[type="checkbox"] { width: 18px; height: 18px; accent-color: var(--primary); cursor: pointer; }
-        .checkbox-text { font-size: 14px; font-weight: 500; color: #4a5568; }
-        .static-year { font-size: 18px; font-weight: 700; color: var(--primary); padding: 8px 0; }
+        .switch-container { display: flex; align-items: center; gap: 10px; background: var(--input-bg); padding: 10px 15px; border-radius: 10px; border: 1px solid var(--border-color); margin-bottom: 15px;}
+        .switch-container span { font-size: 13px; font-weight: 600; color: var(--text-main); flex: 1; }
 
-        /* ALERTS */
-        .alert { padding: 12px 15px; border-radius: 10px; font-size: 14px; margin-bottom: 15px; line-height: 1.5; display: none; }
-        .alert-info { background-color: #ebf8ff; color: #2b6cb0; border: 1px solid #bee3f8; }
-        .alert-warning { background-color: #fffaf0; color: #c05621; border: 1px solid #feebc8; }
-        .target-box { background-color: #fffff0; color: #b7791f; padding: 15px; border-radius: 10px; font-size: 16px; text-align: center; border: 1px dashed #ecc94b; margin-top: 15px; display: none;}
+        /* SWITCH TOGGLE */
+        .switch { position: relative; display: inline-block; width: 46px; height: 24px; flex-shrink: 0;}
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 24px; }
+        .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
+        input:checked + .slider { background-color: var(--success); }
+        input:disabled + .slider { background-color: var(--border-color); cursor: not-allowed; opacity: 0.5;}
+        input:checked + .slider:before { transform: translateX(22px); }
+
+        /* CALENDARS */
+        .calendar-legend { display: flex; justify-content: center; gap: 15px; font-size: 11px; font-weight: 700; margin-bottom: 15px; background: var(--input-bg); padding: 8px; border-radius: 8px; border: 1px solid var(--border-color); }
+        .legend-item { display: flex; align-items: center; gap: 4px; }
+        .legend-color { width: 10px; height: 10px; border-radius: 50%; }
         
-        /* CALENDAR */
-        .calendar-header-days { display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; font-size: 13px; font-weight: 700; color: #a0aec0; margin-bottom: 10px; }
+        .calendar-header-days { display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 8px; }
         .weekend-text { color: var(--secondary); }
-        .days-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; }
-        .day-bubble { aspect-ratio: 1; display: flex; justify-content: center; align-items: center; border-radius: 50%; font-size: 15px; font-weight: 600; background-color: #f7fafc; border: 1px solid #e2e8f0; cursor: pointer; user-select: none; }
-        .day-bubble.weekend { color: var(--secondary); background-color: #fff5f5; border-color: #fed7d7; }
-        .day-bubble.holiday { color: #ffffff; background-color: var(--holiday); border-color: #8e24aa; font-weight: 700;}
-        .day-bubble.selected, .day-bubble.selected.weekend, .day-bubble.selected.holiday { background-color: var(--success); color: white; border-color: #2e7d32; transform: scale(0.95); }
+        .days-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
+        .day-bubble { aspect-ratio: 1; display: flex; flex-direction: column; justify-content: flex-start; align-items: center; border-radius: 12px; font-size: 14px; font-weight: 700; background-color: var(--input-bg); border: 1px solid var(--border-color); cursor: pointer; user-select: none; position: relative; padding-top: 4px; overflow: hidden; }
+        .day-bubble.weekend { color: var(--secondary); background-color: rgba(211, 47, 47, 0.05); border-color: rgba(211, 47, 47, 0.2); }
+        .day-bubble.holiday { color: #fff; background-color: var(--holiday); border-color: var(--holiday); }
+        .day-bubble.selected-leave { background-color: var(--warning); color: white; border-color: var(--warning); transform: scale(0.95); justify-content: center; }
+        .day-bubble.has-data { background-color: var(--card-bg); border: 2px solid var(--primary); }
         .day-bubble.empty { background: transparent; border: none; cursor: default; }
+        
+        .bubble-content { font-size: 9px; line-height: 1.1; width: 100%; text-align: center; margin-top: 2px; font-weight: 800; }
+        .txt-shift { color: var(--shift-color); }
+        .txt-repo { color: var(--repo-color); }
+        .txt-rest { color: var(--rest-color); font-size: 11px;}
+        .comp-dots { position: absolute; bottom: 3px; display: flex; gap: 3px; justify-content: center; width: 100%; }
+        .comp-dot { width: 6px; height: 6px; border-radius: 50%; }
+        .dot-day { background-color: #fbc02d; }
+        .dot-night { background-color: #1976d2; }
 
-        /* RESULTS */
-        .results-wrapper { display: none; }
-        .stats-grid { display: grid; grid-template-columns: 1fr; gap: 10px; margin-bottom: 20px; }
-        .stat-item { display: flex; justify-content: space-between; align-items: center; padding: 12px; background: #f8fafc; border-radius: 10px; border: 1px solid #e2e8f0; }
-        .stat-label { font-size: 14px; color: #4a5568; font-weight: 500; }
-        .stat-value { font-size: 16px; font-weight: 700; color: #2d3748; }
-        .final-dashboard { background: linear-gradient(135deg, #1a237e 0%, #283593 100%); color: white; padding: 25px; border-radius: 16px; text-align: center; }
-        .final-dashboard.negative { background: linear-gradient(135deg, #d32f2f 0%, #b71c1c 100%); }
-        .dashboard-title { font-size: 16px; font-weight: 500; opacity: 0.9; margin-bottom: 5px; }
-        .dashboard-score { font-size: 42px; font-weight: 900; letter-spacing: -1px; }
-        .dashboard-warning { font-size: 13px; margin-top: 8px; padding: 6px; background: rgba(255,255,255,0.2); border-radius: 6px; display: none; }
-
-        .reset-btn { width: 100%; background-color: #edf2f7; color: #4a5568; border: 1px solid #cbd5e0; padding: 15px; border-radius: 10px; font-size: 16px; font-weight: 700; cursor: pointer; display: none; }
-        .footer { text-align: center; font-size: 12px; color: #a0aec0; margin-top: 10px; padding-bottom: 20px; font-style: italic;}
+        /* RESULTS & STATS */
+        .stat-box { background: var(--input-bg); border-radius: 10px; padding: 12px; margin-bottom: 8px; border: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; }
+        .stat-label { font-size: 13px; font-weight: 600; color: var(--text-muted); }
+        .stat-value { font-size: 16px; font-weight: 800; color: var(--text-main); }
+        .stat-value.danger { color: var(--secondary); }
+        .stat-value.warning { color: var(--warning); }
+        
+        .final-dashboard { background: linear-gradient(135deg, var(--primary) 0%, #283593 100%); color: white; padding: 20px; border-radius: 16px; text-align: center; margin-top: 10px; box-shadow: var(--shadow-md); }
+        .final-dashboard.negative { background: linear-gradient(135deg, var(--secondary) 0%, #b71c1c 100%); }
+        .dashboard-score { font-size: 38px; font-weight: 900; letter-spacing: -1px; margin: 5px 0; }
+        .money-text { font-size: 15px; font-weight: 700; color: #a5d6a7; margin-top: 5px; }
+        .alert-box { background: rgba(211,47,47,0.2); color: #ffcdd2; border: 1px solid #e53935; padding: 10px; border-radius: 8px; font-size: 12px; font-weight: 600; margin-top: 10px; text-align: left; display: none;}
 
         /* MODALS */
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(4px); display: none; justify-content: center; align-items: center; z-index: 9999; padding: 20px;}
-        .modal-content { background: white; padding: 35px 25px; border-radius: 20px; text-align: center; max-width: 500px; width: 100%; border: 4px solid var(--secondary); animation: popIn 0.4s; }
-        .modal-content p { font-size: 22px; font-weight: 800; color: var(--primary); line-height: 1.4; margin-bottom: 25px; }
-        .modal-content .terms-text { text-align: justify; font-size: 14px; font-weight: 500; color: #4a5568; line-height: 1.6; margin-bottom: 25px; }
-        .modal-btn { background: var(--secondary); color: white; border: none; padding: 14px 40px; font-size: 18px; font-weight: bold; border-radius: 10px; cursor: pointer; width: 100%;}
-        .modal-btn.primary-btn { background: var(--primary); }
-        @keyframes popIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(3px); display: none; justify-content: center; align-items: center; z-index: 9999; padding: 15px;}
+        .modal-content { background: var(--card-bg); padding: 20px; border-radius: 20px; width: 100%; max-width: 400px; box-shadow: var(--shadow-md); animation: popIn 0.3s ease; border: 2px solid var(--primary); max-height: 95vh; overflow-y: auto;}
+        .modal-content h3 { color: var(--primary); margin-bottom: 12px; text-align: center; font-size: 17px; border-bottom: 2px solid var(--border-color); padding-bottom: 10px;}
+        
+        .modal-section-title { font-size: 12px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; margin: 10px 0 6px 0; text-align: left; border-bottom: 1px dashed var(--border-color); padding-bottom: 4px;}
+        .btn-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; margin-bottom: 5px; }
+        .btn-grid-2 { grid-template-columns: 1fr 1fr; }
+        
+        .sel-btn { background: var(--input-bg); border: 2px solid var(--border-color); color: var(--text-main); padding: 10px 4px; border-radius: 8px; font-weight: 700; cursor: pointer; transition: 0.2s; font-size: 13px; text-align: center; display: flex; justify-content: center; align-items: center; user-select: none;}
+        .sel-btn.active-shift { background: var(--shift-color); color: white; border-color: var(--shift-color); }
+        .sel-btn.active-repo { background: var(--repo-color); color: white; border-color: var(--repo-color); }
+        .sel-btn.active-rest { background: var(--rest-color); color: white; border-color: var(--rest-color); }
+        .sel-btn:disabled { opacity: 0.4; cursor: not-allowed; background: var(--border-color); }
+
+        .checkbox-row { display: flex; justify-content: space-between; gap: 10px;}
+        .check-btn { flex: 1; background: var(--input-bg); border: 2px solid var(--border-color); padding: 8px; border-radius: 8px; text-align: center; font-weight: 700; cursor: pointer; font-size: 13px; transition: 0.2s; user-select: none;}
+        .check-btn.checked { background: var(--repo-color); color: white; border-color: var(--repo-color); }
+        .check-btn.disabled { opacity: 0.4; cursor: not-allowed; background: var(--border-color); }
+
+        .comp-section { background: rgba(0,0,0,0.02); padding: 10px; border-radius: 10px; margin: 12px 0; border: 1px solid var(--border-color); display: none;}
+        
+        .info-text { font-size: 12px; color: var(--secondary); font-weight: 600; text-align: center; margin-bottom: 10px; display: none; background: rgba(211,47,47,0.1); padding: 8px; border-radius: 8px;}
+
+        @keyframes popIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     </style>
 </head>
 <body>
@@ -109,404 +138,644 @@
     <div class="app-container">
         
         <div class="header-section">
+            <button class="theme-toggle" onclick="toggleTheme()" id="theme-btn">☀️</button>
+            <img src="icon-512.png" alt="Λογότυπο ΕΜΟΔΕ" class="app-logo">
             <div class="emode-title">13η Ε.ΜΟ.Δ.Ε</div>
-            <h1 class="main-title">Υπολογιστής Ρεπό και Πενθημέρων Π.Σ.</h1>
+            <h1 class="main-title">Υπολογιστής Υπηρεσιών</h1>
             <div class="subtitle">(Αποκλειστικά για Μόνιμο Προσωπικό και Π.Δ.Ε)</div>
-            
-            <div class="header-buttons">
-                <button id="install-btn" class="install-btn">📲 Εγκατάσταση Εφαρμογής</button>
-                <button class="terms-btn" onclick="openTermsModal()">📄 Όροι Χρήσης & Αποποίηση Ευθύνης</button>
-            </div>
-
-            <div id="ios-prompt" class="alert alert-info" style="text-align: center; margin-top: 10px; margin-bottom: 5px;">
-                🍏 <strong>Για iPhone/iPad:</strong> Πατήστε Κοινοποίηση (Share) στο Safari και <em>"Προσθήκη στην οθόνη έναρξης"</em>.
-            </div>
         </div>
 
-        <div class="card">
-            <div class="card-header">Βήμα 1: Ημερομηνία</div>
-            <div class="form-row">
-                <div class="form-group">
-                    <label>Μήνας</label>
-                    <select id="month" onchange="unlockForm(); renderCalendar(); updateAdeiesDropdown(); updateHolidays(); calculate()">
-                        <option value="" disabled selected>Επιλέξτε...</option>
-                        <option value="0">Ιανουάριος</option>
-                        <option value="1">Φεβρουάριος</option>
-                        <option value="2">Μάρτιος</option>
-                        <option value="3">Απρίλιος</option>
-                        <option value="4">Μάιος</option>
-                        <option value="5">Ιούνιος</option>
-                        <option value="6">Ιούλιος</option>
-                        <option value="7">Αύγουστος</option>
-                        <option value="8">Σεπτέμβριος</option>
-                        <option value="9">Οκτώβριος</option>
-                        <option value="10">Νοέμβριος</option>
-                        <option value="11">Δεκέμβριος</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Έτος</label>
-                    <span id="year-static" class="static-year">-</span>
-                    <select id="year" onchange="checkYearJoke(); renderCalendar(); updateAdeiesDropdown(); updateHolidays(); calculate()" style="display: none;"></select>
-                    <label class="checkbox-container">
-                        <input type="checkbox" id="toggle-year" onchange="toggleYearView()" disabled>
-                        <span class="checkbox-text">Αλλαγή έτους</span>
-                    </label>
+        <div class="accordion open" id="acc-date">
+            <div class="accordion-header" onclick="toggleAcc('acc-date')">🗓️ Βήμα 1: Ημερομηνία <span class="arrow">▼</span></div>
+            <div class="accordion-content">
+                <div class="form-row" style="margin-bottom: 0;">
+                    <div class="form-group">
+                        <label>Μήνας</label>
+                        <select id="month" onchange="changeDate()">
+                            <option value="0">Ιανουάριος</option><option value="1">Φεβρουάριος</option>
+                            <option value="2">Μάρτιος</option><option value="3">Απρίλιος</option>
+                            <option value="4">Μάιος</option><option value="5">Ιούνιος</option>
+                            <option value="6">Ιούλιος</option><option value="7">Αύγουστος</option>
+                            <option value="8">Σεπτέμβριος</option><option value="9">Οκτώβριος</option>
+                            <option value="10">Νοέμβριος</option><option value="11">Δεκέμβριος</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Έτος</label>
+                        <select id="year" onchange="changeDate()"></select>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <div class="card" id="calendar-section" style="display: none;">
-            <div class="card-header">Βήμα 2: Άδειες (Προαιρετικό)</div>
-            <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 15px;">Επιλέξτε Ημέρες Κανονικής ή Αναρρωτικής άδειας (Αν υπάρχουν).</p>
-            
-            <div class="calendar-header-days">
-                <div>Δ</div><div>Τ</div><div>Τ</div><div>Π</div><div>Π</div><div class="weekend-text">Σ</div><div class="weekend-text">Κ</div>
-            </div>
-            <div id="days-grid" class="days-grid"></div>
-
-            <div style="margin-top: 20px;">
-                <label>Σύνολο Ημερών Αδείας (Αυτόματο):</label>
-                <select id="adeies" onchange="updateHolidays(); calculate()" disabled>
-                    <option value="0">0</option>
-                </select>
-            </div>
-
-            <div id="penthimera-info" class="alert alert-info" style="margin-top: 15px;"></div>
-            <div id="holiday-note" class="alert alert-warning"></div>
-        </div>
-
-        <div class="card" id="services-section" style="display: none;">
-            <div class="card-header">Βήμα 3: Υπηρεσίες & Αργίες</div>
-            
-            <div class="form-group" style="margin-bottom: 15px;">
-                <label>Αργίες Μήνα (ενημερώνεται αυτόματα):</label>
-                <select id="argies" onchange="calculate()" disabled>
-                    <option value="0">0</option>
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="4">4</option>
-                    <option value="5">5</option>
-                </select>
-            </div>
-
-            <div id="shift-start-group" style="display: none; background: #f8fafc; padding: 15px; border-radius: 10px; border: 1px solid #e2e8f0; margin-bottom: 15px;">
-                <label style="color: var(--primary); margin-bottom: 5px;">Ειδική Συνθήκη (Μήνας 31 ημερών):</label>
-                <label class="checkbox-container" style="margin-top: 0;">
-                    <input type="checkbox" id="first-shift" onchange="calculate()" disabled> 
-                    <span class="checkbox-text">Η 1η βάρδια είναι στις 1 του μήνα</span>
-                </label>
-            </div>
-
-            <div id="target-box" class="target-box">Υποχρεωτικές υπηρεσίες: -</div>
-
-            <div class="form-group" style="margin-top: 15px; margin-bottom: 15px;">
-                <label>24ωρες Υπηρεσίες (που εκτελέστηκαν):</label>
-                <select id="v24" onchange="calculate()" disabled></select>
-            </div>
-            
-            <div class="form-group">
-                <label>8ωρες Υπηρεσίες (που εκτελέστηκαν):</label>
-                <select id="v8" onchange="calculate()" disabled></select>
+        <div class="accordion" id="acc-leaves">
+            <div class="accordion-header" onclick="toggleAcc('acc-leaves')">🏖️ Βήμα 2: Άδειες (Προαιρετικό) <span class="arrow">▼</span></div>
+            <div class="accordion-content">
+                <label style="display:block; margin-bottom:10px;">Πατήστε τις ημέρες για Κανονική/Αναρρωτική άδεια:</label>
+                <div class="calendar-header-days"><div>Δ</div><div>Τ</div><div>Τ</div><div>Π</div><div>Π</div><div class="weekend-text">Σ</div><div class="weekend-text">Κ</div></div>
+                <div id="leaves-grid" class="days-grid"></div>
+                <div style="margin-top: 15px;" class="form-group">
+                    <label>Σύνολο Ημερών Αδείας (Μη αυτόματο):</label>
+                    <input type="number" id="manual-adeies" value="0" min="0" onchange="manualAdeiesChange()">
+                </div>
             </div>
         </div>
 
-        <div class="card results-wrapper" id="results-section">
-            <div class="card-header">Απολογισμός Μήνα</div>
-            
-            <div class="stats-grid">
-                <div class="stat-item">
-                    <span class="stat-label">Καθαρές Ημέρες Εργασίας:</span>
-                    <span class="stat-value" id="res-eff-days">0</span>
+        <div class="accordion" id="acc-shifts">
+            <div class="accordion-header" onclick="toggleAcc('acc-shifts')">🚒 Βήμα 3: Βάρδιες & Ρεπό Μήνα <span class="arrow">▼</span></div>
+            <div class="accordion-content">
+                
+                <div class="switch-container" id="special-31-box" style="display: none;">
+                    <span>Ειδική Συνθήκη: Η 1η βάρδια είναι στις 1 του μήνα</span>
+                    <label class="switch"><input type="checkbox" id="toggle-31" onchange="toggleSpecial31()"><span class="slider"></span></label>
                 </div>
-                <div class="stat-item">
-                    <span class="stat-label">Υποχρεωτικές Ώρες Α.Π.Σ.:</span>
-                    <span class="stat-value" id="res-req-hours">0.0</span>
+
+                <div class="calendar-legend">
+                    <div class="legend-item"><div class="legend-color" style="background:var(--shift-color);"></div>Βάρδια</div>
+                    <div class="legend-item"><div class="legend-color" style="background:var(--repo-color);"></div>Ρεπό</div>
+                    <div class="legend-item"><div class="legend-color" style="background:var(--rest-color);"></div>Ανάπαυση (🛏️)</div>
                 </div>
-                <div class="stat-item">
-                    <span class="stat-label">Σύνολο Ωρών (Εργασία + Αργίες):</span>
-                    <span class="stat-value" id="res-work-hours">0</span>
-                </div>
-            </div>
-            
-            <div class="final-dashboard" id="final-box">
-                <div class="dashboard-title">Οφειλόμενα 8ωρα Ρεπό</div>
-                <div class="dashboard-score" id="res-repos">0.00</div>
-                <div class="dashboard-warning" id="warning-msg">⚠️ Ο υπάλληλος χρωστάει ώρες!</div>
+
+                <div class="calendar-header-days"><div>Δ</div><div>Τ</div><div>Τ</div><div>Π</div><div>Π</div><div class="weekend-text">Σ</div><div class="weekend-text">Κ</div></div>
+                <div id="shifts-grid" class="days-grid"></div>
             </div>
         </div>
 
-        <button class="reset-btn" id="reset-section" onclick="resetForm()">Επαναφορά Δεδομένων</button>
-        <div class="footer">clopy-right 2026 nikolisx@gmail.com</div>
+        <div class="accordion" id="acc-stats">
+            <div class="accordion-header" onclick="toggleAcc('acc-stats')">📊 Ετήσια Στατιστικά & Όρια <span class="arrow">▼</span></div>
+            <div class="accordion-content">
+                <div class="stat-box"><span class="stat-label">Πρόσθετες Υπηρεσίες (Max 16)</span><span class="stat-value" id="stat-prosthetes">0 / 16</span></div>
+                <div class="stat-box"><span class="stat-label">Αποζημιώσεις Εκτός Έδρας (Max 90)</span><span class="stat-value" id="stat-ektos">0 / 90</span></div>
+                <div class="stat-box"><span class="stat-label">Σύνολο Ημερήσιων Έτους</span><span class="stat-value" id="stat-day">0</span></div>
+                <div class="stat-box"><span class="stat-label">Σύνολο Νυχτερινών Έτους</span><span class="stat-value" id="stat-night">0</span></div>
+            </div>
+        </div>
+
+        <div class="accordion open" style="border-color: var(--primary);">
+            <div class="accordion-header" style="cursor: default;">💰 Απολογισμός Μήνα</div>
+            <div class="accordion-content" style="display: block;">
+                <div class="stat-box"><span class="stat-label">Καθαρές Ημέρες Εργασίας:</span><span class="stat-value" id="res-eff-days">0</span></div>
+                <div class="stat-box"><span class="stat-label">Υποχρεωτικές Ώρες Α.Π.Σ.:</span><span class="stat-value" id="res-req-hours">0.0</span></div>
+                <div class="stat-box"><span class="stat-label">Σύνολο Ωρών Εργασίας + Αργίες:</span><span class="stat-value" id="res-work-hours">0</span></div>
+                
+                <div class="final-dashboard" id="final-box">
+                    <div style="font-size: 15px; font-weight: 600; opacity: 0.9;">Οφειλόμενα 8ωρα Ρεπό (Μετά από αφαιρέσεις)</div>
+                    <div class="dashboard-score" id="res-repos">0.00</div>
+                    <div id="rest-warning" class="alert-box">⚠️ Δεν έχετε καταχωρήσει τις απαιτούμενες αναπαύσεις αυτού του μήνα!</div>
+                    
+                    <div style="background: rgba(0,0,0,0.2); border-radius: 10px; padding: 15px; margin-top: 15px;">
+                        <div style="font-size: 13px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px;">Οικονομική Αποζημίωση (Μεικτά)</div>
+                        <div class="money-text" id="res-money-penth">Πενθήμερα (0): 0 €</div>
+                        <div class="money-text" id="res-money-prostheti" style="display: none;">Πρόσθετες: 0 €</div>
+                        <div class="money-text" id="res-money-day" style="display: none;">Ημερήσιες: 0 €</div>
+                        <div class="money-text" id="res-money-night" style="display: none;">Νυχτερινές: 0 €</div>
+                        <div class="money-text" style="color: #fff; font-size: 20px; border-top: 1px solid rgba(255,255,255,0.3); margin-top: 10px; padding-top: 10px;" id="res-money-total">Σύνολο: 0 €</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion" id="acc-manage">
+            <div class="accordion-header" onclick="toggleAcc('acc-manage')">⚙️ Διαχείριση & Backup <span class="arrow">▼</span></div>
+            <div class="accordion-content">
+                <button class="btn btn-outline" style="margin-bottom: 10px;" onclick="exportBackup()">📥 Εξαγωγή Αντιγράφου (Backup)</button>
+                <button class="btn btn-outline" style="margin-bottom: 20px;" onclick="document.getElementById('import-file').click()">📤 Εισαγωγή Αντιγράφου (Restore)</button>
+                <input type="file" id="import-file" style="display: none;" accept=".json" onchange="importBackup(event)">
+                
+                <button class="btn btn-outline" style="margin-bottom: 10px; color: var(--warning); border-color: var(--warning);" onclick="clearMonth()">🧹 Καθαρισμός Φόρμας Μήνα</button>
+                <button class="btn btn-outline" style="color: var(--secondary); border-color: var(--secondary);" onclick="clearYear()">🚨 Διαγραφή Όλων Δεδομένων Έτους</button>
+                <br><br>
+                <button class="btn btn-outline" onclick="openTermsModal()">📄 Όροι Χρήσης</button>
+            </div>
+        </div>
+
     </div>
 
-    <div id="joke-modal" class="modal-overlay">
+    <div id="shift-modal" class="modal-overlay">
         <div class="modal-content">
-            <p>Σοβαρά τώρα;<br>Κάτσε ρε συνάδελφε.<br>Ποιος ζει και ποιος πεθαίνει μέχρι τότε.</p>
-            <button class="modal-btn" onclick="closeJokeModal()">ΟΚ</button>
+            <h3>Ημερομηνία: <span id="modal-date-title"></span></h3>
+            <div id="modal-warning" class="info-text"></div>
+            
+            <div class="modal-section-title">1. Βαρδια</div>
+            <div class="btn-grid">
+                <div class="sel-btn" id="s-24" onclick="clickShift('24')">24ωρη</div>
+                <div class="sel-btn" id="s-P" onclick="clickShift('P')" style="color:var(--holiday); border-color:var(--holiday);">Πρόσθετη</div>
+                <div class="sel-btn" id="s-none" onclick="clickShift('none')">Καμία</div>
+                
+                <div class="sel-btn" id="s-A" onclick="clickShift('A')">A</div>
+                <div class="sel-btn" id="s-B" onclick="clickShift('B')">B</div>
+                <div class="sel-btn" id="s-G" onclick="clickShift('G')">Γ</div>
+                
+                <div class="sel-btn" id="s-AB" onclick="clickShift('AB')">AB</div>
+                <div class="sel-btn" id="s-BG" onclick="clickShift('BG')">BΓ</div>
+                <div class="sel-btn" id="s-AG" onclick="clickShift('AG')">AΓ</div>
+            </div>
+
+            <div class="modal-section-title" style="margin-top: 15px;">2. Ρεπο</div>
+            <div class="checkbox-row">
+                <div class="check-btn" id="r-A" onclick="clickRepo('A')">Ρεπό A</div>
+                <div class="check-btn" id="r-B" onclick="clickRepo('B')">Ρεπό B</div>
+                <div class="check-btn" id="r-G" onclick="clickRepo('G')">Ρεπό Γ</div>
+            </div>
+
+            <div class="modal-section-title" style="margin-top: 15px;">3. Αναπαυση</div>
+            <div class="btn-grid-2 btn-grid">
+                <div class="sel-btn" id="rest-24" onclick="clickRest('24')">24ωρη</div>
+                <div class="sel-btn" id="rest-none" onclick="clickRest('none')">Καμία</div>
+            </div>
+            <div class="btn-grid" id="rest-16-row" style="display:none; margin-top:5px;">
+                <div class="sel-btn" id="rest-AB" onclick="clickRest('AB')">Ανάπ. ΑΒ</div>
+                <div class="sel-btn" id="rest-BG" onclick="clickRest('BG')">Ανάπ. ΒΓ</div>
+                <div class="sel-btn" id="rest-AG" onclick="clickRest('AG')">Ανάπ. ΑΓ</div>
+            </div>
+
+            <div class="comp-section" id="comp-wrapper">
+                <div class="modal-section-title" style="border:none; margin-top:0;">Αποζημιωσεις (Αντιπυρικη)</div>
+                <div class="switch-container" style="margin-bottom: 8px;">
+                    <span style="color: #fbc02d;">Ημερήσια (9,78€)</span>
+                    <label class="switch"><input type="checkbox" id="toggle-day" onchange="handleCompToggle('day')"><span class="slider"></span></label>
+                </div>
+                <div class="switch-container" style="margin-bottom: 0;">
+                    <span style="color: #1976d2;">Νυχτερινή (39,13€)</span>
+                    <label class="switch"><input type="checkbox" id="toggle-night" onchange="handleCompToggle('night')"><span class="slider"></span></label>
+                </div>
+            </div>
+
+            <div style="display: flex; gap: 10px; margin-top: 20px;">
+                <button class="btn btn-outline" style="flex:1;" onclick="closeShiftModal()">Ακύρωση</button>
+                <button class="btn btn-green" style="flex:2;" onclick="saveDayData()">Αποθήκευση</button>
+            </div>
         </div>
     </div>
 
     <div id="terms-modal" class="modal-overlay">
-        <div class="modal-content" style="border-color: var(--primary);">
-            <p style="font-size: 20px; border-bottom: 2px solid #edf2f7; padding-bottom: 10px;">📄 Όροι Χρήσης</p>
-            <div class="terms-text">
-                Η παρούσα εφαρμογή διατίθεται <strong>δωρεάν</strong> και δεν συλλέγει προσωπικά δεδομένα. <strong>Δεν αποτελεί επίσημη εφαρμογή του Π.Σ.</strong>.<br><br>
-                Τα αποτελέσματα είναι <strong>καθαρά ενδεικτικά</strong>. Δεν μπορούμε να εγγυηθούμε απόλυτη ακρίβεια για όλες τις ειδικές υπηρεσιακές συνθήκες και υπάρχει πιθανότητα σφάλματος.
-            </div>
-            <button class="modal-btn primary-btn" onclick="closeTermsModal()">Κατανόηση & Κλείσιμο</button>
+        <div class="modal-content">
+            <h3>📄 Όροι Χρήσης</h3>
+            <p style="font-size: 13px; line-height: 1.5; color: var(--text-muted); text-align: justify; margin-bottom: 15px;">
+                Η εφαρμογή διατίθεται <strong>δωρεάν</strong>, αποθηκεύει τα δεδομένα τοπικά στη συσκευή σας και <strong>δεν αποτελεί επίσημη εφαρμογή του Π.Σ.</strong>.<br><br>
+                Τα αποτελέσματα είναι ενδεικτικά. Ο τελικός έλεγχος ανήκει στην Υπηρεσία.
+            </p>
+            <button class="btn btn-green" onclick="document.getElementById('terms-modal').style.display='none'">Κλείσιμο</button>
         </div>
     </div>
-
     <div id="update-modal" class="modal-overlay">
         <div class="modal-content" style="border-color: var(--success);">
-            <p style="font-size: 20px; border-bottom: 2px solid #edf2f7; padding-bottom: 10px; color: var(--success);">🔄 Διαθέσιμη Ενημέρωση</p>
-            <div class="terms-text" style="text-align: center;">
-                Υπάρχει μια νέα έκδοση της εφαρμογής με βελτιώσεις! Πατήστε ανανέωση για να την αποκτήσετε άμεσα.
-            </div>
-            <button class="modal-btn" style="background: var(--success);" onclick="window.location.reload(true)">Ανανέωση Τώρα</button>
+            <h3 style="color: var(--success); border-bottom: none;">🔄 Διαθέσιμη Ενημέρωση</h3>
+            <p style="font-size: 14px; text-align: center; margin-bottom: 20px;">Υπάρχει νέα έκδοση! Ανανεώστε για να την αποκτήσετε.</p>
+            <button class="btn btn-green" onclick="window.location.reload(true)">Ανανέωση Τώρα</button>
         </div>
     </div>
 
     <script>
-        const currentYear = new Date().getFullYear();
-        document.getElementById('year-static').innerText = currentYear;
+        // --- 1. STATE & INITIALIZATION ---
+        const CACHE_KEY = 'emode_app_data_v1';
+        let appData = JSON.parse(localStorage.getItem(CACHE_KEY)) || {};
+        let currentYear = new Date().getFullYear();
+        let currentMonth = new Date().getMonth();
+        
+        let tempShift = 'none'; // '24', 'A', 'B', 'G', 'AB', 'BG', 'AG', 'P', 'none'
+        let tempRepos = []; // ['A', 'B', 'G']
+        let tempRest = 'none'; // '24', 'AB', 'BG', 'AG', 'none'
+        let modalDay = null;
 
         const yearSelect = document.getElementById('year');
-        const startYear = currentYear - 3; 
-        for (let i = startYear; i <= 2086; i++) {
-            let opt = document.createElement('option');
-            opt.value = i; opt.innerHTML = i;
-            if (i === currentYear) opt.selected = true;
-            yearSelect.appendChild(opt);
+        for (let i = currentYear - 3; i <= currentYear + 5; i++) yearSelect.appendChild(new Option(i, i));
+        document.getElementById('month').value = currentMonth; yearSelect.value = currentYear;
+
+        const themeBtn = document.getElementById('theme-btn');
+        let isDark = localStorage.getItem('emode_theme') === 'dark';
+        if(isDark) applyDark();
+
+        function toggleTheme() { isDark = !isDark; isDark ? applyDark() : applyLight(); localStorage.setItem('emode_theme', isDark ? 'dark' : 'light'); }
+        function applyDark() { document.documentElement.setAttribute('data-theme', 'dark'); document.getElementById('theme-color-meta').content = "#121212"; themeBtn.innerText = "🌙"; }
+        function applyLight() { document.documentElement.removeAttribute('data-theme'); document.getElementById('theme-color-meta').content = "#1a237e"; themeBtn.innerText = "☀️"; }
+        function toggleAcc(id) { document.getElementById(id).classList.toggle('open'); }
+
+        // --- 2. DATA MANAGEMENT ---
+        function getSafeData(y, m) {
+            if(!appData[y]) appData[y] = {};
+            if(!appData[y][m]) appData[y][m] = { leaves: [], days: {}, special31: false };
+            // Ensure backwards compatibility / defaults
+            if(!appData[y][m].days) appData[y][m].days = {}; 
+            return appData[y][m];
         }
+        function saveToLocal() { localStorage.setItem(CACHE_KEY, JSON.stringify(appData)); refreshUI(); }
+        function changeDate() { currentMonth = parseInt(document.getElementById('month').value); currentYear = parseInt(document.getElementById('year').value); refreshUI(); }
 
-        const v8Select = document.getElementById('v8');
-        for (let i = 0; i <= 31; i++) { v8Select.appendChild(new Option(i, i)); }
-
-        const v24Select = document.getElementById('v24');
-        for (let i = 0; i <= 15; i++) { v24Select.appendChild(new Option(i, i)); }
-
-        function checkYearJoke() { if (document.getElementById('year').value === "2086") document.getElementById('joke-modal').style.display = 'flex'; }
-        function closeJokeModal() { document.getElementById('joke-modal').style.display = 'none'; location.reload(); }
-        function openTermsModal() { document.getElementById('terms-modal').style.display = 'flex'; }
-        function closeTermsModal() { document.getElementById('terms-modal').style.display = 'none'; }
-
-        function toggleYearView() {
-            const isChecked = document.getElementById('toggle-year').checked;
-            const staticYear = document.getElementById('year-static');
-            const dropdownYear = document.getElementById('year');
-            if (isChecked) { staticYear.style.display = 'none'; dropdownYear.style.display = 'block'; } 
-            else { staticYear.style.display = 'block'; dropdownYear.style.display = 'none'; dropdownYear.value = currentYear; }
-            renderCalendar(); updateHolidays(); calculate();
-        }
-
-        function unlockForm() {
-            ['toggle-year', 'year', 'adeies', 'argies', 'v8', 'v24'].forEach(id => document.getElementById(id).disabled = false);
-            ['calendar-section', 'services-section', 'results-section', 'reset-section'].forEach(id => document.getElementById(id).style.display = 'block');
-        }
-
-        function resetForm() { location.reload(); }
-
-        function renderCalendar() {
-            const monthEl = document.getElementById('month');
-            if (monthEl.value === "") return;
-            const month = parseInt(monthEl.value);
-            const year = document.getElementById('toggle-year').checked ? parseInt(document.getElementById('year').value) : currentYear;
-            const totalDays = new Date(year, month + 1, 0).getDate();
-            const grid = document.getElementById('days-grid');
+        // --- 3. CALENDARS & RENDERING ---
+        function refreshUI() {
+            const data = getSafeData(currentYear, currentMonth);
+            const totalDays = new Date(currentYear, currentMonth + 1, 0).getDate();
             
-            let currentlySelected = Array.from(grid.querySelectorAll('.day-bubble.selected')).map(el => parseInt(el.dataset.day));
-            grid.innerHTML = ''; 
+            document.getElementById('manual-adeies').value = data.leaves.length;
             
-            let firstDayOfWeek = new Date(year, month, 1).getDay();
-            let offset = firstDayOfWeek === 0 ? 6 : firstDayOfWeek - 1;
-            for(let j = 0; j < offset; j++) {
-                let blank = document.createElement('div'); blank.className = 'day-bubble empty'; grid.appendChild(blank);
-            }
+            let specBox = document.getElementById('special-31-box');
+            if(totalDays === 31) { specBox.style.display = 'flex'; document.getElementById('toggle-31').checked = data.special31; } 
+            else { specBox.style.display = 'none'; data.special31 = false; }
 
-            const holidays = getHolidaysObjects(month, year);
+            renderLeavesCalendar(totalDays);
+            renderShiftsCalendar(totalDays);
+            updateStatsAndCalculations();
+        }
+
+        function toggleSpecial31() {
+            getSafeData(currentYear, currentMonth).special31 = document.getElementById('toggle-31').checked;
+            saveToLocal();
+        }
+
+        function getHolidays(m, y) {
+            const getEaster = (y) => { const a=y%19,b=y%4,c=y%7,d=(19*a+15)%30,e=(2*b+4*c+6*d+6)%7; return new Date(y,2,22+(d+e)+13); }
+            const l = [], add = (d) => l.push(d);
+            if(m===0){add(1);add(6);} if(m===2)add(25); if(m===4)add(1); if(m===7)add(15); if(m===9)add(28); if(m===11){add(25);add(26);}
+            const ea = getEaster(y);
+            let d = new Date(ea); d.setDate(ea.getDate()-48); if(d.getMonth()===m) add(d.getDate());
+            d = new Date(ea); d.setDate(ea.getDate()-2); if(d.getMonth()===m) add(d.getDate());
+            d = new Date(ea); d.setDate(ea.getDate()+1); if(d.getMonth()===m) add(d.getDate());
+            d = new Date(ea); d.setDate(ea.getDate()+50); if(d.getMonth()===m) add(d.getDate());
+            return l;
+        }
+
+        function renderLeavesCalendar(totalDays) {
+            const grid = document.getElementById('leaves-grid'); grid.innerHTML = '';
+            let offset = new Date(currentYear, currentMonth, 1).getDay(); offset = offset === 0 ? 6 : offset - 1;
+            for(let j=0; j<offset; j++) grid.innerHTML += '<div class="day-bubble empty"></div>';
+
+            const h = getHolidays(currentMonth, currentYear);
+            const data = getSafeData(currentYear, currentMonth);
 
             for (let i = 1; i <= totalDays; i++) {
-                let btn = document.createElement('div');
-                btn.className = 'day-bubble';
-                let dow = new Date(year, month, i).getDay();
-                if (dow === 0 || dow === 6) btn.classList.add('weekend');
+                let div = document.createElement('div'); div.className = 'day-bubble';
+                let dow = new Date(currentYear, currentMonth, i).getDay();
+                if (dow === 0 || dow === 6) div.classList.add('weekend');
+                if (h.includes(i)) div.classList.add('holiday');
+                div.innerHTML = `<span style="margin-top:auto; margin-bottom:auto;">${i}</span>`;
                 
-                let holidayObj = holidays.find(h => h.day === i);
-                if (holidayObj) { btn.classList.add('holiday'); btn.title = holidayObj.name; }
-                if (currentlySelected.includes(i)) btn.classList.add('selected');
-                
-                btn.dataset.day = i; btn.innerHTML = i;
-                btn.onclick = function() {
-                    this.classList.toggle('selected');
-                    updateAdeiesDropdown(document.querySelectorAll('.day-bubble.selected').length);
-                    updateHolidays(); calculate();
+                if (data.leaves.includes(i)) div.classList.add('selected-leave');
+                div.onclick = () => {
+                    if(data.days[i] && (data.days[i].shift !== 'none' || data.days[i].repos.length > 0 || data.days[i].rest !== 'none')) {
+                        alert("⚠️ Υπάρχει εγγραφή βάρδιας ή ρεπό. Διαγράψτε την πρώτα από το Βήμα 3."); return;
+                    }
+                    let idx = data.leaves.indexOf(i);
+                    if (idx > -1) data.leaves.splice(idx, 1); else data.leaves.push(i);
+                    saveToLocal();
                 };
-                grid.appendChild(btn);
+                grid.appendChild(div);
             }
         }
 
-        function updateAdeiesDropdown(forceValue = null) {
-            const monthEl = document.getElementById('month');
-            if (monthEl.value === "") return;
-            const month = parseInt(monthEl.value);
-            const year = document.getElementById('toggle-year').checked ? parseInt(document.getElementById('year').value) : currentYear;
-            const totalDays = new Date(year, month + 1, 0).getDate();
-            const adeiesSelect = document.getElementById('adeies');
-            
-            let currentValue = forceValue !== null ? forceValue : (parseInt(adeiesSelect.value) || 0);
-            const calendarCount = document.querySelectorAll('.day-bubble.selected').length;
-            if (forceValue === null) currentValue = Math.max(currentValue, calendarCount);
-            
-            adeiesSelect.innerHTML = ''; adeiesSelect.appendChild(new Option("0", "0"));
-            
-            let optionsSet = new Set();
-            for (let i = 6; i <= (totalDays - 6); i++) optionsSet.add(i);
-            if (currentValue > 0) optionsSet.add(currentValue);
-            if (calendarCount > 0) optionsSet.add(calendarCount);
+        function renderShiftsCalendar(totalDays) {
+            const grid = document.getElementById('shifts-grid'); grid.innerHTML = '';
+            let offset = new Date(currentYear, currentMonth, 1).getDay(); offset = offset === 0 ? 6 : offset - 1;
+            for(let j=0; j<offset; j++) grid.innerHTML += '<div class="day-bubble empty"></div>';
 
-            Array.from(optionsSet).sort((a,b) => a - b).forEach(val => { adeiesSelect.appendChild(new Option(val, val)); });
-            adeiesSelect.value = currentValue;
-        }
+            const h = getHolidays(currentMonth, currentYear);
+            const data = getSafeData(currentYear, currentMonth);
 
-        function getOrthodoxEaster(year) {
-            const a = year % 19, b = year % 4, c = year % 7;
-            const d = (19 * a + 15) % 30, e = (2 * b + 4 * c + 6 * d + 6) % 7;
-            return new Date(year, 2, 22 + (d + e) + 13, 12, 0, 0); 
-        }
-
-        function getHolidaysObjects(month, year) {
-            const list = []; const add = (name, day) => list.push({ name, day });
-            if (month === 0) { add("Πρωτοχρονιά", 1); add("Θεοφάνεια", 6); }
-            if (month === 2) add("Ευαγγελισμός", 25);
-            if (month === 4) add("Πρωτομαγιά", 1);
-            if (month === 7) add("Παναγίας", 15);
-            if (month === 9) add("Εθνική Εορτή", 28);
-            if (month === 11) { add("Χριστούγεννα", 25); add("Σύναξη Θεοτόκου", 26); }
-
-            const easter = getOrthodoxEaster(year);
-            const cm = new Date(easter); cm.setDate(easter.getDate() - 48); if (cm.getMonth() === month) add("Καθαρά Δευτέρα", cm.getDate());
-            const gf = new Date(easter); gf.setDate(easter.getDate() - 2); if (gf.getMonth() === month) add("Μεγάλη Παρασκευή", gf.getDate());
-            const em = new Date(easter); em.setDate(easter.getDate() + 1); if (em.getMonth() === month) add("Δευτέρα του Πάσχα", em.getDate());
-            const hs = new Date(easter); hs.setDate(easter.getDate() + 50); if (hs.getMonth() === month) add("Αγίου Πνεύματος", hs.getDate());
-            return list;
-        }
-
-        function updateHolidays() {
-            const monthEl = document.getElementById('month');
-            if (monthEl.value === "") return;
-            const month = parseInt(monthEl.value);
-            const year = document.getElementById('toggle-year').checked ? parseInt(document.getElementById('year').value) : currentYear;
-            const holidays = getHolidaysObjects(month, year);
-            const noteBox = document.getElementById('holiday-note');
-            const argiesEl = document.getElementById('argies');
-            const selectedDays = Array.from(document.querySelectorAll('.day-bubble.selected')).map(el => parseInt(el.dataset.day));
-
-            if (holidays.length > 0) {
-                let holidayNames = [], sundayHolidaysText = [], validHolidaysCount = 0;
-                holidays.forEach(h => {
-                    let isSunday = (new Date(year, month, h.day).getDay() === 0);
-                    let isUnderLeave = selectedDays.includes(h.day);
-
-                    if (isSunday) { sundayHolidaysText.push(`• Η αργία <strong>${h.name}</strong> συμπίπτει με <strong>Κυριακή</strong> (δεν παίρνετε ρεπό).`); } 
-                    else if (isUnderLeave) { holidayNames.push(`<span style="text-decoration: line-through;">${h.name}</span>`); } 
-                    else { holidayNames.push(`<strong>${h.name}</strong>`); validHolidaysCount++; }
-                });
-
-                let noteHTML = holidayNames.length > 0 ? `🗓️ <strong>Αργίες:</strong> ${holidayNames.join(', ')}.<br>` : "";
-                if (sundayHolidaysText.length > 0) noteHTML += `<div style="color: #c53030; background: #fff5f5; padding: 10px; border-radius: 8px; margin-top: 10px; font-weight: 500; border: 1px solid #fed7d7;">${sundayHolidaysText.join('<br>')}</div>`;
-
-                let lostHolidays = holidays.filter(h => selectedDays.includes(h.day) && new Date(year, month, h.day).getDay() !== 0);
-                if (lostHolidays.length > 0) noteHTML += `<div style="color: #c05621; background: #fffaf0; padding: 10px; border-radius: 8px; margin-top: 10px; font-weight: 600; border: 1px solid #feebc8;">⚠️ Χάνετε το ρεπό λόγω άδειας: ${lostHolidays.map(h=>h.name).join(', ')}</div>`;
+            for (let i = 1; i <= totalDays; i++) {
+                let div = document.createElement('div'); div.className = 'day-bubble';
+                let dow = new Date(currentYear, currentMonth, i).getDay();
+                if (dow === 0 || dow === 6) div.classList.add('weekend');
+                if (h.includes(i)) div.classList.add('holiday');
                 
-                argiesEl.value = validHolidaysCount.toString();
-                noteBox.innerHTML = noteHTML; noteBox.style.display = 'block';
-            } else { noteBox.style.display = 'none'; argiesEl.value = "0"; }
+                let dayData = data.days[i] || { shift: 'none', repos: [], rest: 'none', comp: 'none' };
+                let hasD = dayData.shift !== 'none' || dayData.repos.length > 0 || dayData.rest !== 'none';
+                
+                if(hasD) div.classList.add('has-data');
+                
+                let html = `<div>${i}</div><div class="bubble-content">`;
+                
+                // Text rendering
+                if(dayData.rest === '24') html += `<span class="txt-rest">🛏️ ΑΝΑΠ.</span><br>`;
+                else if (dayData.rest !== 'none') html += `<span class="txt-rest">🛏️ ${dayData.rest}</span><br>`;
+                
+                if(dayData.shift === 'P') html += `<span class="txt-shift">ΠΡΟΣΘ.</span><br>`;
+                else if(dayData.shift !== 'none' && dayData.shift !== '24') html += `<span class="txt-shift">Β: ${dayData.shift}</span><br>`;
+                else if(dayData.shift === '24') html += `<span class="txt-shift">24ωρο</span><br>`;
+
+                if(dayData.repos.length > 0) {
+                    if(dayData.repos.length === 3) html += `<span class="txt-repo">ΡΕΠΟ</span><br>`;
+                    else html += `<span class="txt-repo">Ρ: ${dayData.repos.join('')}</span><br>`;
+                }
+                
+                html += `</div>`;
+
+                if(dayData.comp !== 'none') {
+                    html += `<div class="comp-dots">`;
+                    if(dayData.comp === 'day') html += `<div class="comp-dot dot-day"></div>`;
+                    if(dayData.comp === 'night') html += `<div class="comp-dot dot-night"></div>`;
+                    html += `</div>`;
+                }
+                
+                div.innerHTML = html;
+                div.onclick = () => openShiftModal(i);
+                grid.appendChild(div);
+            }
         }
 
-        function calculate() {
-            const monthEl = document.getElementById('month');
-            if (monthEl.value === "") return;
-            const month = parseInt(monthEl.value);
-            const year = document.getElementById('toggle-year').checked ? parseInt(document.getElementById('year').value) : currentYear;
-            const selectedDays = Array.from(document.querySelectorAll('.day-bubble.selected')).map(el => parseInt(el.dataset.day));
-            const adeies = parseInt(document.getElementById('adeies').value) || 0;
-            const argies = parseInt(document.getElementById('argies').value) || 0;
-            const v24 = parseInt(document.getElementById('v24').value) || 0;
-            const v8 = parseInt(document.getElementById('v8').value) || 0;
-            const totalDays = new Date(year, month + 1, 0).getDate();
+        // --- 4. SMART MODAL LOGIC ---
+        function isAntipyriki() { return currentMonth >= 4 && currentMonth <= 9; }
+        
+        function getBlocks(type, isArr) {
+            let arr = isArr ? type : [type];
+            let res = [];
+            if(arr.includes('A')) res.push(1); if(arr.includes('B')) res.push(2); if(arr.includes('G')) res.push(3);
+            if(arr.includes('AB')) res.push(1,2); if(arr.includes('BG')) res.push(2,3); if(arr.includes('AG')) res.push(1,3);
+            if(arr.includes('24')) res.push(1,2,3);
+            return res;
+        }
+
+        function getGlobalDay(y, m, d) {
+            let dt = new Date(y, m, d);
+            let cY = dt.getFullYear(), cM = dt.getMonth(), cD = dt.getDate();
+            if(appData[cY] && appData[cY][cM] && appData[cY][cM].days && appData[cY][cM].days[cD]) return appData[cY][cM].days[cD];
+            return null;
+        }
+
+        function openShiftModal(day) {
+            let data = getSafeData(currentYear, currentMonth);
+            if(data.leaves.includes(day)) { alert("⚠️ Η ημέρα είναι δηλωμένη ως άδεια (Βήμα 2)."); return; }
             
-            const shiftGroup = document.getElementById('shift-start-group'), firstShiftCheckbox = document.getElementById('first-shift');
-            if (totalDays === 31) {
-                shiftGroup.style.display = 'block';
-                if (adeies > 0) { firstShiftCheckbox.checked = false; firstShiftCheckbox.disabled = true; shiftGroup.style.opacity = '0.5'; } 
-                else { firstShiftCheckbox.disabled = false; shiftGroup.style.opacity = '1'; }
-            } else { shiftGroup.style.display = 'none'; firstShiftCheckbox.checked = false; firstShiftCheckbox.disabled = true; }
+            modalDay = day;
+            document.getElementById('modal-date-title').innerText = `${day}/${currentMonth+1}/${currentYear}`;
+            document.getElementById('shift-modal').style.display = 'flex';
+            
+            let dData = data.days[day] || { shift: 'none', repos: [], rest: 'none', comp: 'none' };
+            tempShift = dData.shift; tempRepos = [...dData.repos]; tempRest = dData.rest;
+            
+            let is31Special = (new Date(currentYear, currentMonth+1, 0).getDate() === 31 && data.special31);
+            document.getElementById('rest-16-row').style.display = is31Special ? 'grid' : 'none';
+            document.getElementById('comp-wrapper').style.display = isAntipyriki() ? 'block' : 'none';
+            document.getElementById('toggle-day').checked = dData.comp === 'day';
+            document.getElementById('toggle-night').checked = dData.comp === 'night';
+            
+            updateModalUI();
+        }
+
+        function closeShiftModal() { document.getElementById('shift-modal').style.display = 'none'; }
+
+        function clickShift(val) { tempShift = val; updateModalUI(); }
+        function clickRepo(val) { 
+            let idx = tempRepos.indexOf(val); 
+            if(idx>-1) tempRepos.splice(idx,1); else tempRepos.push(val); 
+            updateModalUI(); 
+        }
+        function clickRest(val) { tempRest = val; updateModalUI(); }
+
+        function handleCompToggle(changed) {
+            let tDay = document.getElementById('toggle-day');
+            let tNight = document.getElementById('toggle-night');
+            if(changed === 'day' && tDay.checked) tNight.checked = false;
+            if(changed === 'night' && tNight.checked) tDay.checked = false;
+        }
+
+        function updateModalUI() {
+            let warn = document.getElementById('modal-warning'); warn.style.display = 'none';
+            let yest = getGlobalDay(currentYear, currentMonth, modalDay - 1);
+            
+            let lockA = false;
+            if(yest && yest.shift === '24') {
+                lockA = true;
+                warn.innerText = "🔒 Απαιτείται 8ωρο ανάπαυσης (A) μετά από 24ωρη βάρδια."; warn.style.display = 'block';
+            }
+
+            // Cross-Locks (if one is 24h, clear others)
+            if(tempShift === '24' || tempShift === 'P') { tempRepos = []; tempRest = 'none'; }
+            if(tempRest === '24') { tempShift = 'none'; tempRepos = []; }
+
+            // Collision Detection
+            let sBlk = getBlocks(tempShift, false);
+            let rBlk = getBlocks(tempRepos, true);
+            let eBlk = getBlocks(tempRest, false);
+            
+            // Revert changes if collision
+            let overlap = sBlk.filter(x => rBlk.includes(x)).length > 0 || sBlk.filter(x => eBlk.includes(x)).length > 0 || rBlk.filter(x => eBlk.includes(x)).length > 0;
+            if(overlap) {
+                // If overlap happened, prioritize the last clicked by roughly clearing the others. For simplicity, just wipe shift if repo clicked etc.
+                // Since this is real-time, just clear the conflicting arrays
+                tempShift = 'none'; tempRepos = []; tempRest = 'none';
+                sBlk=[]; rBlk=[]; eBlk=[];
+            }
+
+            // UI Updates - SHIFTS
+            ['24','P','none','A','B','G','AB','BG','AG'].forEach(id => {
+                let btn = document.getElementById('s-'+id);
+                btn.className = 'sel-btn' + (tempShift === id ? ' active-shift' : '');
+                btn.disabled = false;
+                if(lockA && ['24','A','AB','AG'].includes(id)) btn.disabled = true;
+                let bCheck = getBlocks(id, false);
+                if(id !== 'none' && (bCheck.filter(x=>rBlk.includes(x)).length>0 || bCheck.filter(x=>eBlk.includes(x)).length>0)) btn.disabled = true;
+            });
+
+            // UI Updates - REPOS
+            ['A','B','G'].forEach(id => {
+                let btn = document.getElementById('r-'+id);
+                btn.className = 'check-btn' + (tempRepos.includes(id) ? ' checked' : '');
+                btn.classList.remove('disabled');
+                if(lockA && id === 'A') { btn.classList.add('disabled'); btn.className = 'check-btn disabled'; } // A cannot be a working shift, but CAN it be a Repo? Yes, Repo A is rest! Wait, if they take Repo, they rest. So Repo A is allowed.
+                // Wait, if yesterday was 24, today A MUST be rest. Repo A counts as rest. So Repo A is allowed! 
+                // Let's remove lockA from Repo.
+                if(lockA && id === 'A') btn.classList.remove('disabled'); 
+                
+                let bCheck = getBlocks(id, false);
+                if(bCheck.filter(x=>sBlk.includes(x)).length>0 || bCheck.filter(x=>eBlk.includes(x)).length>0) {
+                    btn.classList.add('disabled');
+                }
+            });
+
+            // UI Updates - RESTS
+            ['24','none','AB','BG','AG'].forEach(id => {
+                let btn = document.getElementById('rest-'+id);
+                if(!btn) return;
+                btn.className = 'sel-btn' + (tempRest === id ? ' active-rest' : '');
+                btn.disabled = false;
+                let bCheck = getBlocks(id, false);
+                if(id !== 'none' && (bCheck.filter(x=>sBlk.includes(x)).length>0 || bCheck.filter(x=>rBlk.includes(x)).length>0)) btn.disabled = true;
+            });
+
+            // COMPENSATIONS
+            let canDay = ['24','A','B','AB','BG','AG','P'].includes(tempShift);
+            let canNight = ['24','G','BG','AG'].includes(tempShift);
+            
+            if(yest && yest.comp === 'night') { 
+                canDay = false; canNight = false; 
+                warn.innerText = "🔒 Μη διαθέσιμες αποζημιώσεις λόγω χθεσινής Νυχτερινής."; warn.style.display = 'block';
+            }
+
+            let tDay = document.getElementById('toggle-day'), tNight = document.getElementById('toggle-night');
+            tDay.disabled = !canDay; tNight.disabled = !canNight;
+            if(!canDay) tDay.checked = false; if(!canNight) tNight.checked = false;
+        }
+
+        function saveDayData() {
+            let tDay = document.getElementById('toggle-day').checked;
+            let tNight = document.getElementById('toggle-night').checked;
+            let comp = tDay ? 'day' : (tNight ? 'night' : 'none');
+
+            // LIMIT CHECKS
+            let stats = calcYearlyStats();
+            let cData = appData[currentYear][currentMonth].days[modalDay] || {shift:'none', comp:'none'};
+            
+            if(tempShift === 'P' && cData.shift !== 'P') {
+                if(stats.prosthetesTotal >= 16) { alert("⚠️ Εξαντλήσατε το ετήσιο όριο 16 Πρόσθετων."); return; }
+                let monthP = Object.values(appData[currentYear][currentMonth].days).filter(d=>d.shift==='P').length;
+                if(monthP >= 4) { alert("⚠️ Εξαντλήσατε το μηνιαίο όριο 4 Πρόσθετων."); return; }
+            }
+            
+            let ptsAdd = (comp === 'night' ? 2 : (comp === 'day' ? 1 : 0));
+            let ptsRem = (cData.comp === 'night' ? 2 : (cData.comp === 'day' ? 1 : 0));
+            if(stats.ektosEdras + ptsAdd - ptsRem > 90) { alert("⚠️ Εξαντλήσατε το ετήσιο όριο 90 Εκτός Έδρας."); return; }
+
+            // SAVE
+            if(tempShift==='none' && tempRepos.length===0 && tempRest==='none') {
+                delete appData[currentYear][currentMonth].days[modalDay];
+            } else {
+                appData[currentYear][currentMonth].days[modalDay] = { shift: tempShift, repos: [...tempRepos], rest: tempRest, comp: comp };
+            }
+            
+            saveToLocal();
+            closeShiftModal();
+        }
+
+        // --- 5. CALCULATIONS ---
+        function calcYearlyStats() {
+            let pTotal = 0, ektos = 0, dTotal = 0, nTotal = 0;
+            if(appData[currentYear]) {
+                for(let m=0; m<12; m++) {
+                    if(appData[currentYear][m] && appData[currentYear][m].days) {
+                        for(let d in appData[currentYear][m].days) {
+                            let s = appData[currentYear][m].days[d];
+                            if(s.shift === 'P') pTotal++;
+                            if(s.comp === 'day') { ektos += 1; dTotal++; }
+                            if(s.comp === 'night') { ektos += 2; nTotal++; }
+                        }
+                    }
+                }
+            }
+            return { prosthetesTotal: pTotal, ektosEdras: ektos, days: dTotal, nights: nTotal };
+        }
+
+        function updateStatsAndCalculations() {
+            let yStats = calcYearlyStats();
+            document.getElementById('stat-prosthetes').innerText = `${yStats.prosthetesTotal} / 16`;
+            document.getElementById('stat-prosthetes').className = `stat-value ${yStats.prosthetesTotal >= 16 ? 'danger' : ''}`;
+            document.getElementById('stat-ektos').innerText = `${yStats.ektosEdras} / 90`;
+            document.getElementById('stat-ektos').className = `stat-value ${yStats.ektosEdras >= 90 ? 'danger' : ''}`;
+            document.getElementById('stat-day').innerText = yStats.days;
+            document.getElementById('stat-night').innerText = yStats.nights;
+
+            let data = getSafeData(currentYear, currentMonth);
+            const totalDays = new Date(currentYear, currentMonth + 1, 0).getDate();
+            
+            // Count Rests for warning
+            let r24 = 0, r16 = 0;
+            for(let d in data.days) {
+                if(data.days[d].rest === '24') r24++;
+                if(['AB','BG','AG'].includes(data.days[d].rest)) r16++;
+            }
+            let is31Special = (totalDays === 31 && data.special31);
+            let req24 = 2, req16 = is31Special ? 1 : 0;
+            document.getElementById('rest-warning').style.display = (r24 < req24 || r16 < req16) ? 'block' : 'none';
+
+            // Base Hours Math
+            let leaves = data.leaves.length;
+            let effectiveDays = Math.max(0, totalDays - leaves);
             
             let sundays = 0, saturdays = 0, leaveWeekends = 0;
             for (let i = 1; i <= totalDays; i++) {
-                let dow = new Date(year, month, i).getDay();
+                let dow = new Date(currentYear, currentMonth, i).getDay();
                 if (dow === 0) sundays++; if (dow === 6) saturdays++;
-                if ((dow === 0 || dow === 6) && selectedDays.includes(i)) leaveWeekends++;
+                if ((dow === 0 || dow === 6) && data.leaves.includes(i)) leaveWeekends++;
             }
+            let penthimera = sundays; if (new Date(currentYear, currentMonth, totalDays).getDay() === 6) penthimera++;
             
-            let penthimera = sundays; if (new Date(year, month, totalDays).getDay() === 6) penthimera++;
-            let remainingWeekendDays = (sundays + saturdays) - leaveWeekends;
-            let penthimeraMsg = `Μήνας ${totalDays} ημερών με <strong>${penthimera}</strong> Πενθήμερα.`;
-            if (remainingWeekendDays < penthimera) penthimeraMsg += `<div style="color:#c53030; background:#fff5f5; padding:10px; border-radius:8px; margin-top:10px; font-weight:600; border:1px solid #fed7d7;">⚠️ Προσοχή: Χάνετε πενθήμερα! (Υπολείπονται ${remainingWeekendDays} Σ/Κ)</div>`;
-            document.getElementById('penthimera-info').innerHTML = penthimeraMsg; document.getElementById('penthimera-info').style.display = 'block';
-            
-            let effectiveDays = Math.max(0, totalDays - adeies);
-            const baseHoursLookup = [0, 5.4, 11.0, 16.0, 22.0, 27.0, 33.0, 37.5, 43.0, 49.0, 54.0, 60.0, 65.0, 71.0, 76.0, 82.0, 88.0, 93.0, 98.0, 104.0, 109.0, 115.0, 120.0, 125.0, 131.0, 136.0, 142.0, 147.0, 152.0, 158.0, 162.0, 168.0];
-            let requiredHours = (effectiveDays > 0 && effectiveDays <= 31) ? baseHoursLookup[effectiveDays] + (penthimera === 4 ? 32 : 40) : 0;
-            
-            let targetText = "";
-            if (adeies === 0) { targetText = (totalDays === 31 && firstShiftCheckbox.checked) ? "<strong>8</strong> (24ωρες) και <strong>1</strong> (8ωρη)" : "<strong>8</strong> (24ωρες)"; } 
-            else {
-                let neededFrom24h = requiredHours - ((v8 * 8) + (argies * 8));
-                targetText = `Τουλάχιστον <strong>${neededFrom24h > 0 ? Math.ceil(neededFrom24h / 24) : 0}</strong> (24ωρες) λόγω αδειών`;
+            const baseHours = [0, 5.4, 11, 16, 22, 27, 33, 37.5, 43, 49, 54, 60, 65, 71, 76, 82, 88, 93, 98, 104, 109, 115, 120, 125, 131, 136, 142, 147, 152, 158, 162, 168];
+            let requiredHours = (effectiveDays > 0 && effectiveDays <= 31) ? baseHours[effectiveDays] + (penthimera === 4 ? 32 : 40) : 0;
+
+            let h = getHolidays(currentMonth, currentYear);
+            let argies = 0;
+            h.forEach(d => { if(new Date(currentYear, currentMonth, d).getDay() !== 0 && !data.leaves.includes(d)) argies++; });
+
+            // Count Worked Hours & Taken Repos
+            let wHours = argies * 8;
+            let takenReposCount = 0;
+            let cProstheti = 0, cProsthetiDay = 0, cDay = 0, cNight = 0;
+
+            for(let d in data.days) {
+                let s = data.days[d];
+                // Repos
+                takenReposCount += s.repos.length;
+                // Shifts
+                if(s.shift === '24') wHours += 24;
+                else if(['A','B','G'].includes(s.shift)) wHours += 8;
+                else if(['AB','BG','AG'].includes(s.shift)) wHours += 16;
+                // Financial
+                if(s.shift === 'P') { if(s.comp === 'day') cProsthetiDay++; else cProstheti++; }
+                else { if(s.comp === 'day') cDay++; if(s.comp === 'night') cNight++; }
             }
-            document.getElementById('target-box').innerHTML = `Υποχρεωτικές υπηρεσίες:<br><span style="font-size:1.2em; font-weight:700; color:#b7791f; display:block; margin-top:5px;">${targetText}</span>`; document.getElementById('target-box').style.display = 'block';
+
+            let rawReposOwed = (wHours - requiredHours) / 8;
+            let finalRepos = rawReposOwed - takenReposCount;
+
+            document.getElementById('res-eff-days').innerText = effectiveDays;
+            document.getElementById('res-req-hours').innerText = requiredHours.toFixed(1);
+            document.getElementById('res-work-hours').innerText = wHours;
             
-            const workedHours = (v24 * 24) + (v8 * 8) + (argies * 8); const repos = (workedHours - requiredHours) / 8;
-            document.getElementById('res-eff-days').innerText = effectiveDays; document.getElementById('res-req-hours').innerText = requiredHours.toFixed(1); document.getElementById('res-work-hours').innerText = workedHours;
+            let rBox = document.getElementById('res-repos');
+            rBox.innerText = finalRepos > 0 ? "+" + finalRepos.toFixed(2) : finalRepos.toFixed(2);
+            document.getElementById('final-box').classList.toggle('negative', finalRepos < 0);
+
+            // Money
+            let mPenth = penthimera * 46;
+            let mP = (cProstheti * 55) + (cProsthetiDay * 64.78);
+            let mD = cDay * 9.78;
+            let mN = cNight * 39.13;
+            let tot = mPenth + mP + mD + mN;
+
+            document.getElementById('res-money-penth').innerText = `Πενθήμερα (${penthimera}): ${mPenth.toFixed(2)} €`;
             
-            const finalBox = document.getElementById('final-box'), warningMsg = document.getElementById('warning-msg');
-            document.getElementById('res-repos').innerText = repos > 0 ? "+" + repos.toFixed(2) : repos.toFixed(2);
-            if (repos < 0) { finalBox.classList.add('negative'); warningMsg.style.display = 'block'; } else { finalBox.classList.remove('negative'); warningMsg.style.display = 'none'; }
+            let bp = document.getElementById('res-money-prostheti');
+            if(mP>0) { bp.style.display='block'; bp.innerText=`Πρόσθετες: ${mP.toFixed(2)} €`;} else bp.style.display='none';
+            let bd = document.getElementById('res-money-day');
+            if(mD>0) { bd.style.display='block'; bd.innerText=`Ημερήσιες: ${mD.toFixed(2)} €`;} else bd.style.display='none';
+            let bn = document.getElementById('res-money-night');
+            if(mN>0) { bn.style.display='block'; bn.innerText=`Νυχτερινές: ${mN.toFixed(2)} €`;} else bn.style.display='none';
+            
+            document.getElementById('res-money-total').innerText = `Σύνολο: ${tot.toFixed(2)} €`;
         }
 
-        // --- PWA & UPDATE ΕΛΕΓΧΟΣ ---
-        const isIos = () => /iphone|ipad|ipod/.test(window.navigator.userAgent.toLowerCase());
-        const isInStandaloneMode = () => ('standalone' in window.navigator) && window.navigator.standalone;
+        // --- 6. EXTRAS ---
+        function clearMonth() { if(confirm("⚠️ Σίγουρα θέλετε να διαγράψετε τα δεδομένα αυτού του μήνα;")) { delete appData[currentYear][currentMonth]; saveToLocal(); } }
+        function clearYear() { if(confirm("🚨 ΠΡΟΣΟΧΗ: Θα διαγραφούν ΟΛΑ τα δεδομένα του " + currentYear + ". Σίγουρα;")) { if(confirm("🚨 Οριστική διαγραφή;")) { appData[currentYear] = {}; saveToLocal(); } } }
+        function openTermsModal() { document.getElementById('terms-modal').style.display = 'flex'; }
         
-        let deferredPrompt;
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault(); deferredPrompt = e; document.getElementById('install-btn').style.display = 'block';
-        });
+        function exportBackup() {
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(appData));
+            const a = document.createElement('a'); a.href = dataStr; a.download = `emode_backup_${new Date().toISOString().slice(0,10)}.json`; a.click();
+        }
+        function importBackup(e) {
+            const file = e.target.files[0]; if (!file) return;
+            const r = new FileReader();
+            r.onload = function(ev) {
+                try {
+                    const imp = JSON.parse(ev.target.result);
+                    if(confirm("⚠️ Τα τρέχοντα δεδομένα θα αντικατασταθούν! Συνέχεια;")) { appData = imp; saveToLocal(); alert("✅ Το ιστορικό επανήλθε!"); }
+                } catch(err) { alert("❌ Μη έγκυρο αρχείο backup."); }
+                e.target.value = "";
+            }; r.readAsText(file);
+        }
 
-        document.getElementById('install-btn').addEventListener('click', async () => {
-            if (deferredPrompt) { deferredPrompt.prompt(); await deferredPrompt.userChoice; deferredPrompt = null; document.getElementById('install-btn').style.display = 'none'; }
-        });
-
-        if (isIos() && !isInStandaloneMode()) document.getElementById('ios-prompt').style.display = 'block';
-
-        // Έλεγχος για νέα έκδοση (Updates)
+        // PWA update Check
         if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('sw.js').then(reg => {
-                reg.addEventListener('updatefound', () => {
-                    const newWorker = reg.installing;
-                    newWorker.addEventListener('statechange', () => {
-                        // Αν εγκαταστάθηκε νέα έκδοση ΚΑΙ υπάρχει ήδη προηγούμενη (δεν είναι η πρώτη φορά που μπαίνει)
-                        if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                            document.getElementById('update-modal').style.display = 'flex';
-                        }
+            window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').then(r => {
+                r.addEventListener('updatefound', () => {
+                    const nw = r.installing; nw.addEventListener('statechange', () => {
+                        if(nw.state==='installed' && navigator.serviceWorker.controller) document.getElementById('update-modal').style.display='flex';
                     });
                 });
-            }).catch(err => console.log('SW Error: ', err));
+            }));
         }
+
+        refreshUI();
     </script>
 </body>
 </html>
