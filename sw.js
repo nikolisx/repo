@@ -1,5 +1,5 @@
 // ΚΑΘΕ ΦΟΡΑ ΠΟΥ ΚΑΝΕΙΣ ΑΛΛΑΓΗ ΣΤΟ INDEX.HTML, ΘΑ ΑΛΛΑΖΕΙΣ ΑΥΤΟ ΤΟ ΝΟΥΜΕΡΟ (π.χ. v2, v3, v4)
-const CACHE_NAME = 'emode-calc-v3'; 
+const CACHE_NAME = 'emode-calc-v4'; 
 
 const urlsToCache = [
   './',
