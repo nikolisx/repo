@@ -355,7 +355,6 @@
         function getSafeData(y, m) {
             if(!appData[y]) appData[y] = {};
             if(!appData[y][m]) appData[y][m] = { leaves: [], days: {}, special31: false };
-            // Ensure backwards compatibility / defaults
             if(!appData[y][m].days) appData[y][m].days = {}; 
             return appData[y][m];
         }
@@ -363,6 +362,9 @@
         function changeDate() { currentMonth = parseInt(document.getElementById('month').value); currentYear = parseInt(document.getElementById('year').value); refreshUI(); }
 
         // --- 3. CALENDARS & RENDERING ---
+        // Helper to convert Latin to Greek (fixes BG->ΒΓ etc)
+        const gr = (str) => str ? str.replace(/A/g, 'Α').replace(/B/g, 'Β').replace(/G/g, 'Γ') : '';
+
         function refreshUI() {
             const data = getSafeData(currentYear, currentMonth);
             const totalDays = new Date(currentYear, currentMonth + 1, 0).getDate();
@@ -413,7 +415,7 @@
                 if (data.leaves.includes(i)) div.classList.add('selected-leave');
                 div.onclick = () => {
                     if(data.days[i] && (data.days[i].shift !== 'none' || data.days[i].repos.length > 0 || data.days[i].rest !== 'none')) {
-                        alert("⚠️ Υπάρχει εγγραφή βάρδιας ή ρεπό. Διαγράψτε την πρώτα από το Βήμα 3."); return;
+                        alert("⚠️ Υπάρχει εγγραφή βάρδιας, ρεπό ή ανάπαυσης. Διαγράψτε την πρώτα από το Βήμα 3."); return;
                     }
                     let idx = data.leaves.indexOf(i);
                     if (idx > -1) data.leaves.splice(idx, 1); else data.leaves.push(i);
@@ -444,17 +446,19 @@
                 
                 let html = `<div>${i}</div><div class="bubble-content">`;
                 
-                // Text rendering
+                // Rest rendering (using Bed emoji)
                 if(dayData.rest === '24') html += `<span class="txt-rest">🛏️ ΑΝΑΠ.</span><br>`;
-                else if (dayData.rest !== 'none') html += `<span class="txt-rest">🛏️ ${dayData.rest}</span><br>`;
+                else if (dayData.rest !== 'none') html += `<span class="txt-rest">🛏️ ${gr(dayData.rest)}</span><br>`;
                 
+                // Shift rendering
                 if(dayData.shift === 'P') html += `<span class="txt-shift">ΠΡΟΣΘ.</span><br>`;
-                else if(dayData.shift !== 'none' && dayData.shift !== '24') html += `<span class="txt-shift">Β: ${dayData.shift}</span><br>`;
+                else if(dayData.shift !== 'none' && dayData.shift !== '24') html += `<span class="txt-shift">Β: ${gr(dayData.shift)}</span><br>`;
                 else if(dayData.shift === '24') html += `<span class="txt-shift">24ωρο</span><br>`;
 
+                // Repo rendering
                 if(dayData.repos.length > 0) {
                     if(dayData.repos.length === 3) html += `<span class="txt-repo">ΡΕΠΟ</span><br>`;
-                    else html += `<span class="txt-repo">Ρ: ${dayData.repos.join('')}</span><br>`;
+                    else html += `<span class="txt-repo">Ρ: ${gr(dayData.repos.join(''))}</span><br>`;
                 }
                 
                 html += `</div>`;
@@ -547,11 +551,8 @@
             let rBlk = getBlocks(tempRepos, true);
             let eBlk = getBlocks(tempRest, false);
             
-            // Revert changes if collision
             let overlap = sBlk.filter(x => rBlk.includes(x)).length > 0 || sBlk.filter(x => eBlk.includes(x)).length > 0 || rBlk.filter(x => eBlk.includes(x)).length > 0;
             if(overlap) {
-                // If overlap happened, prioritize the last clicked by roughly clearing the others. For simplicity, just wipe shift if repo clicked etc.
-                // Since this is real-time, just clear the conflicting arrays
                 tempShift = 'none'; tempRepos = []; tempRest = 'none';
                 sBlk=[]; rBlk=[]; eBlk=[];
             }
@@ -571,10 +572,6 @@
                 let btn = document.getElementById('r-'+id);
                 btn.className = 'check-btn' + (tempRepos.includes(id) ? ' checked' : '');
                 btn.classList.remove('disabled');
-                if(lockA && id === 'A') { btn.classList.add('disabled'); btn.className = 'check-btn disabled'; } // A cannot be a working shift, but CAN it be a Repo? Yes, Repo A is rest! Wait, if they take Repo, they rest. So Repo A is allowed.
-                // Wait, if yesterday was 24, today A MUST be rest. Repo A counts as rest. So Repo A is allowed! 
-                // Let's remove lockA from Repo.
-                if(lockA && id === 'A') btn.classList.remove('disabled'); 
                 
                 let bCheck = getBlocks(id, false);
                 if(bCheck.filter(x=>sBlk.includes(x)).length>0 || bCheck.filter(x=>eBlk.includes(x)).length>0) {
@@ -611,7 +608,6 @@
             let tNight = document.getElementById('toggle-night').checked;
             let comp = tDay ? 'day' : (tNight ? 'night' : 'none');
 
-            // LIMIT CHECKS
             let stats = calcYearlyStats();
             let cData = appData[currentYear][currentMonth].days[modalDay] || {shift:'none', comp:'none'};
             
@@ -625,7 +621,6 @@
             let ptsRem = (cData.comp === 'night' ? 2 : (cData.comp === 'day' ? 1 : 0));
             if(stats.ektosEdras + ptsAdd - ptsRem > 90) { alert("⚠️ Εξαντλήσατε το ετήσιο όριο 90 Εκτός Έδρας."); return; }
 
-            // SAVE
             if(tempShift==='none' && tempRepos.length===0 && tempRest==='none') {
                 delete appData[currentYear][currentMonth].days[modalDay];
             } else {
@@ -666,7 +661,6 @@
             let data = getSafeData(currentYear, currentMonth);
             const totalDays = new Date(currentYear, currentMonth + 1, 0).getDate();
             
-            // Count Rests for warning
             let r24 = 0, r16 = 0;
             for(let d in data.days) {
                 if(data.days[d].rest === '24') r24++;
@@ -676,20 +670,25 @@
             let req24 = 2, req16 = is31Special ? 1 : 0;
             document.getElementById('rest-warning').style.display = (r24 < req24 || r16 < req16) ? 'block' : 'none';
 
-            // Base Hours Math
-            let leaves = data.leaves.length;
-            let effectiveDays = Math.max(0, totalDays - leaves);
-            
+            // Penthimera & Leaves Logic
             let sundays = 0, saturdays = 0, leaveWeekends = 0;
             for (let i = 1; i <= totalDays; i++) {
                 let dow = new Date(currentYear, currentMonth, i).getDay();
                 if (dow === 0) sundays++; if (dow === 6) saturdays++;
                 if ((dow === 0 || dow === 6) && data.leaves.includes(i)) leaveWeekends++;
             }
-            let penthimera = sundays; if (new Date(currentYear, currentMonth, totalDays).getDay() === 6) penthimera++;
+            let basePenthimera = sundays; if (new Date(currentYear, currentMonth, totalDays).getDay() === 6) basePenthimera++;
+            
+            let remainingWeekendDays = (sundays + saturdays) - leaveWeekends;
+            let actualPenthimera = Math.min(basePenthimera, remainingWeekendDays);
+            actualPenthimera = Math.max(0, actualPenthimera);
+            let lostPenthimera = basePenthimera - actualPenthimera;
+            
+            let leaves = Math.max(data.leaves.length, parseInt(document.getElementById('manual-adeies').value) || 0);
+            let effectiveDays = Math.max(0, totalDays - leaves);
             
             const baseHours = [0, 5.4, 11, 16, 22, 27, 33, 37.5, 43, 49, 54, 60, 65, 71, 76, 82, 88, 93, 98, 104, 109, 115, 120, 125, 131, 136, 142, 147, 152, 158, 162, 168];
-            let requiredHours = (effectiveDays > 0 && effectiveDays <= 31) ? baseHours[effectiveDays] + (penthimera === 4 ? 32 : 40) : 0;
+            let requiredHours = (effectiveDays > 0 && effectiveDays <= 31) ? baseHours[effectiveDays] + (basePenthimera === 4 ? 32 : 40) : 0;
 
             let h = getHolidays(currentMonth, currentYear);
             let argies = 0;
@@ -702,13 +701,11 @@
 
             for(let d in data.days) {
                 let s = data.days[d];
-                // Repos
                 takenReposCount += s.repos.length;
-                // Shifts
                 if(s.shift === '24') wHours += 24;
                 else if(['A','B','G'].includes(s.shift)) wHours += 8;
                 else if(['AB','BG','AG'].includes(s.shift)) wHours += 16;
-                // Financial
+                
                 if(s.shift === 'P') { if(s.comp === 'day') cProsthetiDay++; else cProstheti++; }
                 else { if(s.comp === 'day') cDay++; if(s.comp === 'night') cNight++; }
             }
@@ -725,13 +722,18 @@
             document.getElementById('final-box').classList.toggle('negative', finalRepos < 0);
 
             // Money
-            let mPenth = penthimera * 46;
+            let mPenth = actualPenthimera * 46;
             let mP = (cProstheti * 55) + (cProsthetiDay * 64.78);
             let mD = cDay * 9.78;
             let mN = cNight * 39.13;
             let tot = mPenth + mP + mD + mN;
 
-            document.getElementById('res-money-penth').innerText = `Πενθήμερα (${penthimera}): ${mPenth.toFixed(2)} €`;
+            let penthBox = document.getElementById('res-money-penth');
+            if (lostPenthimera > 0) {
+                penthBox.innerHTML = `Πενθήμερα (${actualPenthimera}/${basePenthimera}): ${mPenth.toFixed(2)} € <div style="font-size:12px; color:#ffcdd2; margin-top:2px;">⚠️ Χάθηκαν ${lostPenthimera} λόγω άδειας σε Σ/Κ</div>`;
+            } else {
+                penthBox.innerHTML = `Πενθήμερα (${actualPenthimera}): ${mPenth.toFixed(2)} €`;
+            }
             
             let bp = document.getElementById('res-money-prostheti');
             if(mP>0) { bp.style.display='block'; bp.innerText=`Πρόσθετες: ${mP.toFixed(2)} €`;} else bp.style.display='none';
@@ -764,7 +766,6 @@
             }; r.readAsText(file);
         }
 
-        // PWA update Check
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').then(r => {
                 r.addEventListener('updatefound', () => {
