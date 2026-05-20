@@ -59,6 +59,10 @@
         .switch-container { display: flex; align-items: center; gap: 10px; background: var(--input-bg); padding: 10px 15px; border-radius: 10px; border: 1px solid var(--border-color); margin-bottom: 15px;}
         .switch-container span { font-size: 13px; font-weight: 600; color: var(--text-main); flex: 1; }
 
+        .counter-box { display: flex; justify-content: space-between; align-items: center; background: var(--input-bg); padding: 12px 15px; border-radius: 10px; border: 1px dashed var(--primary); margin-bottom: 15px; }
+        .counter-label { font-size: 14px; font-weight: 700; color: var(--primary); }
+        .counter-value { font-size: 20px; font-weight: 900; color: var(--primary); background: rgba(26, 35, 126, 0.1); padding: 2px 12px; border-radius: 8px; }
+
         /* SWITCH TOGGLE */
         .switch { position: relative; display: inline-block; width: 46px; height: 24px; flex-shrink: 0;}
         .switch input { opacity: 0; width: 0; height: 0; }
@@ -126,7 +130,6 @@
         .check-btn.disabled { opacity: 0.4; cursor: not-allowed; background: var(--border-color); }
 
         .comp-section { background: rgba(0,0,0,0.02); padding: 10px; border-radius: 10px; margin: 12px 0; border: 1px solid var(--border-color); display: none;}
-        
         .info-text { font-size: 12px; color: var(--secondary); font-weight: 600; text-align: center; margin-bottom: 10px; display: none; background: rgba(211,47,47,0.1); padding: 8px; border-radius: 8px;}
 
         @keyframes popIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
@@ -185,6 +188,11 @@
             <div class="accordion-header" onclick="toggleAcc('acc-shifts')">🚒 Βήμα 3: Βάρδιες & Ρεπό Μήνα <span class="arrow">▼</span></div>
             <div class="accordion-content">
                 
+                <div class="counter-box">
+                    <span class="counter-label">Σύνολο 24ωρων Βαρδιών:</span>
+                    <span class="counter-value" id="val-24-count">0</span>
+                </div>
+
                 <div class="switch-container" id="special-31-box" style="display: none;">
                     <span>Ειδική Συνθήκη: Η 1η βάρδια είναι στις 1 του μήνα</span>
                     <label class="switch"><input type="checkbox" id="toggle-31" onchange="toggleSpecial31()"><span class="slider"></span></label>
@@ -219,7 +227,7 @@
                 <div class="stat-box"><span class="stat-label">Σύνολο Ωρών Εργασίας + Αργίες:</span><span class="stat-value" id="res-work-hours">0</span></div>
                 
                 <div class="final-dashboard" id="final-box">
-                    <div style="font-size: 15px; font-weight: 600; opacity: 0.9;">Οφειλόμενα 8ωρα Ρεπό (Μετά από αφαιρέσεις)</div>
+                    <div style="font-size: 15px; font-weight: 600; opacity: 0.9;">Οφειλόμενα 8ωρα Ρεπό</div>
                     <div class="dashboard-score" id="res-repos">0.00</div>
                     <div id="rest-warning" class="alert-box">⚠️ Δεν έχετε καταχωρήσει τις απαιτούμενες αναπαύσεις αυτού του μήνα!</div>
                     
@@ -333,9 +341,9 @@
         let currentYear = new Date().getFullYear();
         let currentMonth = new Date().getMonth();
         
-        let tempShift = 'none'; // '24', 'A', 'B', 'G', 'AB', 'BG', 'AG', 'P', 'none'
-        let tempRepos = []; // ['A', 'B', 'G']
-        let tempRest = 'none'; // '24', 'AB', 'BG', 'AG', 'none'
+        let tempShift = 'none';
+        let tempRepos = [];
+        let tempRest = 'none';
         let modalDay = null;
 
         const yearSelect = document.getElementById('year');
@@ -362,7 +370,6 @@
         function changeDate() { currentMonth = parseInt(document.getElementById('month').value); currentYear = parseInt(document.getElementById('year').value); refreshUI(); }
 
         // --- 3. CALENDARS & RENDERING ---
-        // Helper to convert Latin to Greek (fixes BG->ΒΓ etc)
         const gr = (str) => str ? str.replace(/A/g, 'Α').replace(/B/g, 'Β').replace(/G/g, 'Γ') : '';
 
         function refreshUI() {
@@ -446,16 +453,13 @@
                 
                 let html = `<div>${i}</div><div class="bubble-content">`;
                 
-                // Rest rendering (using Bed emoji)
                 if(dayData.rest === '24') html += `<span class="txt-rest">🛏️ ΑΝΑΠ.</span><br>`;
                 else if (dayData.rest !== 'none') html += `<span class="txt-rest">🛏️ ${gr(dayData.rest)}</span><br>`;
                 
-                // Shift rendering
                 if(dayData.shift === 'P') html += `<span class="txt-shift">ΠΡΟΣΘ.</span><br>`;
                 else if(dayData.shift !== 'none' && dayData.shift !== '24') html += `<span class="txt-shift">Β: ${gr(dayData.shift)}</span><br>`;
                 else if(dayData.shift === '24') html += `<span class="txt-shift">24ωρο</span><br>`;
 
-                // Repo rendering
                 if(dayData.repos.length > 0) {
                     if(dayData.repos.length === 3) html += `<span class="txt-repo">ΡΕΠΟ</span><br>`;
                     else html += `<span class="txt-repo">Ρ: ${gr(dayData.repos.join(''))}</span><br>`;
@@ -542,11 +546,9 @@
                 warn.innerText = "🔒 Απαιτείται 8ωρο ανάπαυσης (A) μετά από 24ωρη βάρδια."; warn.style.display = 'block';
             }
 
-            // Cross-Locks (if one is 24h, clear others)
             if(tempShift === '24' || tempShift === 'P') { tempRepos = []; tempRest = 'none'; }
             if(tempRest === '24') { tempShift = 'none'; tempRepos = []; }
 
-            // Collision Detection
             let sBlk = getBlocks(tempShift, false);
             let rBlk = getBlocks(tempRepos, true);
             let eBlk = getBlocks(tempRest, false);
@@ -556,6 +558,18 @@
                 tempShift = 'none'; tempRepos = []; tempRest = 'none';
                 sBlk=[]; rBlk=[]; eBlk=[];
             }
+
+            // Calculate existing rests (limits)
+            let r24Count = 0, r16Count = 0;
+            for(let d in appData[currentYear][currentMonth].days) {
+                if(parseInt(d) !== modalDay) {
+                    let r = appData[currentYear][currentMonth].days[d].rest;
+                    if(r === '24') r24Count++;
+                    if(['AB','BG','AG'].includes(r)) r16Count++;
+                }
+            }
+            let is31Special = (new Date(currentYear, currentMonth+1, 0).getDate() === 31 && getSafeData(currentYear, currentMonth).special31);
+            let limit24 = 2; let limit16 = is31Special ? 1 : 0;
 
             // UI Updates - SHIFTS
             ['24','P','none','A','B','G','AB','BG','AG'].forEach(id => {
@@ -585,11 +599,15 @@
                 if(!btn) return;
                 btn.className = 'sel-btn' + (tempRest === id ? ' active-rest' : '');
                 btn.disabled = false;
+
+                // Limits
+                if (id === '24' && r24Count >= limit24) btn.disabled = true;
+                if (['AB','BG','AG'].includes(id) && r16Count >= limit16) btn.disabled = true;
+
                 let bCheck = getBlocks(id, false);
                 if(id !== 'none' && (bCheck.filter(x=>sBlk.includes(x)).length>0 || bCheck.filter(x=>rBlk.includes(x)).length>0)) btn.disabled = true;
             });
 
-            // COMPENSATIONS
             let canDay = ['24','A','B','AB','BG','AG','P'].includes(tempShift);
             let canNight = ['24','G','BG','AG'].includes(tempShift);
             
@@ -697,12 +715,13 @@
             // Count Worked Hours & Taken Repos
             let wHours = argies * 8;
             let takenReposCount = 0;
+            let count24 = 0;
             let cProstheti = 0, cProsthetiDay = 0, cDay = 0, cNight = 0;
 
             for(let d in data.days) {
                 let s = data.days[d];
                 takenReposCount += s.repos.length;
-                if(s.shift === '24') wHours += 24;
+                if(s.shift === '24') { wHours += 24; count24++; }
                 else if(['A','B','G'].includes(s.shift)) wHours += 8;
                 else if(['AB','BG','AG'].includes(s.shift)) wHours += 16;
                 
@@ -710,7 +729,15 @@
                 else { if(s.comp === 'day') cDay++; if(s.comp === 'night') cNight++; }
             }
 
+            document.getElementById('val-24-count').innerText = count24;
+
             let rawReposOwed = (wHours - requiredHours) / 8;
+            
+            // Rule: Cap negative repos to 0 if 8 or more 24h shifts were worked
+            if (count24 >= 8 && rawReposOwed < 0) {
+                rawReposOwed = 0;
+            }
+
             let finalRepos = rawReposOwed - takenReposCount;
 
             document.getElementById('res-eff-days').innerText = effectiveDays;
