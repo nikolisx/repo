@@ -55,7 +55,7 @@
         .form-row { display: flex; gap: 15px; margin-bottom: 15px; }
         .form-group { flex: 1; display: flex; flex-direction: column; }
         label { font-size: 13px; font-weight: 600; color: var(--text-muted); margin-bottom: 6px; }
-        select, input[type="number"] { width: 100%; padding: 12px; border: 1px solid var(--border-color); border-radius: 10px; font-size: 16px; background-color: var(--input-bg); color: var(--text-main); outline: none; }
+        select, input[type="number"], input[type="date"] { width: 100%; padding: 12px; border: 1px solid var(--border-color); border-radius: 10px; font-size: 15px; background-color: var(--input-bg); color: var(--text-main); outline: none; }
         select:disabled, input:disabled { opacity: 0.5; cursor: not-allowed; }
         
         .switch-container { display: flex; align-items: center; gap: 10px; background: var(--input-bg); padding: 10px 15px; border-radius: 10px; border: 1px solid var(--border-color); margin-bottom: 15px;}
@@ -82,14 +82,15 @@
         .calendar-header-days { display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 8px; }
         .weekend-text { color: var(--secondary); }
         .days-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
-        .day-bubble { aspect-ratio: 1; display: flex; flex-direction: column; justify-content: flex-start; align-items: center; border-radius: 12px; font-size: 14px; font-weight: 700; background-color: var(--input-bg); border: 1px solid var(--border-color); cursor: pointer; user-select: none; position: relative; padding-top: 4px; overflow: hidden; }
+        .day-bubble { aspect-ratio: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; border-radius: 12px; font-size: 14px; font-weight: 700; background-color: var(--input-bg); border: 1px solid var(--border-color); cursor: pointer; user-select: none; position: relative; overflow: hidden; }
         .day-bubble.weekend { color: var(--secondary); background-color: rgba(211, 47, 47, 0.05); border-color: rgba(211, 47, 47, 0.2); }
         .day-bubble.holiday { color: #fff; background-color: var(--holiday); border-color: var(--holiday); }
-        .day-bubble.selected-leave { background-color: var(--warning); color: white; border-color: var(--warning); transform: scale(0.95); justify-content: center; }
-        .day-bubble.has-data { background-color: var(--card-bg); border: 2px solid var(--primary); }
+        .day-bubble.disabled-leave { background: rgba(0,0,0,0.05); border: 1px dashed var(--text-muted); opacity: 0.6; cursor: not-allowed; flex-direction: column; justify-content: center; }
+        [data-theme="dark"] .day-bubble.disabled-leave { background: rgba(255,255,255,0.05); }
+        .day-bubble.has-data { background-color: var(--card-bg); border: 2px solid var(--primary); align-items: center; justify-content: center; }
         .day-bubble.empty { background: transparent; border: none; cursor: default; }
         
-        .bubble-content { font-size: 9px; line-height: 1.1; width: 100%; text-align: center; margin-top: 2px; font-weight: 800; }
+        .bubble-content { font-size: 10px; line-height: 1.2; width: 100%; text-align: center; font-weight: 800; }
         .txt-shift { color: var(--shift-color); }
         .txt-repo { color: var(--repo-color); }
         .txt-rest { color: var(--rest-color); font-size: 11px;}
@@ -128,24 +129,34 @@
         /* MODALS */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(3px); display: none; justify-content: center; align-items: center; z-index: 9998; padding: 15px;}
         .modal-content { background: var(--card-bg); padding: 20px; border-radius: 20px; width: 100%; max-width: 400px; box-shadow: var(--shadow-md); animation: popIn 0.3s ease; border: 2px solid var(--primary); max-height: 95vh; overflow-y: auto;}
-        .modal-content h3 { color: var(--primary); margin-bottom: 12px; text-align: center; font-size: 17px; border-bottom: 2px solid var(--border-color); padding-bottom: 10px;}
-        
-        .modal-section-title { font-size: 12px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; margin: 10px 0 6px 0; text-align: left; border-bottom: 1px dashed var(--border-color); padding-bottom: 4px;}
-        .btn-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; margin-bottom: 5px; }
-        .btn-grid-2 { grid-template-columns: 1fr 1fr; }
-        
-        .sel-btn { background: var(--input-bg); border: 2px solid var(--border-color); color: var(--text-main); padding: 10px 4px; border-radius: 8px; font-weight: 700; cursor: pointer; transition: 0.2s; font-size: 13px; text-align: center; display: flex; justify-content: center; align-items: center; user-select: none;}
-        .sel-btn.active-shift { background: var(--shift-color); color: white; border-color: var(--shift-color); }
-        .sel-btn.active-repo { background: var(--repo-color); color: white; border-color: var(--repo-color); }
-        .sel-btn.active-rest { background: var(--rest-color); color: white; border-color: var(--rest-color); }
-        .sel-btn:disabled { opacity: 0.4; cursor: not-allowed; background: var(--border-color); }
+        .modal-content h3 { color: var(--primary); margin-bottom: 8px; text-align: center; font-size: 16px; font-weight: 900;}
+        .modal-subtitle { font-size: 12px; font-weight: 700; color: var(--holiday); text-align: center; margin-bottom: 15px; border-bottom: 2px solid var(--border-color); padding-bottom: 10px; }
 
-        .checkbox-row { display: flex; justify-content: space-between; gap: 10px;}
-        .check-btn { flex: 1; background: var(--input-bg); border: 2px solid var(--border-color); padding: 8px; border-radius: 8px; text-align: center; font-weight: 700; cursor: pointer; font-size: 13px; transition: 0.2s; user-select: none;}
-        .check-btn.checked { background: var(--repo-color); color: white; border-color: var(--repo-color); }
-        .check-btn.disabled { opacity: 0.4; cursor: not-allowed; background: var(--border-color); }
+        /* THE MATRIX (3x4) */
+        .mx-table { display: flex; flex-direction: column; gap: 6px; margin: 15px 0; }
+        .mx-row { display: grid; grid-template-columns: 65px 1fr 1fr 1fr 1fr; gap: 6px; align-items: center; }
+        .mx-lbl { font-size: 11px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; text-align: right; padding-right: 2px; line-height: 1.1;}
+        .mx-hdr { font-size: 13px; font-weight: 900; color: var(--primary); text-align: center; }
+        .m-cell { background: var(--input-bg); border: 2px solid var(--border-color); border-radius: 8px; height: 40px; display: flex; justify-content: center; align-items: center; cursor: pointer; transition: 0.2s; position: relative; }
+        .m-cell::after { content: ''; display: block; width: 18px; height: 18px; border-radius: 5px; border: 2px solid var(--border-color); background: var(--card-bg); transition: 0.2s; }
+        .m-cell.ticked { border-color: var(--shift-color); background: rgba(25, 118, 210, 0.1); }
+        .m-cell.ticked::after { background: var(--shift-color); border-color: var(--shift-color); background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>'); background-size: cover; }
+        
+        .mx-row.repo .m-cell.ticked { border-color: var(--repo-color); background: rgba(56, 142, 60, 0.1); }
+        .mx-row.repo .m-cell.ticked::after { background-color: var(--repo-color); border-color: var(--repo-color); }
+        
+        .mx-row.rest .m-cell.ticked { border-color: var(--rest-color); background: rgba(211, 47, 47, 0.1); }
+        .mx-row.rest .m-cell.ticked::after { background-color: var(--rest-color); border-color: var(--rest-color); }
+        
+        .m-cell.disabled { opacity: 0.3; cursor: not-allowed; border-color: var(--border-color) !important; background: var(--input-bg) !important;}
+        .m-cell.disabled::after { background: var(--border-color) !important; border-color: var(--text-muted) !important; background-image: none !important;}
 
-        .comp-section { background: rgba(0,0,0,0.02); padding: 10px; border-radius: 10px; margin: 12px 0; border: 1px solid var(--border-color); display: none;}
+        .btn-prostheti { background: var(--input-bg); border: 2px solid var(--border-color); border-radius: 10px; padding: 12px; font-weight: 800; color: var(--text-main); display: flex; align-items: center; justify-content: center; gap: 10px; cursor: pointer; transition: 0.2s; }
+        .btn-prostheti::before { content: ''; display: block; width: 18px; height: 18px; border-radius: 5px; border: 2px solid var(--border-color); background: var(--card-bg); transition: 0.2s; }
+        .btn-prostheti.ticked { border-color: var(--holiday); color: var(--holiday); background: rgba(156, 39, 176, 0.05); }
+        .btn-prostheti.ticked::before { background: var(--holiday); border-color: var(--holiday); background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>'); background-size: cover; }
+
+        .comp-section { background: rgba(0,0,0,0.02); padding: 10px; border-radius: 10px; margin: 15px 0; border: 1px solid var(--border-color); display: none;}
         .info-text { font-size: 12px; color: var(--secondary); font-weight: 600; text-align: center; margin-bottom: 10px; display: none; background: rgba(211,47,47,0.1); padding: 8px; border-radius: 8px;}
 
         @keyframes popIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
@@ -190,20 +201,25 @@
         </div>
 
         <div class="accordion" id="acc-leaves">
-            <div class="accordion-header" onclick="toggleAcc('acc-leaves')">🏖️ Βήμα 2: Άδειες (Προαιρετικό) <span class="arrow">▼</span></div>
+            <div class="accordion-header" onclick="toggleAcc('acc-leaves')">🌴 Βήμα 2: Άδειες <span class="arrow">▼</span></div>
             <div class="accordion-content">
-                <label style="display:block; margin-bottom:10px;">Πατήστε τις ημέρες για Κανονική/Αναρρωτική άδεια:</label>
-                <div class="calendar-header-days"><div>Δ</div><div>Τ</div><div>Τ</div><div>Π</div><div>Π</div><div class="weekend-text">Σ</div><div class="weekend-text">Κ</div></div>
-                <div id="leaves-grid" class="days-grid"></div>
-                <div style="margin-top: 15px;" class="form-group">
-                    <label>Σύνολο Ημερών Αδείας (Μη αυτόματο):</label>
-                    <input type="number" id="manual-adeies" value="0" min="0" onchange="manualAdeiesChange()">
+                <div id="leaves-list-container"></div>
+                <div style="background:var(--input-bg); border:1px solid var(--border-color); border-radius:10px; padding:12px; margin-bottom:15px;">
+                    <label style="color:var(--primary); font-size:12px; text-transform:uppercase;">Νεα Καταχωρηση Αδειας</label>
+                    <div class="form-row" style="margin-top:8px; margin-bottom:10px;">
+                        <div class="form-group"><label>Από</label><input type="date" id="leave-from"></div>
+                        <div class="form-group"><label>Έως</label><input type="date" id="leave-to"></div>
+                    </div>
+                    <button class="btn btn-outline" style="border-color:var(--primary); color:var(--primary);" onclick="addLeave()">➕ Προσθήκη Άδειας</button>
+                </div>
+                <div style="font-size:14px; font-weight: 700; color: var(--text-main); text-align:center;">
+                    Ημέρες άδειας (στον τρέχοντα μήνα): <span id="current-month-leaves-count" style="color:var(--primary); font-size:18px;">0</span>
                 </div>
             </div>
         </div>
 
         <div class="accordion" id="acc-shifts">
-            <div class="accordion-header" onclick="toggleAcc('acc-shifts')">🚒 Βήμα 3: Βάρδιες & Ρεπό Μήνα <span class="arrow">▼</span></div>
+            <div class="accordion-header" onclick="toggleAcc('acc-shifts')">🚒 Βήμα 3: Βάρδιες & Ρεπό <span class="arrow">▼</span></div>
             <div class="accordion-content">
                 
                 <div class="counter-box">
@@ -212,7 +228,7 @@
                 </div>
 
                 <div class="switch-container" id="special-31-box" style="display: none;">
-                    <span>Ειδική Συνθήκη: Η 1η βάρδια είναι στις 1 του μήνα</span>
+                    <span>Ειδική Συνθήκη: Η 1η βάρδια 1 του μήνα</span>
                     <label class="switch"><input type="checkbox" id="toggle-31" onchange="toggleSpecial31()"><span class="slider"></span></label>
                 </div>
 
@@ -266,11 +282,8 @@
                 <button class="btn btn-outline" style="margin-bottom: 10px;" onclick="exportBackup()">📥 Εξαγωγή Αντιγράφου (Backup)</button>
                 <button class="btn btn-outline" style="margin-bottom: 20px;" onclick="document.getElementById('import-file').click()">📤 Εισαγωγή Αντιγράφου (Restore)</button>
                 <input type="file" id="import-file" style="display: none;" accept=".json" onchange="importBackup(event)">
-                
                 <button class="btn btn-outline" style="margin-bottom: 10px; color: var(--warning); border-color: var(--warning);" onclick="clearMonth()">🧹 Καθαρισμός Φόρμας Μήνα</button>
                 <button class="btn btn-outline" style="color: var(--secondary); border-color: var(--secondary);" onclick="clearYear()">🚨 Διαγραφή Όλων Δεδομένων Έτους</button>
-                <br><br>
-                <button class="btn btn-outline" onclick="openTermsModal()">📄 Όροι Χρήσης</button>
             </div>
         </div>
 
@@ -295,41 +308,42 @@
 
     <div id="shift-modal" class="modal-overlay">
         <div class="modal-content">
-            <h3>Ημερομηνία: <span id="modal-date-title"></span></h3>
+            <h3 id="modal-date-title">Δευτέρα, 15/05</h3>
+            <div id="modal-date-holiday" class="modal-subtitle" style="display:none;"></div>
+            
             <div id="modal-warning" class="info-text"></div>
             
-            <div class="modal-section-title">1. Βαρδια</div>
-            <div class="btn-grid">
-                <div class="sel-btn" id="s-24" onclick="clickShift('24')">24ωρη</div>
-                <div class="sel-btn" id="s-P" onclick="clickShift('P')" style="color:var(--holiday); border-color:var(--holiday);">Πρόσθετη</div>
-                <div class="sel-btn" id="s-none" onclick="clickShift('none')">Καμία</div>
+            <div class="mx-table">
+                <div class="mx-row">
+                    <div class="mx-hdr"></div><div class="mx-hdr">24Ω</div><div class="mx-hdr">Α</div><div class="mx-hdr">Β</div><div class="mx-hdr">Γ</div>
+                </div>
                 
-                <div class="sel-btn" id="s-A" onclick="clickShift('A')">A</div>
-                <div class="sel-btn" id="s-B" onclick="clickShift('B')">B</div>
-                <div class="sel-btn" id="s-G" onclick="clickShift('G')">Γ</div>
+                <div class="mx-row shift">
+                    <div class="mx-lbl">ΒΑΡΔΙΑ</div>
+                    <div class="m-cell" id="mx-s-24" onclick="mxClick('s','24')"></div>
+                    <div class="m-cell" id="mx-s-A" onclick="mxClick('s','A')"></div>
+                    <div class="m-cell" id="mx-s-B" onclick="mxClick('s','B')"></div>
+                    <div class="m-cell" id="mx-s-G" onclick="mxClick('s','G')"></div>
+                </div>
                 
-                <div class="sel-btn" id="s-AB" onclick="clickShift('AB')">AB</div>
-                <div class="sel-btn" id="s-BG" onclick="clickShift('BG')">BΓ</div>
-                <div class="sel-btn" id="s-AG" onclick="clickShift('AG')">AΓ</div>
+                <div class="mx-row repo">
+                    <div class="mx-lbl">ΡΕΠΟ</div>
+                    <div class="m-cell" id="mx-r-24" onclick="mxClick('r','24')"></div>
+                    <div class="m-cell" id="mx-r-A" onclick="mxClick('r','A')"></div>
+                    <div class="m-cell" id="mx-r-B" onclick="mxClick('r','B')"></div>
+                    <div class="m-cell" id="mx-r-G" onclick="mxClick('r','G')"></div>
+                </div>
+                
+                <div class="mx-row rest">
+                    <div class="mx-lbl">ΑΝΑΠ.</div>
+                    <div class="m-cell" id="mx-e-24" onclick="mxClick('e','24')"></div>
+                    <div class="m-cell" id="mx-e-A" onclick="mxClick('e','A')"></div>
+                    <div class="m-cell" id="mx-e-B" onclick="mxClick('e','B')"></div>
+                    <div class="m-cell" id="mx-e-G" onclick="mxClick('e','G')"></div>
+                </div>
             </div>
 
-            <div class="modal-section-title" style="margin-top: 15px;">2. Ρεπο</div>
-            <div class="checkbox-row">
-                <div class="check-btn" id="r-A" onclick="clickRepo('A')">Ρεπό A</div>
-                <div class="check-btn" id="r-B" onclick="clickRepo('B')">Ρεπό B</div>
-                <div class="check-btn" id="r-G" onclick="clickRepo('G')">Ρεπό Γ</div>
-            </div>
-
-            <div class="modal-section-title" style="margin-top: 15px;">3. Αναπαυση (Αυτόματη Αποθήκευση)</div>
-            <div class="btn-grid-2 btn-grid">
-                <div class="sel-btn" id="rest-24" onclick="clickRest('24')">24ωρη</div>
-                <div class="sel-btn" id="rest-none" onclick="clickRest('none')">Καμία</div>
-            </div>
-            <div class="btn-grid" id="rest-16-row" style="display:none; margin-top:5px;">
-                <div class="sel-btn" id="rest-AB" onclick="clickRest('AB')">Ανάπ. ΑΒ</div>
-                <div class="sel-btn" id="rest-BG" onclick="clickRest('BG')">Ανάπ. ΒΓ</div>
-                <div class="sel-btn" id="rest-AG" onclick="clickRest('AG')">Ανάπ. ΑΓ</div>
-            </div>
+            <div id="btn-prostheti" class="btn-prostheti" onclick="mxClick('P', 'P')">Πρόσθετη Υπηρεσία</div>
 
             <div class="comp-section" id="comp-wrapper">
                 <div class="modal-section-title" style="border:none; margin-top:0;">Αποζημιωσεις (Αντιπυρικη)</div>
@@ -352,16 +366,6 @@
         </div>
     </div>
 
-    <div id="terms-modal" class="modal-overlay">
-        <div class="modal-content">
-            <h3>📄 Όροι Χρήσης</h3>
-            <p style="font-size: 13px; line-height: 1.5; color: var(--text-muted); text-align: justify; margin-bottom: 15px;">
-                Η εφαρμογή διατίθεται <strong>δωρεάν</strong>, αποθηκεύει τα δεδομένα τοπικά στη συσκευή σας και <strong>δεν αποτελεί επίσημη εφαρμογή του Π.Σ.</strong>.<br><br>
-                Τα αποτελέσματα είναι ενδεικτικά. Ο τελικός έλεγχος ανήκει στην Υπηρεσία.
-            </p>
-            <button class="btn btn-green" onclick="document.getElementById('terms-modal').style.display='none'">Κλείσιμο</button>
-        </div>
-    </div>
     <div id="update-modal" class="modal-overlay">
         <div class="modal-content" style="border-color: var(--success);">
             <h3 style="color: var(--success); border-bottom: none;">🔄 Διαθέσιμη Ενημέρωση</h3>
@@ -371,16 +375,29 @@
     </div>
 
     <script>
-        // --- 1. STATE & INITIALIZATION ---
+        // --- STATE & INITIALIZATION ---
         const CACHE_KEY = 'emode_app_data_v1';
         let appData = JSON.parse(localStorage.getItem(CACHE_KEY)) || {};
         let currentYear = new Date().getFullYear();
         let currentMonth = new Date().getMonth();
         
-        let tempShift = 'none';
-        let tempRepos = [];
-        let tempRest = 'none';
-        let modalDay = null;
+        // Matrix Modal State
+        let tempShift = 'none', tempRepos = [], tempRest = 'none', isProstheti = false, modalDay = null;
+
+        // Migrating old 'leaves' to 'leavePeriods' (backwards compatibility)
+        if(!appData.leavePeriods) appData.leavePeriods = [];
+        for(let y in appData) {
+            if(y === 'leavePeriods') continue;
+            for(let m in appData[y]) {
+                if(appData[y][m].leaves && appData[y][m].leaves.length > 0) {
+                    appData[y][m].leaves.forEach(d => {
+                        let dStr = `${y}-${String(parseInt(m)+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+                        appData.leavePeriods.push({start: dStr, end: dStr});
+                    });
+                    appData[y][m].leaves = []; // clear old array
+                }
+            }
+        }
 
         const yearSelect = document.getElementById('year');
         for (let i = currentYear - 3; i <= currentYear + 5; i++) yearSelect.appendChild(new Option(i, i));
@@ -395,83 +412,85 @@
         function applyLight() { document.documentElement.removeAttribute('data-theme'); document.getElementById('theme-color-meta').content = "#1a237e"; themeBtn.innerText = "☀️"; }
         function toggleAcc(id) { document.getElementById(id).classList.toggle('open'); }
 
-        // --- TOAST NOTIFICATIONS ---
         function showToast(msg) {
             const container = document.getElementById('toast-container');
-            const toast = document.createElement('div');
-            toast.className = 'toast'; toast.innerText = msg;
-            container.appendChild(toast);
-            setTimeout(() => { if(toast.parentElement) toast.remove(); }, 3000);
+            const t = document.createElement('div'); t.className = 'toast'; t.innerText = msg;
+            container.appendChild(t); setTimeout(() => { if(t.parentElement) t.remove(); }, 3000);
         }
 
-        // --- 2. DATA MANAGEMENT ---
+        // --- DATA MANAGEMENT ---
         function getSafeData(y, m) {
             if(!appData[y]) appData[y] = {};
-            if(!appData[y][m]) appData[y][m] = { leaves: [], days: {}, special31: false };
+            if(!appData[y][m]) appData[y][m] = { days: {}, special31: false };
             if(!appData[y][m].days) appData[y][m].days = {}; 
             return appData[y][m];
         }
         function saveToLocal() { localStorage.setItem(CACHE_KEY, JSON.stringify(appData)); refreshUI(); }
         function changeDate() { currentMonth = parseInt(document.getElementById('month').value); currentYear = parseInt(document.getElementById('year').value); refreshUI(); }
+        function toggleSpecial31() { getSafeData(currentYear, currentMonth).special31 = document.getElementById('toggle-31').checked; saveToLocal(); }
 
-        // --- 3. CALENDARS & RENDERING ---
+        // --- LEAVES LOGIC ---
+        function addLeave() {
+            let from = document.getElementById('leave-from').value;
+            let to = document.getElementById('leave-to').value;
+            if(!from || !to) { showToast("Συμπληρώστε και τις δύο ημερομηνίες."); return; }
+            if(new Date(to) < new Date(from)) { showToast("Η ημερομηνία λήξης είναι πριν την έναρξη!"); return; }
+            appData.leavePeriods.push({start: from, end: to});
+            document.getElementById('leave-from').value = ''; document.getElementById('leave-to').value = '';
+            saveToLocal();
+        }
+        function removeLeave(idx) { appData.leavePeriods.splice(idx, 1); saveToLocal(); }
+        
+        function isLeaveDay(y, m, d) {
+            if(!appData.leavePeriods) return false;
+            let checkD = new Date(y, m, d, 12, 0, 0).getTime();
+            for(let lp of appData.leavePeriods) {
+                let s = new Date(lp.start); s.setHours(0,0,0,0);
+                let e = new Date(lp.end); e.setHours(23,59,59,999);
+                if(checkD >= s.getTime() && checkD <= e.getTime()) return true;
+            }
+            return false;
+        }
+
+        function renderLeavesList() {
+            let html = '';
+            appData.leavePeriods.forEach((lp, idx) => {
+                let s = lp.start.split('-').reverse().join('/'); let e = lp.end.split('-').reverse().join('/');
+                html += `<div style="display:flex; justify-content:space-between; align-items:center; background:var(--input-bg); padding:10px; border-radius:8px; margin-bottom:8px; border:1px solid var(--border-color); font-size:13px;">
+                    <span>Από: <b>${s}</b><br>Έως: <b>${e}</b></span>
+                    <button class="btn btn-danger" style="width:40px; height:40px; padding:0; display:flex; align-items:center; justify-content:center;" onclick="removeLeave(${idx})">🗑</button>
+                </div>`;
+            });
+            document.getElementById('leaves-list-container').innerHTML = html;
+        }
+
+        function getHolidays(m, y) {
+            const getEaster = (y) => { const a=y%19,b=y%4,c=y%7,d=(19*a+15)%30,e=(2*b+4*c+6*d+6)%7; return new Date(y,2,22+(d+e)+13); }
+            const l = []; const add = (d, n) => l.push({day: d, name: n});
+            if(m===0){add(1,'Πρωτοχρονιά');add(6,'Θεοφάνεια');} if(m===2)add(25,'25η Μαρτίου'); if(m===4)add(1,'Πρωτομαγιά'); 
+            if(m===7)add(15,'Κοίμηση Θεοτόκου'); if(m===9)add(28,'28η Οκτωβρίου'); if(m===11){add(25,'Χριστούγεννα');add(26,'Σύναξη Θεοτόκου');}
+            const ea = getEaster(y);
+            let d = new Date(ea); d.setDate(ea.getDate()-48); if(d.getMonth()===m) add(d.getDate(),'Καθαρά Δευτέρα');
+            d = new Date(ea); d.setDate(ea.getDate()-2); if(d.getMonth()===m) add(d.getDate(),'Μ. Παρασκευή');
+            d = new Date(ea); d.setDate(ea.getDate()+1); if(d.getMonth()===m) add(d.getDate(),'Δευτέρα του Πάσχα');
+            d = new Date(ea); d.setDate(ea.getDate()+50); if(d.getMonth()===m) add(d.getDate(),'Αγίου Πνεύματος');
+            return l;
+        }
+
+        // --- RENDERING ---
         const gr = (str) => str ? str.replace(/A/g, 'Α').replace(/B/g, 'Β').replace(/G/g, 'Γ') : '';
 
         function refreshUI() {
             const data = getSafeData(currentYear, currentMonth);
             const totalDays = new Date(currentYear, currentMonth + 1, 0).getDate();
             
-            document.getElementById('manual-adeies').value = data.leaves.length;
-            
             let specBox = document.getElementById('special-31-box');
             if(totalDays === 31) { specBox.style.display = 'flex'; document.getElementById('toggle-31').checked = data.special31; } 
             else { specBox.style.display = 'none'; data.special31 = false; }
 
-            renderLeavesCalendar(totalDays);
+            renderLeavesList();
             renderShiftsCalendar(totalDays);
-            updateStatsAndCalculations();
-        }
-
-        function toggleSpecial31() { getSafeData(currentYear, currentMonth).special31 = document.getElementById('toggle-31').checked; saveToLocal(); }
-
-        function getHolidays(m, y) {
-            const getEaster = (y) => { const a=y%19,b=y%4,c=y%7,d=(19*a+15)%30,e=(2*b+4*c+6*d+6)%7; return new Date(y,2,22+(d+e)+13); }
-            const l = [], add = (d) => l.push(d);
-            if(m===0){add(1);add(6);} if(m===2)add(25); if(m===4)add(1); if(m===7)add(15); if(m===9)add(28); if(m===11){add(25);add(26);}
-            const ea = getEaster(y);
-            let d = new Date(ea); d.setDate(ea.getDate()-48); if(d.getMonth()===m) add(d.getDate());
-            d = new Date(ea); d.setDate(ea.getDate()-2); if(d.getMonth()===m) add(d.getDate());
-            d = new Date(ea); d.setDate(ea.getDate()+1); if(d.getMonth()===m) add(d.getDate());
-            d = new Date(ea); d.setDate(ea.getDate()+50); if(d.getMonth()===m) add(d.getDate());
-            return l;
-        }
-
-        function renderLeavesCalendar(totalDays) {
-            const grid = document.getElementById('leaves-grid'); grid.innerHTML = '';
-            let offset = new Date(currentYear, currentMonth, 1).getDay(); offset = offset === 0 ? 6 : offset - 1;
-            for(let j=0; j<offset; j++) grid.innerHTML += '<div class="day-bubble empty"></div>';
-
-            const h = getHolidays(currentMonth, currentYear);
-            const data = getSafeData(currentYear, currentMonth);
-
-            for (let i = 1; i <= totalDays; i++) {
-                let div = document.createElement('div'); div.className = 'day-bubble';
-                let dow = new Date(currentYear, currentMonth, i).getDay();
-                if (dow === 0 || dow === 6) div.classList.add('weekend');
-                if (h.includes(i)) div.classList.add('holiday');
-                div.innerHTML = `<span style="margin-top:auto; margin-bottom:auto;">${i}</span>`;
-                
-                if (data.leaves.includes(i)) div.classList.add('selected-leave');
-                div.onclick = () => {
-                    if(data.days[i] && (data.days[i].shift !== 'none' || data.days[i].repos.length > 0 || data.days[i].rest !== 'none')) {
-                        showToast("⚠️ Υπάρχει βάρδια/ρεπό. Διαγράψτε την πρώτα από το Βήμα 3."); return;
-                    }
-                    let idx = data.leaves.indexOf(i);
-                    if (idx > -1) data.leaves.splice(idx, 1); else data.leaves.push(i);
-                    saveToLocal();
-                };
-                grid.appendChild(div);
-            }
+            updateStatsAndCalculations(totalDays);
         }
 
         function renderShiftsCalendar(totalDays) {
@@ -486,125 +505,173 @@
                 let div = document.createElement('div'); div.className = 'day-bubble';
                 let dow = new Date(currentYear, currentMonth, i).getDay();
                 if (dow === 0 || dow === 6) div.classList.add('weekend');
-                if (h.includes(i)) div.classList.add('holiday');
+                if (h.find(x=>x.day===i)) div.classList.add('holiday');
                 
-                let dayData = data.days[i] || { shift: 'none', repos: [], rest: 'none', comp: 'none' };
-                let hasD = dayData.shift !== 'none' || dayData.repos.length > 0 || dayData.rest !== 'none';
+                let dayData = data.days[i] || { shift: 'none', repos: [], rest: 'none', comp: 'none', prostheti: false };
+                let hasD = dayData.shift !== 'none' || dayData.repos.length > 0 || dayData.rest !== 'none' || dayData.prostheti;
+                let isLeave = isLeaveDay(currentYear, currentMonth, i);
                 
-                if(hasD) div.classList.add('has-data');
-                
-                let html = `<div>${i}</div><div class="bubble-content">`;
-                
-                if(dayData.rest === '24') html += `<span class="txt-rest">🛏️ ΑΝΑΠ.</span><br>`;
-                else if (dayData.rest !== 'none') html += `<span class="txt-rest">🛏️ ${gr(dayData.rest)}</span><br>`;
-                
-                if(dayData.shift === 'P') html += `<span class="txt-shift">ΠΡΟΣΘ.</span><br>`;
-                else if(dayData.shift !== 'none' && dayData.shift !== '24') html += `<span class="txt-shift">Β: ${gr(dayData.shift)}</span><br>`;
-                else if(dayData.shift === '24') html += `<span class="txt-shift">24ωρο</span><br>`;
+                if(isLeave) {
+                    div.classList.add('disabled-leave');
+                    div.innerHTML = `<span style="font-size:22px; opacity:0.8; margin-bottom:2px;">🌴</span><div class="bubble-content" style="color:var(--text-muted); font-size:10px;">ΑΔΕΙΑ</div>`;
+                } else {
+                    if(hasD) {
+                        div.classList.add('has-data');
+                        let html = `<div style="position:absolute; top:2px; left:4px; font-size:9px; opacity:0.3; font-weight:900;">${i}</div><div class="bubble-content" style="margin-top:5px;">`;
+                        
+                        if(dayData.rest === '24') html += `<span class="txt-rest">🛏️ ΑΝΑΠ.</span><br>`;
+                        else if (dayData.rest !== 'none') html += `<span class="txt-rest">🛏️ ${gr(dayData.rest)}</span><br>`;
+                        
+                        if(dayData.prostheti) html += `<span class="txt-shift" style="color:var(--holiday);">ΠΡΟΣΘ.</span><br>`;
+                        
+                        if(dayData.shift !== 'none' && dayData.shift !== '24') html += `<span class="txt-shift">Β: ${gr(dayData.shift)}</span><br>`;
+                        else if(dayData.shift === '24') html += `<span class="txt-shift">24ωρο</span><br>`;
 
-                if(dayData.repos.length > 0) {
-                    if(dayData.repos.length === 3) html += `<span class="txt-repo">ΡΕΠΟ</span><br>`;
-                    else html += `<span class="txt-repo">Ρ: ${gr(dayData.repos.join(''))}</span><br>`;
-                }
-                
-                html += `</div>`;
+                        if(dayData.repos.length > 0) {
+                            if(dayData.repos.length === 3) html += `<span class="txt-repo">ΡΕΠΟ</span><br>`;
+                            else html += `<span class="txt-repo">Ρ: ${gr(dayData.repos.join(''))}</span><br>`;
+                        }
+                        html += `</div>`;
 
-                if(dayData.comp !== 'none') {
-                    html += `<div class="comp-dots">`;
-                    if(dayData.comp === 'day') html += `<div class="comp-dot dot-day"></div>`;
-                    if(dayData.comp === 'night') html += `<div class="comp-dot dot-night"></div>`;
-                    html += `</div>`;
+                        if(dayData.comp !== 'none') {
+                            html += `<div class="comp-dots">`;
+                            if(dayData.comp === 'day') html += `<div class="comp-dot dot-day"></div>`;
+                            if(dayData.comp === 'night') html += `<div class="comp-dot dot-night"></div>`;
+                            html += `</div>`;
+                        }
+                        div.innerHTML = html;
+                    } else {
+                        div.innerHTML = `<div>${i}</div>`;
+                    }
+                    div.onclick = () => openShiftModal(i);
                 }
-                
-                div.innerHTML = html;
-                div.onclick = () => openShiftModal(i);
                 grid.appendChild(div);
             }
         }
 
-        // --- 4. SMART MODAL LOGIC ---
+        // --- MATRIX MODAL LOGIC ---
+        const dayNames = ['Κυριακή', 'Δευτέρα', 'Τρίτη', 'Τετάρτη', 'Πέμπτη', 'Παρασκευή', 'Σάββατο'];
         function isAntipyriki() { return currentMonth >= 4 && currentMonth <= 9; }
-        
         function getBlocks(type, isArr) {
             let arr = isArr ? type : [type]; let res = [];
-            if(arr.includes('A')) res.push(1); if(arr.includes('B')) res.push(2); if(arr.includes('G')) res.push(3);
-            if(arr.includes('AB')) res.push(1,2); if(arr.includes('BG')) res.push(2,3); if(arr.includes('AG')) res.push(1,3);
-            if(arr.includes('24')) res.push(1,2,3);
+            if(arr.includes('A')) res.push('A'); if(arr.includes('B')) res.push('B'); if(arr.includes('G')) res.push('G');
+            if(arr.includes('AB')) res.push('A','B'); if(arr.includes('BG')) res.push('B','G'); if(arr.includes('AG')) res.push('A','G');
+            if(arr.includes('24')) res.push('24');
             return res;
         }
 
-        function getGlobalDay(y, m, d) {
-            let dt = new Date(y, m, d);
-            let cY = dt.getFullYear(), cM = dt.getMonth(), cD = dt.getDate();
-            if(appData[cY] && appData[cY][cM] && appData[cY][cM].days && appData[cY][cM].days[cD]) return appData[cY][cM].days[cD];
-            return null;
-        }
-
         function openShiftModal(day) {
-            let data = getSafeData(currentYear, currentMonth);
-            if(data.leaves.includes(day)) { showToast("⚠️ Η ημέρα είναι δηλωμένη ως άδεια στο Βήμα 2."); return; }
-            
             modalDay = day;
-            document.getElementById('modal-date-title').innerText = `${day}/${currentMonth+1}/${currentYear}`;
+            
+            let dw = new Date(currentYear, currentMonth, day).getDay();
+            let hol = getHolidays(currentMonth, currentYear).find(h => h.day === day);
+            document.getElementById('modal-date-title').innerText = `${dayNames[dw]}, ${day}/${currentMonth+1}`;
+            
+            let hTitle = document.getElementById('modal-date-holiday');
+            if(hol) { hTitle.innerText = `⭐ ${hol.name} ⭐`; hTitle.style.display = 'block'; }
+            else { hTitle.style.display = 'none'; }
+
             document.getElementById('shift-modal').style.display = 'flex';
             
-            let dData = data.days[day] || { shift: 'none', repos: [], rest: 'none', comp: 'none' };
-            tempShift = dData.shift; tempRepos = [...dData.repos]; tempRest = dData.rest;
+            let dData = getSafeData(currentYear, currentMonth).days[day] || { shift: 'none', repos: [], rest: 'none', comp: 'none', prostheti: false };
+            tempShift = dData.shift; tempRepos = [...dData.repos]; tempRest = dData.rest; isProstheti = dData.prostheti;
             
-            let is31Special = (new Date(currentYear, currentMonth+1, 0).getDate() === 31 && data.special31);
-            document.getElementById('rest-16-row').style.display = is31Special ? 'grid' : 'none';
             document.getElementById('comp-wrapper').style.display = isAntipyriki() ? 'block' : 'none';
             document.getElementById('toggle-day').checked = dData.comp === 'day';
             document.getElementById('toggle-night').checked = dData.comp === 'night';
             
-            updateModalUI();
+            updateMatrixUI();
         }
 
         function closeShiftModal() { document.getElementById('shift-modal').style.display = 'none'; }
-        
         function clearModalDay() {
-            if(appData[currentYear][currentMonth].days[modalDay]) {
-                delete appData[currentYear][currentMonth].days[modalDay];
-                saveToLocal();
+            if(appData[currentYear][currentMonth].days[modalDay]) { delete appData[currentYear][currentMonth].days[modalDay]; saveToLocal(); }
+            closeShiftModal(); showToast("Η ημέρα καθαρίστηκε επιτυχώς!");
+        }
+
+        function mxClick(row, val) {
+            if(row === 'P') { isProstheti = !isProstheti; updateMatrixUI(); return; }
+
+            // Automatic Rest pairs & save
+            if(row === 'e') {
+                if(val === 'A') { tempRest = 'AB'; tempShift='none'; tempRepos=[]; saveDayData(); return; }
+                if(val === 'B' || val === 'G') { tempRest = 'BG'; tempShift='none'; tempRepos=[]; saveDayData(); return; }
+                if(val === '24') { tempRest = '24'; tempShift='none'; tempRepos=[]; saveDayData(); return; }
             }
-            closeShiftModal();
-            showToast("Η ημέρα καθαρίστηκε επιτυχώς!");
-        }
 
-        function clickShift(val) { tempShift = val; updateModalUI(); }
-        function clickRepo(val) { let idx = tempRepos.indexOf(val); if(idx>-1) tempRepos.splice(idx,1); else tempRepos.push(val); updateModalUI(); }
-        
-        // AUTO-SAVE FOR RESTS
-        function clickRest(val) { 
-            tempRest = val; 
-            updateModalUI(); 
-            if(['24','AB','BG','AG'].includes(val)) {
-                saveDayData(); // Auto close and save
+            let sArr = getBlocks(tempShift, false), rArr = [...tempRepos];
+
+            if(row === 's') {
+                if(val === '24') {
+                    if(tempShift === '24') tempShift = 'none';
+                    else { tempShift = '24'; tempRepos = []; tempRest = 'none'; }
+                } else {
+                    if(sArr.includes('24')) sArr = [];
+                    if(sArr.includes(val)) sArr = sArr.filter(x => x !== val);
+                    else { sArr.push(val); if(sArr.length === 3) { tempShift = '24'; sArr=[]; } }
+                    
+                    if(sArr.length > 0) {
+                        if (sArr.includes('A') && sArr.includes('B')) tempShift = 'AB';
+                        else if (sArr.includes('B') && sArr.includes('G')) tempShift = 'BG';
+                        else if (sArr.includes('A') && sArr.includes('G')) tempShift = 'AG';
+                        else tempShift = sArr[0];
+                    } else if(tempShift !== '24') tempShift = 'none';
+                    
+                    tempRepos = tempRepos.filter(x => !sArr.includes(x));
+                }
             }
+            
+            if(row === 'r') {
+                if(val === '24') {
+                    if(tempRepos.length === 3) tempRepos = [];
+                    else { tempRepos = ['A','B','G']; tempShift = 'none'; tempRest = 'none'; }
+                } else {
+                    if(rArr.length === 3) rArr = [];
+                    if(rArr.includes(val)) rArr = rArr.filter(x => x !== val);
+                    else rArr.push(val);
+                    tempRepos = rArr;
+                    
+                    let newS = getBlocks(tempShift, false).filter(x => !tempRepos.includes(x));
+                    if(newS.length === 0) tempShift = 'none';
+                    else if(newS.length === 1) tempShift = newS[0];
+                    else if(newS.includes('A') && newS.includes('B')) tempShift = 'AB';
+                    else if(newS.includes('B') && newS.includes('G')) tempShift = 'BG';
+                    else if(newS.includes('A') && newS.includes('G')) tempShift = 'AG';
+                }
+            }
+            updateMatrixUI();
         }
 
-        function handleCompToggle(changed) {
-            let tDay = document.getElementById('toggle-day'); let tNight = document.getElementById('toggle-night');
-            if(changed === 'day' && tDay.checked) tNight.checked = false;
-            if(changed === 'night' && tNight.checked) tDay.checked = false;
-        }
-
-        function updateModalUI() {
+        function updateMatrixUI() {
             let warn = document.getElementById('modal-warning'); warn.style.display = 'none';
-            let yest = getGlobalDay(currentYear, currentMonth, modalDay - 1);
+            let dtYest = new Date(currentYear, currentMonth, modalDay - 1);
+            let yest = null;
+            if(appData[dtYest.getFullYear()] && appData[dtYest.getFullYear()][dtYest.getMonth()] && appData[dtYest.getFullYear()][dtYest.getMonth()].days) {
+                yest = appData[dtYest.getFullYear()][dtYest.getMonth()].days[dtYest.getDate()];
+            }
             
             let lockA = false;
-            if(yest && yest.shift === '24') {
-                lockA = true; warn.innerText = "🔒 Απαιτείται 8ωρο ανάπαυσης (A) μετά από 24ωρη βάρδια."; warn.style.display = 'block';
-            }
+            if(yest && yest.shift === '24') { lockA = true; warn.innerText = "🔒 Απαιτείται 8ωρο ανάπαυσης (A) μετά από 24ωρη βάρδια."; warn.style.display = 'block'; }
 
-            if(tempShift === '24' || tempShift === 'P') { tempRepos = []; tempRest = 'none'; }
-            if(tempRest === '24') { tempShift = 'none'; tempRepos = []; }
+            let sBlk = getBlocks(tempShift, false);
+            
+            // Render Shift
+            document.getElementById('mx-s-24').className = 'm-cell ' + (tempShift === '24' ? 'ticked' : '');
+            ['A','B','G'].forEach(v => {
+                let cell = document.getElementById('mx-s-'+v);
+                cell.className = 'm-cell ' + ((sBlk.includes(v) || tempShift === '24') ? 'ticked' : '');
+                if(lockA && v === 'A') cell.classList.add('disabled');
+            });
 
-            let sBlk = getBlocks(tempShift, false), rBlk = getBlocks(tempRepos, true), eBlk = getBlocks(tempRest, false);
-            let overlap = sBlk.filter(x => rBlk.includes(x)).length > 0 || sBlk.filter(x => eBlk.includes(x)).length > 0 || rBlk.filter(x => eBlk.includes(x)).length > 0;
-            if(overlap) { tempShift = 'none'; tempRepos = []; tempRest = 'none'; sBlk=[]; rBlk=[]; eBlk=[]; }
+            // Render Repo
+            let isR24 = (tempRepos.length === 3);
+            document.getElementById('mx-r-24').className = 'm-cell ' + (isR24 ? 'ticked' : '');
+            ['A','B','G'].forEach(v => {
+                document.getElementById('mx-r-'+v).className = 'm-cell ' + (tempRepos.includes(v) ? 'ticked' : '');
+            });
 
+            // Render Rest
+            let is31Special = (new Date(currentYear, currentMonth+1, 0).getDate() === 31 && getSafeData(currentYear, currentMonth).special31);
             let r24Count = 0, r16Count = 0;
             for(let d in appData[currentYear][currentMonth].days) {
                 if(parseInt(d) !== modalDay) {
@@ -612,61 +679,57 @@
                     if(r === '24') r24Count++; if(['AB','BG','AG'].includes(r)) r16Count++;
                 }
             }
-            let limit24 = 2; let limit16 = (new Date(currentYear, currentMonth+1, 0).getDate() === 31 && getSafeData(currentYear, currentMonth).special31) ? 1 : 0;
+            let e24 = document.getElementById('mx-e-24'); e24.className = 'm-cell ' + (tempRest === '24' ? 'ticked' : '');
+            if(r24Count >= 2 && tempRest !== '24') e24.classList.add('disabled');
 
-            ['24','P','none','A','B','G','AB','BG','AG'].forEach(id => {
-                let btn = document.getElementById('s-'+id);
-                btn.className = 'sel-btn' + (tempShift === id ? ' active-shift' : ''); btn.disabled = false;
-                if(lockA && ['24','A','AB','AG'].includes(id)) btn.disabled = true;
-                let bCheck = getBlocks(id, false);
-                if(id !== 'none' && (bCheck.filter(x=>rBlk.includes(x)).length>0 || bCheck.filter(x=>eBlk.includes(x)).length>0)) btn.disabled = true;
+            ['A','B','G'].forEach(v => {
+                let cell = document.getElementById('mx-e-'+v);
+                cell.className = 'm-cell ' + (getBlocks(tempRest, false).includes(v) ? 'ticked' : '');
+                if(!is31Special || (r16Count >= 1 && !getBlocks(tempRest, false).includes(v))) cell.classList.add('disabled');
             });
 
-            ['A','B','G'].forEach(id => {
-                let btn = document.getElementById('r-'+id);
-                btn.className = 'check-btn' + (tempRepos.includes(id) ? ' checked' : ''); btn.classList.remove('disabled');
-                let bCheck = getBlocks(id, false);
-                if(bCheck.filter(x=>sBlk.includes(x)).length>0 || bCheck.filter(x=>eBlk.includes(x)).length>0) btn.classList.add('disabled');
-            });
+            document.getElementById('btn-prostheti').className = 'btn-prostheti ' + (isProstheti ? 'ticked' : '');
 
-            ['24','none','AB','BG','AG'].forEach(id => {
-                let btn = document.getElementById('rest-'+id); if(!btn) return;
-                btn.className = 'sel-btn' + (tempRest === id ? ' active-rest' : ''); btn.disabled = false;
-                if (id === '24' && r24Count >= limit24) btn.disabled = true;
-                if (['AB','BG','AG'].includes(id) && r16Count >= limit16) btn.disabled = true;
-                let bCheck = getBlocks(id, false);
-                if(id !== 'none' && (bCheck.filter(x=>sBlk.includes(x)).length>0 || bCheck.filter(x=>rBlk.includes(x)).length>0)) btn.disabled = true;
-            });
-
-            let canDay = ['24','A','B','AB','BG','AG','P'].includes(tempShift), canNight = ['24','G','BG','AG'].includes(tempShift);
+            // Compensations logic
+            let canDay = ['24','A','B','AB','BG','AG'].includes(tempShift) || isProstheti;
+            let canNight = ['24','G','BG','AG'].includes(tempShift); // Prostheti usually day, if it's night they can toggle it manually? Actually, left it allowed for prostheti just in case, but typically night is specific. We'll allow night if G is involved. Let's keep it robust.
+            
             if(yest && yest.comp === 'night') { canDay = false; canNight = false; warn.innerText = "🔒 Μη διαθέσιμες αποζημιώσεις λόγω χθεσινής Νυχτερινής."; warn.style.display = 'block'; }
             let tDay = document.getElementById('toggle-day'), tNight = document.getElementById('toggle-night');
             tDay.disabled = !canDay; tNight.disabled = !canNight;
             if(!canDay) tDay.checked = false; if(!canNight) tNight.checked = false;
         }
 
+        function handleCompToggle(changed) {
+            let tDay = document.getElementById('toggle-day'), tNight = document.getElementById('toggle-night');
+            if(changed === 'day' && tDay.checked) tNight.checked = false;
+            if(changed === 'night' && tNight.checked) tDay.checked = false;
+        }
+
         function saveDayData() {
             let tDay = document.getElementById('toggle-day').checked, tNight = document.getElementById('toggle-night').checked;
             let comp = tDay ? 'day' : (tNight ? 'night' : 'none');
             let stats = calcYearlyStats();
-            let cData = appData[currentYear][currentMonth].days[modalDay] || {shift:'none', comp:'none'};
+            let cData = appData[currentYear][currentMonth].days[modalDay] || {comp:'none', prostheti: false};
             
-            if(tempShift === 'P' && cData.shift !== 'P') {
+            if(isProstheti && !cData.prostheti) {
                 if(stats.prosthetesTotal >= 16) { showToast("⚠️ Εξαντλήσατε το ετήσιο όριο 16 Πρόσθετων."); return; }
-                let monthP = Object.values(appData[currentYear][currentMonth].days).filter(d=>d.shift==='P').length;
+                let monthP = Object.values(appData[currentYear][currentMonth].days).filter(d=>d.prostheti).length;
                 if(monthP >= 4) { showToast("⚠️ Εξαντλήσατε το μηνιαίο όριο 4 Πρόσθετων."); return; }
             }
             
             let ptsAdd = (comp === 'night' ? 2 : (comp === 'day' ? 1 : 0)), ptsRem = (cData.comp === 'night' ? 2 : (cData.comp === 'day' ? 1 : 0));
             if(stats.ektosEdras + ptsAdd - ptsRem > 90) { showToast("⚠️ Εξαντλήσατε το ετήσιο όριο 90 Εκτός Έδρας."); return; }
 
-            if(tempShift==='none' && tempRepos.length===0 && tempRest==='none') delete appData[currentYear][currentMonth].days[modalDay];
-            else appData[currentYear][currentMonth].days[modalDay] = { shift: tempShift, repos: [...tempRepos], rest: tempRest, comp: comp };
-            
+            if(tempShift==='none' && tempRepos.length===0 && tempRest==='none' && !isProstheti) {
+                delete appData[currentYear][currentMonth].days[modalDay];
+            } else {
+                appData[currentYear][currentMonth].days[modalDay] = { shift: tempShift, repos: [...tempRepos], rest: tempRest, comp: comp, prostheti: isProstheti };
+            }
             saveToLocal(); closeShiftModal();
         }
 
-        // --- 5. CALCULATIONS ---
+        // --- CALCULATIONS ---
         function calcYearlyStats() {
             let pTotal = 0, ektos = 0, dTotal = 0, nTotal = 0;
             if(appData[currentYear]) {
@@ -674,7 +737,7 @@
                     if(appData[currentYear][m] && appData[currentYear][m].days) {
                         for(let d in appData[currentYear][m].days) {
                             let s = appData[currentYear][m].days[d];
-                            if(s.shift === 'P') pTotal++;
+                            if(s.prostheti) pTotal++;
                             if(s.comp === 'day') { ektos += 1; dTotal++; }
                             if(s.comp === 'night') { ektos += 2; nTotal++; }
                         }
@@ -684,7 +747,7 @@
             return { prosthetesTotal: pTotal, ektosEdras: ektos, days: dTotal, nights: nTotal };
         }
 
-        function updateStatsAndCalculations() {
+        function updateStatsAndCalculations(totalDays) {
             let yStats = calcYearlyStats();
             document.getElementById('stat-prosthetes').innerText = `${yStats.prosthetesTotal} / 16`;
             document.getElementById('stat-prosthetes').className = `stat-value ${yStats.prosthetesTotal >= 16 ? 'danger' : ''}`;
@@ -693,35 +756,39 @@
             document.getElementById('stat-day').innerText = yStats.days; document.getElementById('stat-night').innerText = yStats.nights;
 
             let data = getSafeData(currentYear, currentMonth);
-            const totalDays = new Date(currentYear, currentMonth + 1, 0).getDate();
             
-            let r24 = 0, r16 = 0;
-            for(let d in data.days) {
-                if(data.days[d].rest === '24') r24++;
-                if(['AB','BG','AG'].includes(data.days[d].rest)) r16++;
+            let r24 = 0, r16 = 0, leavesInMonth = 0;
+            for(let i=1; i<=totalDays; i++) {
+                if(isLeaveDay(currentYear, currentMonth, i)) leavesInMonth++;
+                let d = data.days[i];
+                if(d) {
+                    if(d.rest === '24') r24++;
+                    if(['AB','BG','AG'].includes(d.rest)) r16++;
+                }
             }
+            document.getElementById('current-month-leaves-count').innerText = leavesInMonth;
+
             let is31Special = (totalDays === 31 && data.special31);
             let req24 = 2, req16 = is31Special ? 1 : 0;
             document.getElementById('rest-warning').style.display = (r24 < req24 || r16 < req16) ? 'block' : 'none';
 
             let sundays = 0, saturdays = 0, leaveWeekends = 0;
             for (let i = 1; i <= totalDays; i++) {
-                let dow = new Date(currentYear, currentMonth, i).getDay();
-                if (dow === 0) sundays++; if (dow === 6) saturdays++;
-                if ((dow === 0 || dow === 6) && data.leaves.includes(i)) leaveWeekends++;
+                let dw = new Date(currentYear, currentMonth, i).getDay();
+                if (dw === 0) sundays++; if (dw === 6) saturdays++;
+                if ((dw === 0 || dw === 6) && isLeaveDay(currentYear, currentMonth, i)) leaveWeekends++;
             }
             let basePenthimera = sundays; if (new Date(currentYear, currentMonth, totalDays).getDay() === 6) basePenthimera++;
             let remainingWeekendDays = (sundays + saturdays) - leaveWeekends;
             let actualPenthimera = Math.max(0, Math.min(basePenthimera, remainingWeekendDays));
             let lostPenthimera = basePenthimera - actualPenthimera;
             
-            let leaves = Math.max(data.leaves.length, parseInt(document.getElementById('manual-adeies').value) || 0);
-            let effectiveDays = Math.max(0, totalDays - leaves);
+            let effectiveDays = Math.max(0, totalDays - leavesInMonth);
             const baseHours = [0, 5.4, 11, 16, 22, 27, 33, 37.5, 43, 49, 54, 60, 65, 71, 76, 82, 88, 93, 98, 104, 109, 115, 120, 125, 131, 136, 142, 147, 152, 158, 162, 168];
             let requiredHours = (effectiveDays > 0 && effectiveDays <= 31) ? baseHours[effectiveDays] + (basePenthimera === 4 ? 32 : 40) : 0;
 
             let h = getHolidays(currentMonth, currentYear); let argies = 0;
-            h.forEach(d => { if(new Date(currentYear, currentMonth, d).getDay() !== 0 && !data.leaves.includes(d)) argies++; });
+            h.forEach(hol => { if(new Date(currentYear, currentMonth, hol.day).getDay() !== 0 && !isLeaveDay(currentYear, currentMonth, hol.day)) argies++; });
 
             let wHours = argies * 8, takenReposCount = 0, count24 = 0;
             let cProstheti = 0, cProsthetiDay = 0, cDay = 0, cNight = 0;
@@ -733,8 +800,9 @@
                 else if(['A','B','G'].includes(s.shift)) wHours += 8;
                 else if(['AB','BG','AG'].includes(s.shift)) wHours += 16;
                 
-                if(s.shift === 'P') { if(s.comp === 'day') cProsthetiDay++; else cProstheti++; }
-                else { if(s.comp === 'day') cDay++; if(s.comp === 'night') cNight++; }
+                if(s.prostheti) { if(s.comp === 'day') cProsthetiDay++; else cProstheti++; }
+                if(s.comp === 'day' && !s.prostheti) cDay++; // If Prostheti + Day comp, it goes to cProsthetiDay
+                if(s.comp === 'night') cNight++;
             }
 
             document.getElementById('val-24-count').innerText = count24;
@@ -745,17 +813,15 @@
             document.getElementById('res-eff-days').innerText = effectiveDays;
             document.getElementById('res-req-hours').innerText = requiredHours.toFixed(1);
             document.getElementById('res-work-hours').innerText = wHours;
-            
             document.getElementById('res-repos').innerText = finalRepos > 0 ? "+" + finalRepos.toFixed(2) : finalRepos.toFixed(2);
             document.getElementById('final-box').classList.toggle('negative', finalRepos < 0);
 
             // Money Logic
             let mPenth = actualPenthimera * 46;
             let mP = (cProstheti * 55) + (cProsthetiDay * 64.78);
-            let ektosMoney = (cDay * 9.78) + (cNight * 39.13); // Ημερήσιες + Νυχτερινές
+            let ektosMoney = (cDay * 9.78) + (cNight * 39.13); 
             let tot = mPenth + mP + ektosMoney;
 
-            // Update Card
             let penthBox = document.getElementById('res-money-penth');
             if (lostPenthimera > 0) penthBox.innerHTML = `Πενθήμερα (${actualPenthimera}/${basePenthimera}): ${mPenth.toFixed(2)} € <div style="font-size:12px; color:#ffcdd2; margin-top:2px;">⚠️ Χάθηκαν ${lostPenthimera} λόγω άδειας</div>`;
             else penthBox.innerHTML = `Πενθήμερα (${actualPenthimera}): ${mPenth.toFixed(2)} €`;
@@ -764,14 +830,13 @@
             document.getElementById('res-money-ektos').innerText = `Εκτός Έδρας: ${ektosMoney.toFixed(2)} €`;
             document.getElementById('res-money-total').innerText = `Σύνολο: ${tot.toFixed(2)} €`;
 
-            // Update Sticky Bar
+            // Sticky Bar
             document.getElementById('sticky-bar').style.display = 'flex';
             let percent = requiredHours > 0 ? Math.min(100, (wHours / requiredHours) * 100) : 0;
             document.getElementById('stk-pb').style.width = percent + '%';
             document.getElementById('stk-pb').style.background = percent >= 100 ? 'var(--success)' : 'var(--warning)';
             document.getElementById('stk-hours-text').innerText = `${wHours} / ${requiredHours.toFixed(0)}`;
             document.getElementById('stk-hours-percent').innerText = percent.toFixed(0) + '%';
-
             document.getElementById('stk-repo').innerText = finalRepos > 0 ? "+" + finalRepos.toFixed(2) : finalRepos.toFixed(2);
             document.getElementById('stk-repo').style.color = finalRepos < 0 ? 'var(--secondary)' : 'var(--text-main)';
             document.getElementById('stk-penth').innerText = mPenth.toFixed(0) + '€';
@@ -780,22 +845,18 @@
             document.getElementById('stk-total').innerText = tot.toFixed(0) + '€';
         }
 
-        // --- 6. EXTRAS ---
+        // --- MANAGEMENT ---
         function clearMonth() { if(confirm("⚠️ Σίγουρα θέλετε να διαγράψετε τα δεδομένα αυτού του μήνα;")) { delete appData[currentYear][currentMonth]; saveToLocal(); } }
         function clearYear() { if(confirm("🚨 ΠΡΟΣΟΧΗ: Θα διαγραφούν ΟΛΑ τα δεδομένα του " + currentYear + ". Σίγουρα;")) { if(confirm("🚨 Οριστική διαγραφή;")) { appData[currentYear] = {}; saveToLocal(); } } }
         function openTermsModal() { document.getElementById('terms-modal').style.display = 'flex'; }
-        
-        function exportBackup() {
-            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(appData));
-            const a = document.createElement('a'); a.href = dataStr; a.download = `emode_backup_${new Date().toISOString().slice(0,10)}.json`; a.click();
-        }
+        function exportBackup() { const a = document.createElement('a'); a.href = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(appData)); a.download = `emode_backup_${new Date().toISOString().slice(0,10)}.json`; a.click(); }
         function importBackup(e) {
             const file = e.target.files[0]; if (!file) return;
             const r = new FileReader();
             r.onload = function(ev) {
                 try {
                     const imp = JSON.parse(ev.target.result);
-                    if(confirm("⚠️ Τα τρέχοντα δεδομένα θα αντικατασταθούν! Συνέχεια;")) { appData = imp; saveToLocal(); showToast("✅ Το ιστορικό επανήλθε!"); }
+                    if(confirm("⚠️ Τα δεδομένα θα αντικατασταθούν! Συνέχεια;")) { appData = imp; saveToLocal(); showToast("✅ Το ιστορικό επανήλθε!"); }
                 } catch(err) { showToast("❌ Μη έγκυρο αρχείο backup."); }
                 e.target.value = "";
             }; r.readAsText(file);
