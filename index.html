@@ -433,6 +433,12 @@
             }
             currentMonth = parseInt(document.getElementById('month').value); 
             currentYear = parseInt(document.getElementById('year').value); 
+            
+            // Auto-point Leave calendar to the selected month
+            let mStr = String(currentMonth + 1).padStart(2, '0');
+            document.getElementById('leave-from').value = `${currentYear}-${mStr}-01`;
+            document.getElementById('leave-to').value = '';
+            
             refreshUI(); 
         }
 
@@ -569,7 +575,6 @@
             if(appData[currentYear] && appData[currentYear][currentMonth]) {
                 delete appData[currentYear][currentMonth];
             }
-            // Clear current month's leaves
             let mStart = new Date(currentYear, currentMonth, 1).getTime();
             let mEnd = new Date(currentYear, currentMonth + 1, 0, 23, 59, 59).getTime();
             appData.leavePeriods = appData.leavePeriods.filter(lp => {
@@ -619,7 +624,6 @@
         }
 
         function tkClick(row, val) {
-            // Rest pairs automatics
             if(row === 'e') {
                 if(document.getElementById('tk-e-'+val).checked) {
                     if(val === 'A') tempRest = 'AB';
@@ -714,7 +718,6 @@
             let isR24 = tempRepos.includes('24');
             let is31Special = (new Date(currentYear, currentMonth+1, 0).getDate() === 31 && getSafeData(currentYear, currentMonth).special31);
 
-            // UI Unchecking & State Management
             document.getElementById('tk-s-24').checked = (tempShift === '24');
             ['A','B','G'].forEach(v => {
                 let cb = document.getElementById('tk-s-'+v);
@@ -744,7 +747,6 @@
                 }
             });
 
-            // Compensations Lock rules
             let tPros = document.getElementById('toggle-prostheti');
             let is24hActive = (tempShift === '24' || tempRepos.includes('24') || tempRest === '24');
             
@@ -842,7 +844,6 @@
             let effectiveDays = Math.max(0, totalDays - leavesInMonth);
             const baseHours = [0, 5.4, 11, 16, 22, 27, 33, 37.5, 43, 49, 54, 60, 65, 71, 76, 82, 88, 93, 98, 104, 109, 115, 120, 125, 131, 136, 142, 147, 152, 158, 162, 168];
             
-            // DYNAMIC HOURS DEDUCTION PER LEAVE DAY (-8 Hours)
             let requiredHours = (effectiveDays > 0 && effectiveDays <= 31) ? baseHours[effectiveDays] + (basePenthimera === 4 ? 32 : 40) : 0;
 
             let h = getHolidays(currentMonth, currentYear); let argies = 0;
@@ -935,6 +936,12 @@
         }
 
         const dayNames = ['Κυριακή', 'Δευτέρα', 'Τρίτη', 'Τετάρτη', 'Πέμπτη', 'Παρασκευή', 'Σάββατο'];
+
+        // PRE-FILL FIRST LOAD
+        window.addEventListener('DOMContentLoaded', () => {
+            let initM = String(currentMonth + 1).padStart(2, '0');
+            document.getElementById('leave-from').value = `${currentYear}-${initM}-01`;
+        });
 
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').then(r => {
