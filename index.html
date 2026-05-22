@@ -71,9 +71,12 @@
         input:checked + .slider:before { transform: translateX(22px); }
 
         /* CALENDARS */
-        .calendar-legend { display: flex; justify-content: center; gap: 15px; font-size: 11px; font-weight: 700; margin-bottom: 15px; background: var(--input-bg); padding: 8px; border-radius: 8px; border: 1px solid var(--border-color); }
+        .calendar-legend { display: flex; justify-content: space-between; align-items: center; font-size: 11px; font-weight: 700; margin-bottom: 15px; background: var(--input-bg); padding: 8px 12px; border-radius: 8px; border: 1px solid var(--border-color); }
+        .legend-colors { display: flex; gap: 12px; }
         .legend-item { display: flex; align-items: center; gap: 4px; }
         .legend-color { width: 10px; height: 10px; border-radius: 50%; }
+        .btn-broom-stk { background: transparent; border: none; font-size: 15px; cursor: pointer; padding: 2px 6px; border-radius: 4px; transition: background 0.2s; }
+        .btn-broom-stk:hover { background: rgba(0,0,0,0.05); }
         
         .calendar-header-days { display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 8px; }
         .weekend-text { color: var(--secondary); }
@@ -127,17 +130,16 @@
         .modal-content h3 { color: var(--primary); margin-bottom: 8px; text-align: center; font-size: 16px; font-weight: 900;}
         .modal-subtitle { font-size: 12px; font-weight: 700; color: var(--holiday); text-align: center; margin-bottom: 15px; border-bottom: 2px solid var(--border-color); padding-bottom: 10px; }
 
-        /* THE MATRIX (3x4) */
-        .mx-table { display: flex; flex-direction: column; gap: 6px; margin: 15px 0; }
-        .mx-row { display: grid; grid-template-columns: 65px 1fr 1fr 1fr; gap: 6px; align-items: center; }
-        .mx-lbl { font-size: 11px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; text-align: right; padding-right: 2px; line-height: 1.1;}
-        .m-cell { background: var(--input-bg); border: 2px solid var(--border-color); border-radius: 8px; height: 40px; display: flex; justify-content: center; align-items: center; cursor: pointer; transition: 0.2s; position: relative; font-size: 13px; font-weight: 800; color: var(--text-muted);}
-        
-        .m-cell.ticked { border-color: var(--shift-color); background: rgba(25, 118, 210, 0.1); color: var(--shift-color);}
-        .mx-row.repo .m-cell.ticked { border-color: var(--repo-color); background: rgba(56, 142, 60, 0.1); color: var(--repo-color);}
-        .mx-row.rest .m-cell.ticked { border-color: var(--rest-color); background: rgba(211, 47, 47, 0.1); color: var(--rest-color);}
-        
-        .m-cell.disabled { opacity: 0.3; cursor: not-allowed; border-color: var(--border-color) !important; background: var(--input-bg) !important; color: var(--text-muted) !important;}
+        /* NATIVE TICK BOX MATRIX STYLE */
+        .tk-table { display: flex; flex-direction: column; gap: 10px; margin: 15px 0; }
+        .tk-row { display: grid; grid-template-columns: 75px 1fr 1fr 1fr 1fr; gap: 5px; align-items: center; background: var(--input-bg); padding: 6px; border-radius: 8px; border: 1px solid var(--border-color); }
+        .tk-lbl { font-size: 11px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; text-align: right; padding-right: 4px; }
+        .tk-hdr-row { display: grid; grid-template-columns: 75px 1fr 1fr 1fr 1fr; gap: 5px; text-align: center; font-size: 12px; font-weight: 900; color: var(--primary); margin-bottom: -5px; }
+        .tk-cell { display: flex; justify-content: center; align-items: center; height: 32px; position: relative; }
+        .tk-cell input[type="checkbox"] { width: 20px; height: 20px; cursor: pointer; accent-color: var(--primary); }
+        .tk-row.repo input[type="checkbox"] { accent-color: var(--repo-color); }
+        .tk-row.rest input[type="checkbox"] { accent-color: var(--rest-color); }
+        .tk-cell.disabled { opacity: 0.15; pointer-events: none; }
 
         .info-text { font-size: 12px; color: var(--secondary); font-weight: 600; text-align: center; margin-bottom: 10px; display: none; background: rgba(211,47,47,0.1); padding: 8px; border-radius: 8px;}
 
@@ -215,9 +217,12 @@
                 </div>
 
                 <div class="calendar-legend">
-                    <div class="legend-item"><div class="legend-color" style="background:var(--shift-color);"></div>Βάρδια</div>
-                    <div class="legend-item"><div class="legend-color" style="background:var(--repo-color);"></div>Ρεπό</div>
-                    <div class="legend-item"><div class="legend-color" style="background:var(--rest-color);"></div>Ανάπαυση (🛏️)</div>
+                    <div class="legend-colors">
+                        <div class="legend-item"><div class="legend-color" style="background:var(--shift-color);"></div>Βάρδια</div>
+                        <div class="legend-item"><div class="legend-color" style="background:var(--repo-color);"></div>Ρεπό</div>
+                        <div class="legend-item"><div class="legend-color" style="background:var(--rest-color);"></div>Ανάπαυση</div>
+                    </div>
+                    <button class="btn-broom-stk" onclick="clearCurrentMonthBroom()" title="Καθαρισμός Μήνα">🧹</button>
                 </div>
 
                 <div class="calendar-header-days"><div>Δ</div><div>Τ</div><div>Τ</div><div>Π</div><div>Π</div><div class="weekend-text">Σ</div><div class="weekend-text">Κ</div></div>
@@ -293,35 +298,38 @@
             
             <div id="modal-warning" class="info-text"></div>
             
-            <div class="mx-table">
-                
-                <div class="mx-row shift">
-                    <div class="mx-lbl">ΒΑΡΔΙΑ</div>
-                    <div class="m-cell" id="mx-s-24" onclick="mxClick('s','24')">24Ω</div>
-                    <div class="m-cell" id="mx-s-A" onclick="mxClick('s','A')">Α</div>
-                    <div class="m-cell" id="mx-s-B" onclick="mxClick('s','B')">Β</div>
-                    <div class="m-cell" id="mx-s-G" onclick="mxClick('s','G')">Γ</div>
+            <div class="tk-table">
+                <div class="tk-hdr-row">
+                    <div></div><div>24Ω</div><div>Α</div><div>Β</div><div>Γ</div>
                 </div>
                 
-                <div class="mx-row repo">
-                    <div class="mx-lbl">ΡΕΠΟ</div>
-                    <div class="m-cell" id="mx-r-24" onclick="mxClick('r','24')">24Ω</div>
-                    <div class="m-cell" id="mx-r-A" onclick="mxClick('r','A')">Α</div>
-                    <div class="m-cell" id="mx-r-B" onclick="mxClick('r','B')">Β</div>
-                    <div class="m-cell" id="mx-r-G" onclick="mxClick('r','G')">Γ</div>
+                <div class="tk-row shift">
+                    <div class="tk-lbl">ΒΑΡΔΙΑ</div>
+                    <div class="tk-cell"><input type="checkbox" id="tk-s-24" onchange="tkClick('s','24')"></div>
+                    <div class="tk-cell" id="cell-s-A"><input type="checkbox" id="tk-s-A" onchange="tkClick('s','A')"></div>
+                    <div class="tk-cell" id="cell-s-B"><input type="checkbox" id="tk-s-B" onchange="tkClick('s','B')"></div>
+                    <div class="tk-cell" id="cell-s-G"><input type="checkbox" id="tk-s-G" onchange="tkClick('s','G')"></div>
                 </div>
                 
-                <div class="mx-row rest">
-                    <div class="mx-lbl">ΑΝΑΠ.</div>
-                    <div class="m-cell" id="mx-e-24" onclick="mxClick('e','24')">24Ω</div>
-                    <div class="m-cell" id="mx-e-A" onclick="mxClick('e','A')">Α</div>
-                    <div class="m-cell" id="mx-e-B" onclick="mxClick('e','B')">Β</div>
-                    <div class="m-cell" id="mx-e-G" onclick="mxClick('e','G')">Γ</div>
+                <div class="tk-row repo">
+                    <div class="tk-lbl">ΡΕΠΟ</div>
+                    <div class="tk-cell"><input type="checkbox" id="tk-r-24" onchange="tkClick('r','24')"></div>
+                    <div class="tk-cell" id="cell-r-A"><input type="checkbox" id="tk-r-A" onchange="tkClick('r','A')"></div>
+                    <div class="tk-cell" id="cell-r-B"><input type="checkbox" id="tk-r-B" onchange="tkClick('r','B')"></div>
+                    <div class="tk-cell" id="cell-r-G"><input type="checkbox" id="tk-r-G" onchange="tkClick('r','G')"></div>
+                </div>
+                
+                <div class="tk-row rest">
+                    <div class="tk-lbl">ΑΝΑΠ.</div>
+                    <div class="tk-cell"><input type="checkbox" id="tk-e-24" onchange="tkClick('e','24')"></div>
+                    <div class="tk-cell" id="cell-e-A"><input type="checkbox" id="tk-e-A" onchange="tkClick('e','A')"></div>
+                    <div class="tk-cell" id="cell-e-B"><input type="checkbox" id="tk-e-B" onchange="tkClick('e','B')"></div>
+                    <div class="tk-cell" id="cell-e-G"><input type="checkbox" id="tk-e-G" onchange="tkClick('e','G')"></div>
                 </div>
             </div>
 
             <div style="background: rgba(0,0,0,0.02); padding: 12px; border-radius: 12px; margin: 15px 0; border: 1px solid var(--border-color);">
-                <div style="font-size: 11px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; margin-bottom: 10px; border-bottom: 1px dashed var(--border-color); padding-bottom: 4px;">Αποζημιωσεις / Προσθετη</div>
+                <div style="font-size: 11px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; margin-bottom: 10px; border-bottom: 1px dashed var(--border-color); padding-bottom: 4px;">Αποζημιώσεις / Πρόσθετη</div>
                 
                 <div class="switch-container" style="margin-bottom: 8px;">
                     <span style="color: #fbc02d;">Εκτός έδρας Ημ. (9,78€)</span>
@@ -354,9 +362,7 @@
                 <button class="btn btn-outline" style="margin-bottom: 20px;" onclick="document.getElementById('import-file').click()">📤 Εισαγωγή Αντιγράφου (Restore)</button>
                 <input type="file" id="import-file" style="display: none;" accept=".json" onchange="importBackup(event)">
                 
-                <button class="btn btn-outline" style="margin-bottom: 10px; color: var(--warning); border-color: var(--warning);" onclick="clearMonth()">🧹 Καθαρισμός Μήνα & Αδειών</button>
                 <button class="btn btn-outline" style="margin-bottom: 20px; color: var(--secondary); border-color: var(--secondary);" onclick="clearYear()">🚨 Διαγραφή Όλων Δεδομένων</button>
-                
                 <button class="btn btn-outline" onclick="document.getElementById('settings-modal').style.display='none'; document.getElementById('terms-modal').style.display='flex'">📄 Όροι Χρήσης</button>
                 <button class="btn btn-green" style="margin-top: 15px;" onclick="document.getElementById('settings-modal').style.display='none'">Κλείσιμο</button>
             </div>
@@ -387,7 +393,6 @@
         if(!appData.leavePeriods) appData.leavePeriods = [];
         
         const yearSelect = document.getElementById('year');
-        // Fixed Years list from 2026 to 2066
         for (let i = 2026; i <= 2066; i++) {
             yearSelect.appendChild(new Option(i, i));
         }
@@ -423,7 +428,6 @@
             let selectedYear = parseInt(document.getElementById('year').value);
             if(selectedYear === 2066) { 
                 document.getElementById('easter-egg-modal').style.display = 'flex';
-                // Reset to current real date
                 document.getElementById('year').value = new Date().getFullYear();
                 document.getElementById('month').value = new Date().getMonth();
             }
@@ -560,8 +564,24 @@
             }
         }
 
-        // --- MATRIX MODAL LOGIC ---
-        const dayNames = ['Κυριακή', 'Δευτέρα', 'Τρίτη', 'Τετάρτη', 'Πέμπτη', 'Παρασκευή', 'Σάββατο'];
+        // --- ACCURATE BROOM CLEANER ---
+        function clearCurrentMonthBroom() {
+            if(appData[currentYear] && appData[currentYear][currentMonth]) {
+                delete appData[currentYear][currentMonth];
+            }
+            // Clear current month's leaves
+            let mStart = new Date(currentYear, currentMonth, 1).getTime();
+            let mEnd = new Date(currentYear, currentMonth + 1, 0, 23, 59, 59).getTime();
+            appData.leavePeriods = appData.leavePeriods.filter(lp => {
+                let s = new Date(lp.start).getTime();
+                let e = new Date(lp.end).getTime();
+                return !(s <= mEnd && e >= mStart); 
+            });
+            saveToLocal();
+            showToast("🧹 Ο μήνας και οι άδειές του καθαρίστηκαν ακαριαία!");
+        }
+
+        // --- MODAL TICK BOX LOGIC ---
         function getBlocks(type, isArr) {
             let arr = isArr ? type : [type]; let res = [];
             if(arr.includes('A')) res.push('A'); if(arr.includes('B')) res.push('B'); if(arr.includes('G')) res.push('G');
@@ -598,31 +618,41 @@
             closeShiftModal(); showToast("Η ημέρα καθαρίστηκε επιτυχώς!");
         }
 
-        function mxClick(row, val) {
-            // Rest pairs & save
+        function tkClick(row, val) {
+            // Rest pairs automatics
             if(row === 'e') {
-                if(val === 'A') { tempRest = 'AB'; tempShift='none'; tempRepos=[]; saveDayData(); return; }
-                if(val === 'B' || val === 'G') { tempRest = 'BG'; tempShift='none'; tempRepos=[]; saveDayData(); return; }
-                if(val === '24') { tempRest = '24'; tempShift='none'; tempRepos=[]; saveDayData(); return; }
+                if(document.getElementById('tk-e-'+val).checked) {
+                    if(val === 'A') tempRest = 'AB';
+                    else if(val === 'B' || val === 'G') tempRest = 'BG';
+                    else if(val === '24') tempRest = '24';
+                    tempShift='none'; tempRepos=[];
+                    saveDayData(); return;
+                } else {
+                    tempRest = 'none';
+                }
             }
 
             let sArr = getBlocks(tempShift, false), rArr = [...tempRepos];
 
             if(row === 's') {
+                let chk = document.getElementById('tk-s-'+val).checked;
                 if(val === '24') {
-                    if(tempShift === '24') tempShift = 'none';
-                    else { tempShift = '24'; tempRepos = []; tempRest = 'none'; isProstheti = false; }
+                    tempShift = chk ? '24' : 'none';
+                    if(chk) { tempRepos = []; tempRest = 'none'; isProstheti = false; }
                 } else {
-                    if(sArr.includes('24')) sArr = [];
-                    if(sArr.includes(val)) sArr = sArr.filter(x => x !== val);
-                    else { sArr.push(val); if(sArr.length === 3) { tempShift = '24'; sArr=[]; isProstheti = false; } }
+                    if(chk) {
+                        sArr = sArr.filter(x => x !== '24');
+                        sArr.push(val); if(sArr.length === 3) { tempShift = '24'; sArr = []; isProstheti = false; }
+                    } else {
+                        sArr = sArr.filter(x => x !== val);
+                    }
                     
-                    if(sArr.length > 0) {
+                    if(sArr.length > 0 && tempShift !== '24') {
                         if (sArr.includes('A') && sArr.includes('B')) tempShift = 'AB';
                         else if (sArr.includes('B') && sArr.includes('G')) tempShift = 'BG';
                         else if (sArr.includes('A') && sArr.includes('G')) tempShift = 'AG';
                         else tempShift = sArr[0];
-                    } else if(tempShift !== '24') tempShift = 'none';
+                    } else if (tempShift !== '24') tempShift = 'none';
                     
                     if(tempRepos.includes('24')) tempRepos = [];
                     else tempRepos = tempRepos.filter(x => !sArr.includes(x));
@@ -630,13 +660,17 @@
             }
             
             if(row === 'r') {
+                let chk = document.getElementById('tk-r-'+val).checked;
                 if(val === '24') {
-                    if(tempRepos.includes('24')) tempRepos = [];
-                    else { tempRepos = ['24']; tempShift = 'none'; tempRest = 'none'; isProstheti = false;}
+                    tempRepos = chk ? ['24'] : [];
+                    if(chk) { tempShift = 'none'; tempRest = 'none'; isProstheti = false; }
                 } else {
-                    if(rArr.includes('24')) rArr = [];
-                    if(rArr.includes(val)) rArr = rArr.filter(x => x !== val);
-                    else { rArr.push(val); if(rArr.length === 3) { rArr = ['24']; isProstheti = false;} }
+                    rArr = rArr.filter(x => x !== '24');
+                    if(chk) {
+                        rArr.push(val); if(rArr.length === 3) { rArr = ['24']; isProstheti = false; }
+                    } else {
+                        rArr = rArr.filter(x => x !== val);
+                    }
                     tempRepos = rArr;
                     
                     let newS = getBlocks(tempShift, false).filter(x => !tempRepos.includes(x));
@@ -657,13 +691,12 @@
             if(changed === 'prostheti') {
                 isProstheti = tPros.checked;
                 if(isProstheti && (tempShift === '24' || tempRepos.includes('24') || tempRest === '24')) {
-                    // Turn off 24h shifts if prostheti is toggled manually
                     tempShift = 'none'; tempRepos = []; tempRest = 'none';
-                    updateMatrixUI();
                 }
             }
             if(changed === 'day' && tDay.checked) tNight.checked = false;
             if(changed === 'night' && tNight.checked) tDay.checked = false;
+            updateMatrixUI();
         }
 
         function updateMatrixUI() {
@@ -678,48 +711,40 @@
             if(yest && yest.shift === '24') { lockA = true; warn.innerText = "🔒 Απαιτείται 8ωρο ανάπαυσης (A) μετά από 24ωρη βάρδια."; warn.style.display = 'block'; }
 
             let sBlk = getBlocks(tempShift, false);
-            
-            // Render Shift
-            document.getElementById('mx-s-24').className = 'm-cell ' + (tempShift === '24' ? 'ticked' : '');
-            ['A','B','G'].forEach(v => {
-                let cell = document.getElementById('mx-s-'+v);
-                cell.className = 'm-cell ' + ((sBlk.includes(v) && tempShift !== '24') ? 'ticked' : '');
-                if(tempShift === '24' || (lockA && v === 'A')) cell.classList.add('disabled');
-            });
-
-            // Render Repo
             let isR24 = tempRepos.includes('24');
-            document.getElementById('mx-r-24').className = 'm-cell ' + (isR24 ? 'ticked' : '');
+            let is31Special = (new Date(currentYear, currentMonth+1, 0).getDate() === 31 && getSafeData(currentYear, currentMonth).special31);
+
+            // UI Unchecking & State Management
+            document.getElementById('tk-s-24').checked = (tempShift === '24');
             ['A','B','G'].forEach(v => {
-                let cell = document.getElementById('mx-r-'+v);
-                cell.className = 'm-cell ' + ((tempRepos.includes(v) && !isR24) ? 'ticked' : '');
-                if(isR24) cell.classList.add('disabled');
+                let cb = document.getElementById('tk-s-'+v);
+                cb.checked = (sBlk.includes(v) && tempShift !== '24');
+                let cell = document.getElementById('cell-s-'+v);
+                if(tempShift === '24' || (lockA && v === 'A')) cell.className = 'tk-cell disabled'; else cell.className = 'tk-cell';
             });
 
-            // Render Rest
-            let is31Special = (new Date(currentYear, currentMonth+1, 0).getDate() === 31 && getSafeData(currentYear, currentMonth).special31);
-            let r24Count = 0, r16Count = 0;
-            for(let d in appData[currentYear][currentMonth].days) {
-                if(parseInt(d) !== modalDay) {
-                    let r = appData[currentYear][currentMonth].days[d].rest;
-                    if(r === '24') r24Count++; if(['AB','BG','AG'].includes(r)) r16Count++;
-                }
-            }
-            let e24 = document.getElementById('mx-e-24'); e24.className = 'm-cell ' + (tempRest === '24' ? 'ticked' : '');
-            if(r24Count >= 2 && tempRest !== '24') e24.classList.add('disabled');
-
+            document.getElementById('tk-r-24').checked = isR24;
             ['A','B','G'].forEach(v => {
-                let cell = document.getElementById('mx-e-'+v);
+                let cb = document.getElementById('tk-r-'+v);
+                cb.checked = (tempRepos.includes(v) && !isR24);
+                let cell = document.getElementById('cell-r-'+v);
+                if(isR24) cell.className = 'tk-cell disabled'; else cell.className = 'tk-cell';
+            });
+
+            document.getElementById('tk-e-24').checked = (tempRest === '24');
+            ['A','B','G'].forEach(v => {
+                let cb = document.getElementById('tk-e-'+v);
+                let cell = document.getElementById('cell-e-'+v);
                 if(is31Special) {
                     cell.style.display = 'flex';
-                    cell.className = 'm-cell ' + ((getBlocks(tempRest, false).includes(v) && tempRest !== '24') ? 'ticked' : '');
-                    if(tempRest === '24' || (r16Count >= 1 && !getBlocks(tempRest, false).includes(v))) cell.classList.add('disabled');
+                    cb.checked = (getBlocks(tempRest, false).includes(v) && tempRest !== '24');
+                    if(tempRest === '24') cell.className = 'tk-cell disabled'; else cell.className = 'tk-cell';
                 } else {
                     cell.style.display = 'none';
                 }
             });
 
-            // Compensations logic
+            // Compensations Lock rules
             let tPros = document.getElementById('toggle-prostheti');
             let is24hActive = (tempShift === '24' || tempRepos.includes('24') || tempRest === '24');
             
@@ -760,7 +785,7 @@
             saveToLocal(); closeShiftModal();
         }
 
-        // --- CALCULATIONS ---
+        // --- CALCULATIONS & STATS ---
         function calcYearlyStats() {
             let pTotal = 0, ektos = 0, dTotal = 0, nTotal = 0;
             if(appData[currentYear]) {
@@ -816,6 +841,8 @@
             
             let effectiveDays = Math.max(0, totalDays - leavesInMonth);
             const baseHours = [0, 5.4, 11, 16, 22, 27, 33, 37.5, 43, 49, 54, 60, 65, 71, 76, 82, 88, 93, 98, 104, 109, 115, 120, 125, 131, 136, 142, 147, 152, 158, 162, 168];
+            
+            // DYNAMIC HOURS DEDUCTION PER LEAVE DAY (-8 Hours)
             let requiredHours = (effectiveDays > 0 && effectiveDays <= 31) ? baseHours[effectiveDays] + (basePenthimera === 4 ? 32 : 40) : 0;
 
             let h = getHolidays(currentMonth, currentYear); let argies = 0;
@@ -847,7 +874,7 @@
             document.getElementById('res-repos').innerText = finalRepos > 0 ? "+" + finalRepos.toFixed(2) : finalRepos.toFixed(2);
             document.getElementById('final-box').classList.toggle('negative', finalRepos < 0);
 
-            // Money Logic
+            // Money Matrix
             let mPenth = actualPenthimera * 46;
             let mP = cProstheti * 55;
             let ektosMoney = (cDay * 9.78) + (cNight * 39.13); 
@@ -861,7 +888,7 @@
             document.getElementById('res-money-ektos').innerText = `Εκτός Έδρας: ${ektosMoney.toFixed(2)} €`;
             document.getElementById('res-money-total').innerText = `Σύνολο: ${tot.toFixed(2)} €`;
 
-            // Sticky Bar
+            // Bottom Sticky Bar
             document.getElementById('sticky-bar').style.display = 'flex';
             let percent = requiredHours > 0 ? Math.min(100, (wHours / requiredHours) * 100) : 0;
             document.getElementById('stk-pb').style.width = percent + '%';
@@ -877,23 +904,6 @@
         }
 
         // --- MANAGEMENT ---
-        function clearMonth() { 
-            if(confirm("⚠️ Σίγουρα θέλετε να διαγράψετε τα δεδομένα και τις άδειες αυτού του μήνα;")) { 
-                delete appData[currentYear][currentMonth]; 
-                
-                let mStart = new Date(currentYear, currentMonth, 1).getTime();
-                let mEnd = new Date(currentYear, currentMonth + 1, 0, 23, 59, 59).getTime();
-                appData.leavePeriods = appData.leavePeriods.filter(lp => {
-                    let s = new Date(lp.start).getTime();
-                    let e = new Date(lp.end).getTime();
-                    return !(s <= mEnd && e >= mStart); 
-                });
-
-                saveToLocal(); 
-                document.getElementById('settings-modal').style.display = 'none';
-                showToast("Ο μήνας καθαρίστηκε.");
-            } 
-        }
         function clearYear() { 
             if(confirm("🚨 ΠΡΟΣΟΧΗ: Θα διαγραφούν ΟΛΑ τα δεδομένα. Σίγουρα;")) { 
                 if(confirm("🚨 Οριστική διαγραφή;")) { 
@@ -924,11 +934,15 @@
             }; r.readAsText(file);
         }
 
+        const dayNames = ['Κυριακή', 'Δευτέρα', 'Τρίτη', 'Τετάρτη', 'Πέμπτη', 'Παρασκευή', 'Σάββατο'];
+
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').then(r => {
                 r.addEventListener('updatefound', () => {
                     const nw = r.installing; nw.addEventListener('statechange', () => {
-                        if(nw.state==='installed' && navigator.serviceWorker.controller) document.getElementById('update-modal').style.display='flex';
+                        if(nw.state==='installed' && navigator.serviceWorker.controller) {
+                            showToast("🔄 Νέα έκδοση διαθέσιμη! Ανανεώστε τη σελίδα.");
+                        }
                     });
                 });
             }));
