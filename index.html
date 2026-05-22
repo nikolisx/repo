@@ -43,7 +43,7 @@
         .btn-danger { background-color: #ffebee; color: #c62828; border: 1px solid #ffcdd2; }
         [data-theme="dark"] .btn-danger { background-color: rgba(211,47,47,0.2); color: #ffcdd2; border-color: #e53935; }
 
-        /* ALWAYS OPEN CARDS */
+        /* CARDS */
         .card { background: var(--card-bg); border-radius: var(--border-radius); box-shadow: var(--shadow-sm); border: 1px solid var(--border-color); overflow: hidden; }
         .card-header { padding: 14px 20px; font-size: 15px; font-weight: 800; color: white; background: var(--primary); text-transform: uppercase; letter-spacing: 0.5px;}
         .card-content { padding: 15px 20px; }
@@ -54,7 +54,7 @@
         label { font-size: 13px; font-weight: 600; color: var(--text-muted); margin-bottom: 6px; }
         select, input[type="number"], input[type="date"] { width: 100%; padding: 12px; border: 1px solid var(--border-color); border-radius: 10px; font-size: 15px; background-color: var(--input-bg); color: var(--text-main); outline: none; font-weight: 600;}
         
-        .switch-container { display: flex; align-items: center; gap: 10px; background: var(--input-bg); padding: 10px 15px; border-radius: 10px; border: 1px solid var(--border-color); margin-bottom: 15px;}
+        .switch-container { display: flex; align-items: center; gap: 10px; background: var(--input-bg); padding: 10px 15px; border-radius: 10px; border: 1px solid var(--border-color); margin-bottom: 10px;}
         .switch-container span { font-size: 13px; font-weight: 700; color: var(--text-main); flex: 1; }
 
         .counter-box { display: flex; justify-content: space-between; align-items: center; background: var(--input-bg); padding: 12px 15px; border-radius: 10px; border: 1px dashed var(--primary); margin-bottom: 15px; }
@@ -129,22 +129,15 @@
 
         /* THE MATRIX (3x4) */
         .mx-table { display: flex; flex-direction: column; gap: 6px; margin: 15px 0; }
-        .mx-row { display: grid; grid-template-columns: 65px 1fr 1fr 1fr 1fr; gap: 6px; align-items: center; }
+        .mx-row { display: grid; grid-template-columns: 65px 1fr 1fr 1fr; gap: 6px; align-items: center; }
         .mx-lbl { font-size: 11px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; text-align: right; padding-right: 2px; line-height: 1.1;}
-        .mx-hdr { font-size: 13px; font-weight: 900; color: var(--primary); text-align: center; }
-        .m-cell { background: var(--input-bg); border: 2px solid var(--border-color); border-radius: 8px; height: 40px; display: flex; justify-content: center; align-items: center; cursor: pointer; transition: 0.2s; position: relative; }
-        .m-cell::after { content: ''; display: block; width: 18px; height: 18px; border-radius: 5px; border: 2px solid var(--border-color); background: var(--card-bg); transition: 0.2s; }
-        .m-cell.ticked { border-color: var(--shift-color); background: rgba(25, 118, 210, 0.1); }
-        .m-cell.ticked::after { background: var(--shift-color); border-color: var(--shift-color); background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>'); background-size: cover; }
+        .m-cell { background: var(--input-bg); border: 2px solid var(--border-color); border-radius: 8px; height: 40px; display: flex; justify-content: center; align-items: center; cursor: pointer; transition: 0.2s; position: relative; font-size: 13px; font-weight: 800; color: var(--text-muted);}
         
-        .mx-row.repo .m-cell.ticked { border-color: var(--repo-color); background: rgba(56, 142, 60, 0.1); }
-        .mx-row.repo .m-cell.ticked::after { background-color: var(--repo-color); border-color: var(--repo-color); }
+        .m-cell.ticked { border-color: var(--shift-color); background: rgba(25, 118, 210, 0.1); color: var(--shift-color);}
+        .mx-row.repo .m-cell.ticked { border-color: var(--repo-color); background: rgba(56, 142, 60, 0.1); color: var(--repo-color);}
+        .mx-row.rest .m-cell.ticked { border-color: var(--rest-color); background: rgba(211, 47, 47, 0.1); color: var(--rest-color);}
         
-        .mx-row.rest .m-cell.ticked { border-color: var(--rest-color); background: rgba(211, 47, 47, 0.1); }
-        .mx-row.rest .m-cell.ticked::after { background-color: var(--rest-color); border-color: var(--rest-color); }
-        
-        .m-cell.disabled { opacity: 0.3; cursor: not-allowed; border-color: var(--border-color) !important; background: var(--input-bg) !important;}
-        .m-cell.disabled::after { background: var(--border-color) !important; border-color: var(--text-muted) !important; background-image: none !important;}
+        .m-cell.disabled { opacity: 0.3; cursor: not-allowed; border-color: var(--border-color) !important; background: var(--input-bg) !important; color: var(--text-muted) !important;}
 
         .info-text { font-size: 12px; color: var(--secondary); font-weight: 600; text-align: center; margin-bottom: 10px; display: none; background: rgba(211,47,47,0.1); padding: 8px; border-radius: 8px;}
 
@@ -197,11 +190,10 @@
             <div class="card-content">
                 <div id="leaves-list-container"></div>
                 <div style="background:var(--input-bg); border:1px solid var(--border-color); border-radius:10px; padding:12px; margin-bottom:15px;">
-                    <div class="form-row" style="margin-bottom:10px;">
+                    <div class="form-row" style="margin-bottom:0;">
                         <div class="form-group"><label>Από</label><input type="date" id="leave-from"></div>
-                        <div class="form-group"><label>Έως</label><input type="date" id="leave-to"></div>
+                        <div class="form-group"><label>Έως (Αυτόματη Καταχώρηση)</label><input type="date" id="leave-to" onchange="autoAddLeave()"></div>
                     </div>
-                    <button class="btn btn-outline" style="border-color:var(--primary); color:var(--primary);" onclick="addLeave()">➕ Προσθήκη Άδειας</button>
                 </div>
                 <div style="font-size:14px; font-weight: 700; color: var(--text-main); text-align:center;">
                     Ημέρες άδειας (στον τρέχοντα μήνα): <span id="current-month-leaves-count" style="color:var(--primary); font-size:18px;">0</span>
@@ -218,7 +210,7 @@
                 </div>
 
                 <div class="switch-container" id="special-31-box" style="display: none;">
-                    <span>Ειδική Συνθήκη: Η 1η βάρδια 1 του μήνα</span>
+                    <span>Ειδική Συνθήκη: 1η βάρδια την 1η του μήνα</span>
                     <label class="switch"><input type="checkbox" id="toggle-31" onchange="toggleSpecial31()"><span class="slider"></span></label>
                 </div>
 
@@ -285,6 +277,15 @@
 
     <div id="toast-container"></div>
 
+    <div id="easter-egg-modal" class="modal-overlay">
+        <div class="modal-content" style="border-color: var(--secondary); text-align: center;">
+            <div style="font-size: 40px; margin-bottom: 10px;">🏖️</div>
+            <h3 style="color: var(--secondary); border-bottom: none;">Σοβαρά ρε συνάδελφε;</h3>
+            <p style="font-size: 16px; font-weight: 700; margin-bottom: 20px;">Σύνταξη δε θα πάρουμε ποτέ;</p>
+            <button class="btn btn-danger" onclick="closeEasterEgg()">ΟΚ (Επιστροφή στην πραγματικότητα)</button>
+        </div>
+    </div>
+
     <div id="shift-modal" class="modal-overlay">
         <div class="modal-content">
             <h3 id="modal-date-title">Δευτέρα, 15/05</h3>
@@ -293,32 +294,29 @@
             <div id="modal-warning" class="info-text"></div>
             
             <div class="mx-table">
-                <div class="mx-row">
-                    <div class="mx-hdr"></div><div class="mx-hdr">24Ω</div><div class="mx-hdr">Α</div><div class="mx-hdr">Β</div><div class="mx-hdr">Γ</div>
-                </div>
                 
                 <div class="mx-row shift">
                     <div class="mx-lbl">ΒΑΡΔΙΑ</div>
-                    <div class="m-cell" id="mx-s-24" onclick="mxClick('s','24')"></div>
-                    <div class="m-cell" id="mx-s-A" onclick="mxClick('s','A')"></div>
-                    <div class="m-cell" id="mx-s-B" onclick="mxClick('s','B')"></div>
-                    <div class="m-cell" id="mx-s-G" onclick="mxClick('s','G')"></div>
+                    <div class="m-cell" id="mx-s-24" onclick="mxClick('s','24')">24Ω</div>
+                    <div class="m-cell" id="mx-s-A" onclick="mxClick('s','A')">Α</div>
+                    <div class="m-cell" id="mx-s-B" onclick="mxClick('s','B')">Β</div>
+                    <div class="m-cell" id="mx-s-G" onclick="mxClick('s','G')">Γ</div>
                 </div>
                 
                 <div class="mx-row repo">
                     <div class="mx-lbl">ΡΕΠΟ</div>
-                    <div class="m-cell" id="mx-r-24" onclick="mxClick('r','24')"></div>
-                    <div class="m-cell" id="mx-r-A" onclick="mxClick('r','A')"></div>
-                    <div class="m-cell" id="mx-r-B" onclick="mxClick('r','B')"></div>
-                    <div class="m-cell" id="mx-r-G" onclick="mxClick('r','G')"></div>
+                    <div class="m-cell" id="mx-r-24" onclick="mxClick('r','24')">24Ω</div>
+                    <div class="m-cell" id="mx-r-A" onclick="mxClick('r','A')">Α</div>
+                    <div class="m-cell" id="mx-r-B" onclick="mxClick('r','B')">Β</div>
+                    <div class="m-cell" id="mx-r-G" onclick="mxClick('r','G')">Γ</div>
                 </div>
                 
                 <div class="mx-row rest">
                     <div class="mx-lbl">ΑΝΑΠ.</div>
-                    <div class="m-cell" id="mx-e-24" onclick="mxClick('e','24')"></div>
-                    <div class="m-cell" id="mx-e-A" onclick="mxClick('e','A')"></div>
-                    <div class="m-cell" id="mx-e-B" onclick="mxClick('e','B')"></div>
-                    <div class="m-cell" id="mx-e-G" onclick="mxClick('e','G')"></div>
+                    <div class="m-cell" id="mx-e-24" onclick="mxClick('e','24')">24Ω</div>
+                    <div class="m-cell" id="mx-e-A" onclick="mxClick('e','A')">Α</div>
+                    <div class="m-cell" id="mx-e-B" onclick="mxClick('e','B')">Β</div>
+                    <div class="m-cell" id="mx-e-G" onclick="mxClick('e','G')">Γ</div>
                 </div>
             </div>
 
@@ -375,13 +373,6 @@
             <button class="btn btn-green" onclick="document.getElementById('terms-modal').style.display='none'">Κλείσιμο</button>
         </div>
     </div>
-    <div id="update-modal" class="modal-overlay">
-        <div class="modal-content" style="border-color: var(--success);">
-            <h3 style="color: var(--success); border-bottom: none;">🔄 Διαθέσιμη Ενημέρωση</h3>
-            <p style="font-size: 14px; text-align: center; margin-bottom: 20px;">Υπάρχει νέα έκδοση! Ανανεώστε για να την αποκτήσετε.</p>
-            <button class="btn btn-green" onclick="window.location.reload(true)">Ανανέωση Τώρα</button>
-        </div>
-    </div>
 
     <script>
         // --- STATE & INITIALIZATION ---
@@ -394,26 +385,14 @@
         const monthNames = ['Ιανουάριος', 'Φεβρουάριος', 'Μάρτιος', 'Απρίλιος', 'Μάιος', 'Ιούνιος', 'Ιούλιος', 'Αύγουστος', 'Σεπτέμβριος', 'Οκτώβριος', 'Νοέμβριος', 'Δεκέμβριος'];
 
         if(!appData.leavePeriods) appData.leavePeriods = [];
-        for(let y in appData) {
-            if(y === 'leavePeriods') continue;
-            for(let m in appData[y]) {
-                if(appData[y][m].leaves && appData[y][m].leaves.length > 0) {
-                    appData[y][m].leaves.forEach(d => {
-                        let dStr = `${y}-${String(parseInt(m)+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
-                        appData.leavePeriods.push({start: dStr, end: dStr});
-                    });
-                    appData[y][m].leaves = [];
-                }
-            }
-        }
-
+        
         const yearSelect = document.getElementById('year');
-        // Add years up to 2066 for the easter egg!
-        for (let i = currentYear - 3; i <= 2066; i++) {
-            if(i > currentYear + 5 && i !== 2066) continue; // Skip gap
+        // Fixed Years list from 2026 to 2066
+        for (let i = 2026; i <= 2066; i++) {
             yearSelect.appendChild(new Option(i, i));
         }
-        document.getElementById('month').value = currentMonth; yearSelect.value = currentYear;
+        document.getElementById('month').value = currentMonth; 
+        yearSelect.value = currentYear >= 2026 && currentYear <= 2066 ? currentYear : 2026;
 
         const themeBtn = document.getElementById('theme-btn');
         let isDark = localStorage.getItem('emode_theme') === 'dark';
@@ -441,22 +420,35 @@
         function saveToLocal() { localStorage.setItem(CACHE_KEY, JSON.stringify(appData)); refreshUI(); }
         
         function changeDate() { 
+            let selectedYear = parseInt(document.getElementById('year').value);
+            if(selectedYear === 2066) { 
+                document.getElementById('easter-egg-modal').style.display = 'flex';
+                // Reset to current real date
+                document.getElementById('year').value = new Date().getFullYear();
+                document.getElementById('month').value = new Date().getMonth();
+            }
             currentMonth = parseInt(document.getElementById('month').value); 
             currentYear = parseInt(document.getElementById('year').value); 
-            if(currentYear === 2066) { showToast("Μέχρι το 2066 ελπίζω να έχουμε βγει στη σύνταξη! 🏖️"); }
             refreshUI(); 
+        }
+
+        function closeEasterEgg() {
+            document.getElementById('easter-egg-modal').style.display = 'none';
+            refreshUI();
         }
         
         function toggleSpecial31() { getSafeData(currentYear, currentMonth).special31 = document.getElementById('toggle-31').checked; saveToLocal(); }
 
         // --- LEAVES LOGIC ---
-        function addLeave() {
+        function autoAddLeave() {
             let from = document.getElementById('leave-from').value; let to = document.getElementById('leave-to').value;
-            if(!from || !to) { showToast("Συμπληρώστε και τις δύο ημερομηνίες."); return; }
-            if(new Date(to) < new Date(from)) { showToast("Η ημερομηνία λήξης είναι πριν την έναρξη!"); return; }
-            appData.leavePeriods.push({start: from, end: to});
-            document.getElementById('leave-from').value = ''; document.getElementById('leave-to').value = '';
-            saveToLocal();
+            if(from && to) { 
+                if(new Date(to) < new Date(from)) { showToast("Η ημερομηνία λήξης είναι πριν την έναρξη!"); return; }
+                appData.leavePeriods.push({start: from, end: to});
+                document.getElementById('leave-from').value = ''; document.getElementById('leave-to').value = '';
+                saveToLocal();
+                showToast("Η άδεια καταχωρήθηκε!");
+            }
         }
         function removeLeave(idx) { appData.leavePeriods.splice(idx, 1); saveToLocal(); }
         
@@ -607,7 +599,7 @@
         }
 
         function mxClick(row, val) {
-            // Automatic Rest pairs & save
+            // Rest pairs & save
             if(row === 'e') {
                 if(val === 'A') { tempRest = 'AB'; tempShift='none'; tempRepos=[]; saveDayData(); return; }
                 if(val === 'B' || val === 'G') { tempRest = 'BG'; tempShift='none'; tempRepos=[]; saveDayData(); return; }
@@ -619,11 +611,11 @@
             if(row === 's') {
                 if(val === '24') {
                     if(tempShift === '24') tempShift = 'none';
-                    else { tempShift = '24'; tempRepos = []; tempRest = 'none'; }
+                    else { tempShift = '24'; tempRepos = []; tempRest = 'none'; isProstheti = false; }
                 } else {
                     if(sArr.includes('24')) sArr = [];
                     if(sArr.includes(val)) sArr = sArr.filter(x => x !== val);
-                    else { sArr.push(val); if(sArr.length === 3) { tempShift = '24'; sArr=[]; } }
+                    else { sArr.push(val); if(sArr.length === 3) { tempShift = '24'; sArr=[]; isProstheti = false; } }
                     
                     if(sArr.length > 0) {
                         if (sArr.includes('A') && sArr.includes('B')) tempShift = 'AB';
@@ -640,11 +632,11 @@
             if(row === 'r') {
                 if(val === '24') {
                     if(tempRepos.includes('24')) tempRepos = [];
-                    else { tempRepos = ['24']; tempShift = 'none'; tempRest = 'none'; }
+                    else { tempRepos = ['24']; tempShift = 'none'; tempRest = 'none'; isProstheti = false;}
                 } else {
                     if(rArr.includes('24')) rArr = [];
                     if(rArr.includes(val)) rArr = rArr.filter(x => x !== val);
-                    else { rArr.push(val); if(rArr.length === 3) { rArr = ['24']; } }
+                    else { rArr.push(val); if(rArr.length === 3) { rArr = ['24']; isProstheti = false;} }
                     tempRepos = rArr;
                     
                     let newS = getBlocks(tempShift, false).filter(x => !tempRepos.includes(x));
@@ -660,6 +652,16 @@
 
         function handleCompToggle(changed) {
             let tDay = document.getElementById('toggle-day'), tNight = document.getElementById('toggle-night');
+            let tPros = document.getElementById('toggle-prostheti');
+            
+            if(changed === 'prostheti') {
+                isProstheti = tPros.checked;
+                if(isProstheti && (tempShift === '24' || tempRepos.includes('24') || tempRest === '24')) {
+                    // Turn off 24h shifts if prostheti is toggled manually
+                    tempShift = 'none'; tempRepos = []; tempRest = 'none';
+                    updateMatrixUI();
+                }
+            }
             if(changed === 'day' && tDay.checked) tNight.checked = false;
             if(changed === 'night' && tNight.checked) tDay.checked = false;
         }
@@ -681,7 +683,7 @@
             document.getElementById('mx-s-24').className = 'm-cell ' + (tempShift === '24' ? 'ticked' : '');
             ['A','B','G'].forEach(v => {
                 let cell = document.getElementById('mx-s-'+v);
-                cell.className = 'm-cell ' + (sBlk.includes(v) ? 'ticked' : '');
+                cell.className = 'm-cell ' + ((sBlk.includes(v) && tempShift !== '24') ? 'ticked' : '');
                 if(tempShift === '24' || (lockA && v === 'A')) cell.classList.add('disabled');
             });
 
@@ -690,7 +692,7 @@
             document.getElementById('mx-r-24').className = 'm-cell ' + (isR24 ? 'ticked' : '');
             ['A','B','G'].forEach(v => {
                 let cell = document.getElementById('mx-r-'+v);
-                cell.className = 'm-cell ' + (tempRepos.includes(v) ? 'ticked' : '');
+                cell.className = 'm-cell ' + ((tempRepos.includes(v) && !isR24) ? 'ticked' : '');
                 if(isR24) cell.classList.add('disabled');
             });
 
@@ -708,12 +710,22 @@
 
             ['A','B','G'].forEach(v => {
                 let cell = document.getElementById('mx-e-'+v);
-                cell.className = 'm-cell ' + (getBlocks(tempRest, false).includes(v) ? 'ticked' : '');
-                if(tempRest === '24' || (!is31Special || (r16Count >= 1 && !getBlocks(tempRest, false).includes(v)))) cell.classList.add('disabled');
+                if(is31Special) {
+                    cell.style.display = 'flex';
+                    cell.className = 'm-cell ' + ((getBlocks(tempRest, false).includes(v) && tempRest !== '24') ? 'ticked' : '');
+                    if(tempRest === '24' || (r16Count >= 1 && !getBlocks(tempRest, false).includes(v))) cell.classList.add('disabled');
+                } else {
+                    cell.style.display = 'none';
+                }
             });
 
             // Compensations logic
-            isProstheti = document.getElementById('toggle-prostheti').checked;
+            let tPros = document.getElementById('toggle-prostheti');
+            let is24hActive = (tempShift === '24' || tempRepos.includes('24') || tempRest === '24');
+            
+            if(is24hActive) { isProstheti = false; tPros.checked = false; tPros.disabled = true; } 
+            else { tPros.disabled = false; tPros.checked = isProstheti; }
+
             let canDay = ['24','A','B','AB','BG','AG'].includes(tempShift) || isProstheti;
             let canNight = ['24','G','BG','AG'].includes(tempShift) || isProstheti; 
             
@@ -869,13 +881,12 @@
             if(confirm("⚠️ Σίγουρα θέλετε να διαγράψετε τα δεδομένα και τις άδειες αυτού του μήνα;")) { 
                 delete appData[currentYear][currentMonth]; 
                 
-                // Clear overlapping leaves for current month
                 let mStart = new Date(currentYear, currentMonth, 1).getTime();
                 let mEnd = new Date(currentYear, currentMonth + 1, 0, 23, 59, 59).getTime();
                 appData.leavePeriods = appData.leavePeriods.filter(lp => {
                     let s = new Date(lp.start).getTime();
                     let e = new Date(lp.end).getTime();
-                    return !(s <= mEnd && e >= mStart); // Keep only if it doesn't overlap
+                    return !(s <= mEnd && e >= mStart); 
                 });
 
                 saveToLocal(); 
