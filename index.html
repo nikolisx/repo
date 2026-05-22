@@ -52,7 +52,7 @@
         .form-row { display: flex; gap: 15px; margin-bottom: 10px; }
         .form-group { flex: 1; display: flex; flex-direction: column; }
         label { font-size: 13px; font-weight: 600; color: var(--text-muted); margin-bottom: 6px; }
-        select, input[type="number"], input[type="date"] { width: 100%; padding: 12px; border: 1px solid var(--border-color); border-radius: 10px; font-size: 15px; background-color: var(--input-bg); color: var(--text-main); outline: none; font-weight: 600;}
+        select, input[type="date"] { width: 100%; padding: 12px; border: 1px solid var(--border-color); border-radius: 10px; font-size: 15px; background-color: var(--input-bg); color: var(--text-main); outline: none; font-weight: 600;}
         
         .switch-container { display: flex; align-items: center; gap: 10px; background: var(--input-bg); padding: 10px 15px; border-radius: 10px; border: 1px solid var(--border-color); margin-bottom: 10px;}
         .switch-container span { font-size: 13px; font-weight: 700; color: var(--text-main); flex: 1; }
@@ -72,11 +72,12 @@
 
         /* CALENDARS */
         .calendar-legend { display: flex; justify-content: space-between; align-items: center; font-size: 11px; font-weight: 700; margin-bottom: 15px; background: var(--input-bg); padding: 8px 12px; border-radius: 8px; border: 1px solid var(--border-color); }
-        .legend-colors { display: flex; gap: 12px; }
+        .legend-colors { display: flex; gap: 10px; }
         .legend-item { display: flex; align-items: center; gap: 4px; }
         .legend-color { width: 10px; height: 10px; border-radius: 50%; }
-        .btn-broom-stk { background: transparent; border: none; font-size: 15px; cursor: pointer; padding: 2px 6px; border-radius: 4px; transition: background 0.2s; }
-        .btn-broom-stk:hover { background: rgba(0,0,0,0.05); }
+        .brooms-container { display: flex; gap: 5px; }
+        .btn-broom-stk { background: var(--card-bg); border: 1px solid var(--border-color); font-size: 14px; cursor: pointer; padding: 4px 8px; border-radius: 6px; transition: all 0.2s; box-shadow: var(--shadow-sm);}
+        .btn-broom-stk:hover { transform: scale(1.05); }
         
         .calendar-header-days { display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 8px; }
         .weekend-text { color: var(--secondary); }
@@ -108,6 +109,7 @@
         .final-dashboard.negative { background: linear-gradient(135deg, var(--secondary) 0%, #b71c1c 100%); }
         .dashboard-score { font-size: 38px; font-weight: 900; letter-spacing: -1px; margin: 5px 0; }
         .money-text { font-size: 15px; font-weight: 700; color: #a5d6a7; margin-top: 5px; }
+        .money-text.night { color: #81d4fa; }
         .alert-box { background: rgba(211,47,47,0.2); color: #ffcdd2; border: 1px solid #e53935; padding: 10px; border-radius: 8px; font-size: 12px; font-weight: 600; margin-top: 10px; text-align: left; display: none;}
 
         /* STICKY BOTTOM BAR */
@@ -190,16 +192,20 @@
         <div class="card">
             <div class="card-header">2. Καταχώρηση Άδειας (Προαιρετικό)</div>
             <div class="card-content">
+                <div id="annual-leaves-counter" style="text-align:center; font-size:15px; font-weight:800; color:var(--primary); margin-bottom:15px; padding:8px; background:var(--input-bg); border-radius:8px; border:1px dashed var(--primary);">
+                    Υπολειπόμενες Ημέρες (Έτους): 45 / 45
+                </div>
+
                 <div id="leaves-list-container"></div>
+                
                 <div style="background:var(--input-bg); border:1px solid var(--border-color); border-radius:10px; padding:12px; margin-bottom:15px;">
                     <div class="form-row" style="margin-bottom:0;">
-                        <div class="form-group"><label>Από</label><input type="date" id="leave-from"></div>
+                        <div class="form-group"><label>Από</label><input type="date" id="leave-from" onchange="updateLeaveToDefault()"></div>
                         <div class="form-group"><label>Έως (Αυτόματη Καταχώρηση)</label><input type="date" id="leave-to" onchange="autoAddLeave()"></div>
                     </div>
                 </div>
-                <div style="font-size:14px; font-weight: 700; color: var(--text-main); text-align:center;">
-                    Ημέρες άδειας (στον τρέχοντα μήνα): <span id="current-month-leaves-count" style="color:var(--primary); font-size:18px;">0</span>
-                </div>
+
+                <button class="btn btn-outline" style="border-color:var(--primary); color:var(--primary);" onclick="openYearlyLeaves()">👁️ Συγκεντρωτική Προβολή Έτους</button>
             </div>
         </div>
 
@@ -222,21 +228,14 @@
                         <div class="legend-item"><div class="legend-color" style="background:var(--repo-color);"></div>Ρεπό</div>
                         <div class="legend-item"><div class="legend-color" style="background:var(--rest-color);"></div>Ανάπαυση</div>
                     </div>
-                    <button class="btn-broom-stk" onclick="clearCurrentMonthBroom()" title="Καθαρισμός Μήνα">🧹</button>
+                    <div class="brooms-container">
+                        <button class="btn-broom-stk" onclick="clearLeavesBroom()" title="Καθαρισμός Αδειών Μήνα">🧹🌴</button>
+                        <button class="btn-broom-stk" onclick="clearShiftsBroom()" title="Καθαρισμός Υπηρεσιών Μήνα">🧹📅</button>
+                    </div>
                 </div>
 
                 <div class="calendar-header-days"><div>Δ</div><div>Τ</div><div>Τ</div><div>Π</div><div>Π</div><div class="weekend-text">Σ</div><div class="weekend-text">Κ</div></div>
                 <div id="shifts-grid" class="days-grid"></div>
-            </div>
-        </div>
-
-        <div class="card">
-            <div class="card-header">📊 Ετήσια Στατιστικά & Όρια</div>
-            <div class="card-content">
-                <div class="stat-box"><span class="stat-label">Πρόσθετες Υπηρεσίες (Max 16)</span><span class="stat-value" id="stat-prosthetes">0 / 16</span></div>
-                <div class="stat-box"><span class="stat-label">Αποζημιώσεις Εκτός Έδρας (Max 90)</span><span class="stat-value" id="stat-ektos">0 / 90</span></div>
-                <div class="stat-box"><span class="stat-label">Σύνολο Ημερήσιων Έτους</span><span class="stat-value" id="stat-day">0</span></div>
-                <div class="stat-box"><span class="stat-label">Σύνολο Νυχτερινών Έτους</span><span class="stat-value" id="stat-night">0</span></div>
             </div>
         </div>
 
@@ -255,11 +254,22 @@
                     <div style="background: rgba(0,0,0,0.2); border-radius: 10px; padding: 15px; margin-top: 15px;">
                         <div style="font-size: 13px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px;">Οικονομική Αποζημίωση (Μεικτά)</div>
                         <div class="money-text" id="res-money-penth">Πενθήμερα (0): 0 €</div>
+                        <div class="money-text night" id="res-money-nychterina">Νυχτερινά: 0 €</div>
                         <div class="money-text" id="res-money-prostheti">Πρόσθετες: 0 €</div>
                         <div class="money-text" id="res-money-ektos">Εκτός Έδρας: 0 €</div>
                         <div class="money-text" style="color: #fff; font-size: 20px; border-top: 1px solid rgba(255,255,255,0.3); margin-top: 10px; padding-top: 10px;" id="res-money-total">Σύνολο: 0 €</div>
                     </div>
                 </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">📊 Ετήσια Στατιστικά & Όρια</div>
+            <div class="card-content">
+                <div class="stat-box"><span class="stat-label">Πρόσθετες Υπηρεσίες (Max 16)</span><span class="stat-value" id="stat-prosthetes">0 / 16</span></div>
+                <div class="stat-box"><span class="stat-label">Αποζημιώσεις Εκτός Έδρας (Max 90)</span><span class="stat-value" id="stat-ektos">0 / 90</span></div>
+                <div class="stat-box"><span class="stat-label">Σύνολο Ημερήσιων Έτους</span><span class="stat-value" id="stat-day">0</span></div>
+                <div class="stat-box"><span class="stat-label">Σύνολο Νυχτερινών Έτους</span><span class="stat-value" id="stat-night">0</span></div>
             </div>
         </div>
 
@@ -288,6 +298,15 @@
             <h3 style="color: var(--secondary); border-bottom: none;">Σοβαρά ρε συνάδελφε;</h3>
             <p style="font-size: 16px; font-weight: 700; margin-bottom: 20px;">Σύνταξη δε θα πάρουμε ποτέ;</p>
             <button class="btn btn-danger" onclick="closeEasterEgg()">ΟΚ (Επιστροφή στην πραγματικότητα)</button>
+        </div>
+    </div>
+
+    <div id="yearly-leaves-modal" class="modal-overlay">
+        <div class="modal-content">
+            <h3>👁️ Ιστορικό Αδειών Έτους</h3>
+            <div id="yearly-leaves-content" style="margin-top: 15px; margin-bottom: 15px; max-height: 50vh; overflow-y: auto;">
+                </div>
+            <button class="btn btn-green" onclick="document.getElementById('yearly-leaves-modal').style.display='none'">Κλείσιμο</button>
         </div>
     </div>
 
@@ -349,8 +368,6 @@
                 <button class="btn btn-outline" style="flex:1;" onclick="closeShiftModal()">Ακύρωση</button>
                 <button class="btn btn-green" style="flex:2;" onclick="saveDayData()">Αποθήκευση</button>
             </div>
-            
-            <button class="btn btn-danger" style="margin-top: 10px;" onclick="clearModalDay()">🗑️ Καθαρισμός Ημέρας</button>
         </div>
     </div>
 
@@ -428,16 +445,17 @@
             let selectedYear = parseInt(document.getElementById('year').value);
             if(selectedYear === 2066) { 
                 document.getElementById('easter-egg-modal').style.display = 'flex';
-                document.getElementById('year').value = new Date().getFullYear();
-                document.getElementById('month').value = new Date().getMonth();
+                let realDate = new Date();
+                document.getElementById('year').value = realDate.getFullYear();
+                document.getElementById('month').value = realDate.getMonth();
             }
             currentMonth = parseInt(document.getElementById('month').value); 
             currentYear = parseInt(document.getElementById('year').value); 
             
-            // Auto-point Leave calendar to the selected month
+            // Auto-point both Leave calendars to the selected month
             let mStr = String(currentMonth + 1).padStart(2, '0');
             document.getElementById('leave-from').value = `${currentYear}-${mStr}-01`;
-            document.getElementById('leave-to').value = '';
+            document.getElementById('leave-to').value = `${currentYear}-${mStr}-01`;
             
             refreshUI(); 
         }
@@ -450,16 +468,25 @@
         function toggleSpecial31() { getSafeData(currentYear, currentMonth).special31 = document.getElementById('toggle-31').checked; saveToLocal(); }
 
         // --- LEAVES LOGIC ---
+        function updateLeaveToDefault() {
+            let fromVal = document.getElementById('leave-from').value;
+            if (fromVal) document.getElementById('leave-to').value = fromVal;
+        }
+
         function autoAddLeave() {
             let from = document.getElementById('leave-from').value; let to = document.getElementById('leave-to').value;
             if(from && to) { 
                 if(new Date(to) < new Date(from)) { showToast("Η ημερομηνία λήξης είναι πριν την έναρξη!"); return; }
                 appData.leavePeriods.push({start: from, end: to});
-                document.getElementById('leave-from').value = ''; document.getElementById('leave-to').value = '';
+                // Reset fields back to default for target month
+                let mStr = String(currentMonth + 1).padStart(2, '0');
+                document.getElementById('leave-from').value = `${currentYear}-${mStr}-01`; 
+                document.getElementById('leave-to').value = `${currentYear}-${mStr}-01`;
                 saveToLocal();
                 showToast("Η άδεια καταχωρήθηκε!");
             }
         }
+        
         function removeLeave(idx) { appData.leavePeriods.splice(idx, 1); saveToLocal(); }
         
         function isLeaveDay(y, m, d) {
@@ -473,16 +500,81 @@
             return false;
         }
 
+        function getAnnualLeaveCount(year) {
+            let count = 0;
+            for(let m=0; m<12; m++) {
+                let dInM = new Date(year, m+1, 0).getDate();
+                for(let d=1; d<=dInM; d++) {
+                    if(isLeaveDay(year, m, d)) count++;
+                }
+            }
+            return count;
+        }
+
         function renderLeavesList() {
             let html = '';
+            let mStart = new Date(currentYear, currentMonth, 1).getTime();
+            let mEnd = new Date(currentYear, currentMonth + 1, 0, 23, 59, 59).getTime();
+
             appData.leavePeriods.forEach((lp, idx) => {
-                let s = lp.start.split('-').reverse().join('/'); let e = lp.end.split('-').reverse().join('/');
-                html += `<div style="display:flex; justify-content:space-between; align-items:center; background:var(--input-bg); padding:10px; border-radius:8px; margin-bottom:8px; border:1px solid var(--border-color); font-size:13px;">
-                    <span>Από: <b>${s}</b><br>Έως: <b>${e}</b></span>
-                    <button class="btn btn-danger" style="width:40px; height:40px; padding:0; display:flex; align-items:center; justify-content:center;" onclick="removeLeave(${idx})">🗑</button>
-                </div>`;
+                let s = new Date(lp.start).getTime();
+                let e = new Date(lp.end).getTime();
+                // Show ONLY if the leave falls within the currently selected month
+                if(s <= mEnd && e >= mStart) {
+                    let sStr = lp.start.split('-').reverse().join('/'); 
+                    let eStr = lp.end.split('-').reverse().join('/');
+                    html += `<div style="display:flex; justify-content:space-between; align-items:center; background:var(--input-bg); padding:10px; border-radius:8px; margin-bottom:8px; border:1px solid var(--border-color); font-size:13px;">
+                        <span>Από: <b>${sStr}</b><br>Έως: <b>${eStr}</b></span>
+                        <button class="btn btn-danger" style="width:40px; height:40px; padding:0; display:flex; align-items:center; justify-content:center;" onclick="removeLeave(${idx})">🗑</button>
+                    </div>`;
+                }
             });
             document.getElementById('leaves-list-container').innerHTML = html;
+
+            let annualCount = getAnnualLeaveCount(currentYear);
+            let remDays = 45 - annualCount;
+            let counterUI = document.getElementById('annual-leaves-counter');
+            counterUI.innerText = `Υπολειπόμενες Ημέρες (Έτους): ${remDays} / 45`;
+            counterUI.style.color = remDays < 0 ? 'var(--secondary)' : 'var(--primary)';
+            counterUI.style.borderColor = remDays < 0 ? 'var(--secondary)' : 'var(--primary)';
+        }
+
+        function openYearlyLeaves() {
+            let html = '';
+            let totalYear = 0;
+            for(let m=0; m<12; m++) {
+                let dInM = new Date(currentYear, m+1, 0).getDate();
+                let countM = 0;
+                let periodsM = [];
+                
+                let mStart = new Date(currentYear, m, 1).getTime();
+                let mEnd = new Date(currentYear, m+1, 0, 23, 59, 59).getTime();
+                
+                appData.leavePeriods.forEach(lp => {
+                    let s = new Date(lp.start).getTime();
+                    let e = new Date(lp.end).getTime();
+                    if(s <= mEnd && e >= mStart) {
+                        periodsM.push(`${lp.start.split('-').reverse().join('/')} - ${lp.end.split('-').reverse().join('/')}`);
+                    }
+                });
+
+                for(let d=1; d<=dInM; d++) {
+                    if(isLeaveDay(currentYear, m, d)) countM++;
+                }
+
+                if(countM > 0) {
+                    html += `<div style="margin-bottom: 10px; padding: 10px; background: var(--input-bg); border-radius: 8px; border: 1px solid var(--border-color);">
+                        <strong style="color:var(--primary); font-size: 14px;">${monthNames[m]} ${currentYear} (Σύνολο: ${countM}ημ.)</strong>
+                        <ul style="margin-top: 5px; padding-left: 20px; font-size: 13px; color: var(--text-muted);">`;
+                    [...new Set(periodsM)].forEach(p => { html += `<li>${p}</li>`; });
+                    html += `</ul></div>`;
+                    totalYear += countM;
+                }
+            }
+            if(totalYear === 0) html = '<p style="text-align:center; font-size: 14px; font-weight: 600; color: var(--text-muted);">Δεν βρέθηκαν άδειες για αυτό το έτος.</p>';
+            
+            document.getElementById('yearly-leaves-content').innerHTML = html;
+            document.getElementById('yearly-leaves-modal').style.display = 'flex';
         }
 
         function getHolidays(m, y) {
@@ -570,11 +662,8 @@
             }
         }
 
-        // --- ACCURATE BROOM CLEANER ---
-        function clearCurrentMonthBroom() {
-            if(appData[currentYear] && appData[currentYear][currentMonth]) {
-                delete appData[currentYear][currentMonth];
-            }
+        // --- TWO BROOMS CLEANERS ---
+        function clearLeavesBroom() {
             let mStart = new Date(currentYear, currentMonth, 1).getTime();
             let mEnd = new Date(currentYear, currentMonth + 1, 0, 23, 59, 59).getTime();
             appData.leavePeriods = appData.leavePeriods.filter(lp => {
@@ -583,7 +672,15 @@
                 return !(s <= mEnd && e >= mStart); 
             });
             saveToLocal();
-            showToast("🧹 Ο μήνας και οι άδειές του καθαρίστηκαν ακαριαία!");
+            showToast("🧹🌴 Οι άδειες αυτού του μήνα διαγράφηκαν!");
+        }
+        
+        function clearShiftsBroom() {
+            if(appData[currentYear] && appData[currentYear][currentMonth]) {
+                appData[currentYear][currentMonth].days = {};
+            }
+            saveToLocal();
+            showToast("🧹📅 Οι υπηρεσίες αυτού του μήνα διαγράφηκαν!");
         }
 
         // --- MODAL TICK BOX LOGIC ---
@@ -844,7 +941,9 @@
             let effectiveDays = Math.max(0, totalDays - leavesInMonth);
             const baseHours = [0, 5.4, 11, 16, 22, 27, 33, 37.5, 43, 49, 54, 60, 65, 71, 76, 82, 88, 93, 98, 104, 109, 115, 120, 125, 131, 136, 142, 147, 152, 158, 162, 168];
             
-            let requiredHours = (effectiveDays > 0 && effectiveDays <= 31) ? baseHours[effectiveDays] + (basePenthimera === 4 ? 32 : 40) : 0;
+            // DEDUCT 8 HOURS PER LEAVE DAY
+            let baseReqHours = (totalDays > 0 && totalDays <= 31) ? baseHours[totalDays] + (basePenthimera === 4 ? 32 : 40) : 0;
+            let requiredHours = Math.max(0, baseReqHours - (leavesInMonth * 8));
 
             let h = getHolidays(currentMonth, currentYear); let argies = 0;
             h.forEach(hol => { if(new Date(currentYear, currentMonth, hol.day).getDay() !== 0 && !isLeaveDay(currentYear, currentMonth, hol.day)) argies++; });
@@ -875,16 +974,28 @@
             document.getElementById('res-repos').innerText = finalRepos > 0 ? "+" + finalRepos.toFixed(2) : finalRepos.toFixed(2);
             document.getElementById('final-box').classList.toggle('negative', finalRepos < 0);
 
-            // Money Matrix
+            // Money Matrix & Night Compensation Logic
             let mPenth = actualPenthimera * 46;
             let mP = cProstheti * 55;
             let ektosMoney = (cDay * 9.78) + (cNight * 39.13); 
-            let tot = mPenth + mP + ektosMoney;
+            
+            // NYCHTERINA MATH
+            let nychterinaMoney = 0;
+            if (leavesInMonth <= 15) {
+                nychterinaMoney = 213.12;
+            } else {
+                let cleanDays = totalDays - leavesInMonth;
+                let factor = Math.floor(cleanDays / 2);
+                nychterinaMoney = factor * 26.64;
+            }
+
+            let tot = mPenth + mP + ektosMoney + nychterinaMoney;
 
             let penthBox = document.getElementById('res-money-penth');
             if (lostPenthimera > 0) penthBox.innerHTML = `Πενθήμερα (${actualPenthimera}/${basePenthimera}): ${mPenth.toFixed(2)} € <div style="font-size:12px; color:#ffcdd2; margin-top:2px;">⚠️ Χάθηκαν ${lostPenthimera} λόγω άδειας</div>`;
             else penthBox.innerHTML = `Πενθήμερα (${actualPenthimera}): ${mPenth.toFixed(2)} €`;
             
+            document.getElementById('res-money-nychterina').innerText = `Νυχτερινά: ${nychterinaMoney.toFixed(2)} €`;
             document.getElementById('res-money-prostheti').innerText = `Πρόσθετες: ${mP.toFixed(2)} €`;
             document.getElementById('res-money-ektos').innerText = `Εκτός Έδρας: ${ektosMoney.toFixed(2)} €`;
             document.getElementById('res-money-total').innerText = `Σύνολο: ${tot.toFixed(2)} €`;
@@ -941,6 +1052,7 @@
         window.addEventListener('DOMContentLoaded', () => {
             let initM = String(currentMonth + 1).padStart(2, '0');
             document.getElementById('leave-from').value = `${currentYear}-${initM}-01`;
+            document.getElementById('leave-to').value = `${currentYear}-${initM}-01`;
         });
 
         if ('serviceWorker' in navigator) {
