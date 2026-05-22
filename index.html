@@ -26,12 +26,13 @@
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
         body { background-color: var(--bg-color); color: var(--text-main); display: flex; justify-content: center; padding: 20px 10px 100px 10px; min-height: 100vh; transition: background-color 0.3s; }
-        .app-container { width: 100%; max-width: 600px; display: flex; flex-direction: column; gap: 12px; }
+        .app-container { width: 100%; max-width: 600px; display: flex; flex-direction: column; gap: 15px; }
 
         /* HEADER */
         .header-section { text-align: center; margin-bottom: 5px; position: relative; }
         .app-logo { width: 85px; height: auto; border-radius: 20px; box-shadow: var(--shadow-sm); margin-bottom: 10px; animation: fadeIn 0.5s ease; }
-        .theme-toggle { position: absolute; top: 0; right: 10px; background: var(--card-bg); border: 1px solid var(--border-color); color: var(--text-main); font-size: 20px; padding: 8px; border-radius: 50%; cursor: pointer; box-shadow: var(--shadow-sm); }
+        .top-actions { position: absolute; top: 0; right: 5px; display: flex; gap: 8px; }
+        .top-btn { background: var(--card-bg); border: 1px solid var(--border-color); color: var(--text-main); font-size: 18px; width: 40px; height: 40px; display: flex; justify-content: center; align-items: center; border-radius: 50%; cursor: pointer; box-shadow: var(--shadow-sm); }
         .emode-title { color: var(--secondary); font-weight: 900; font-size: 18px; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 5px;}
         .main-title { color: var(--primary); font-size: 24px; font-weight: 800; line-height: 1.2; margin-bottom: 5px;}
         .subtitle { font-size: 13px; color: var(--text-muted); font-weight: 500; margin-bottom: 10px; }
@@ -42,24 +43,19 @@
         .btn-danger { background-color: #ffebee; color: #c62828; border: 1px solid #ffcdd2; }
         [data-theme="dark"] .btn-danger { background-color: rgba(211,47,47,0.2); color: #ffcdd2; border-color: #e53935; }
 
-        /* ACCORDIONS */
-        .accordion { background: var(--card-bg); border-radius: var(--border-radius); box-shadow: var(--shadow-sm); border: 1px solid var(--border-color); overflow: hidden; }
-        .accordion-header { padding: 16px 20px; font-size: 16px; font-weight: 700; color: var(--primary); display: flex; justify-content: space-between; align-items: center; cursor: pointer; user-select: none; background: var(--card-bg); }
-        .accordion-content { padding: 0 20px 20px 20px; display: none; border-top: 1px solid var(--border-color); margin-top: 5px; padding-top: 15px; }
-        .accordion.open .accordion-content { display: block; animation: fadeIn 0.3s; }
-        .accordion.open .accordion-header { border-bottom: none; }
-        .arrow { transition: transform 0.3s; }
-        .accordion.open .arrow { transform: rotate(180deg); }
+        /* ALWAYS OPEN CARDS */
+        .card { background: var(--card-bg); border-radius: var(--border-radius); box-shadow: var(--shadow-sm); border: 1px solid var(--border-color); overflow: hidden; }
+        .card-header { padding: 14px 20px; font-size: 15px; font-weight: 800; color: white; background: var(--primary); text-transform: uppercase; letter-spacing: 0.5px;}
+        .card-content { padding: 15px 20px; }
 
         /* FORMS */
-        .form-row { display: flex; gap: 15px; margin-bottom: 15px; }
+        .form-row { display: flex; gap: 15px; margin-bottom: 10px; }
         .form-group { flex: 1; display: flex; flex-direction: column; }
         label { font-size: 13px; font-weight: 600; color: var(--text-muted); margin-bottom: 6px; }
-        select, input[type="number"], input[type="date"] { width: 100%; padding: 12px; border: 1px solid var(--border-color); border-radius: 10px; font-size: 15px; background-color: var(--input-bg); color: var(--text-main); outline: none; }
-        select:disabled, input:disabled { opacity: 0.5; cursor: not-allowed; }
+        select, input[type="number"], input[type="date"] { width: 100%; padding: 12px; border: 1px solid var(--border-color); border-radius: 10px; font-size: 15px; background-color: var(--input-bg); color: var(--text-main); outline: none; font-weight: 600;}
         
         .switch-container { display: flex; align-items: center; gap: 10px; background: var(--input-bg); padding: 10px 15px; border-radius: 10px; border: 1px solid var(--border-color); margin-bottom: 15px;}
-        .switch-container span { font-size: 13px; font-weight: 600; color: var(--text-main); flex: 1; }
+        .switch-container span { font-size: 13px; font-weight: 700; color: var(--text-main); flex: 1; }
 
         .counter-box { display: flex; justify-content: space-between; align-items: center; background: var(--input-bg); padding: 12px 15px; border-radius: 10px; border: 1px dashed var(--primary); margin-bottom: 15px; }
         .counter-label { font-size: 14px; font-weight: 700; color: var(--primary); }
@@ -104,7 +100,6 @@
         .stat-label { font-size: 13px; font-weight: 600; color: var(--text-muted); }
         .stat-value { font-size: 16px; font-weight: 800; color: var(--text-main); }
         .stat-value.danger { color: var(--secondary); }
-        .stat-value.warning { color: var(--warning); }
         
         .final-dashboard { background: linear-gradient(135deg, var(--primary) 0%, #283593 100%); color: white; padding: 20px; border-radius: 16px; text-align: center; margin-top: 10px; box-shadow: var(--shadow-md); }
         .final-dashboard.negative { background: linear-gradient(135deg, var(--secondary) 0%, #b71c1c 100%); }
@@ -151,12 +146,6 @@
         .m-cell.disabled { opacity: 0.3; cursor: not-allowed; border-color: var(--border-color) !important; background: var(--input-bg) !important;}
         .m-cell.disabled::after { background: var(--border-color) !important; border-color: var(--text-muted) !important; background-image: none !important;}
 
-        .btn-prostheti { background: var(--input-bg); border: 2px solid var(--border-color); border-radius: 10px; padding: 12px; font-weight: 800; color: var(--text-main); display: flex; align-items: center; justify-content: center; gap: 10px; cursor: pointer; transition: 0.2s; }
-        .btn-prostheti::before { content: ''; display: block; width: 18px; height: 18px; border-radius: 5px; border: 2px solid var(--border-color); background: var(--card-bg); transition: 0.2s; }
-        .btn-prostheti.ticked { border-color: var(--holiday); color: var(--holiday); background: rgba(156, 39, 176, 0.05); }
-        .btn-prostheti.ticked::before { background: var(--holiday); border-color: var(--holiday); background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>'); background-size: cover; }
-
-        .comp-section { background: rgba(0,0,0,0.02); padding: 10px; border-radius: 10px; margin: 15px 0; border: 1px solid var(--border-color); display: none;}
         .info-text { font-size: 12px; color: var(--secondary); font-weight: 600; text-align: center; margin-bottom: 10px; display: none; background: rgba(211,47,47,0.1); padding: 8px; border-radius: 8px;}
 
         @keyframes popIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
@@ -170,16 +159,19 @@
     <div class="app-container">
         
         <div class="header-section">
-            <button class="theme-toggle" onclick="toggleTheme()" id="theme-btn">☀️</button>
+            <div class="top-actions">
+                <button class="top-btn" onclick="toggleTheme()" id="theme-btn">☀️</button>
+                <button class="top-btn" onclick="openSettings()">⚙️</button>
+            </div>
             <img src="icon-512.png" alt="Λογότυπο ΕΜΟΔΕ" class="app-logo">
             <div class="emode-title">13η Ε.ΜΟ.Δ.Ε</div>
             <h1 class="main-title">Υπολογιστής Υπηρεσιών</h1>
             <div class="subtitle">(Αποκλειστικά για Μόνιμο Προσωπικό και Π.Δ.Ε)</div>
         </div>
 
-        <div class="accordion open" id="acc-date">
-            <div class="accordion-header" onclick="toggleAcc('acc-date')">🗓️ Βήμα 1: Ημερομηνία <span class="arrow">▼</span></div>
-            <div class="accordion-content">
+        <div class="card">
+            <div class="card-header">1. Μήνας Εργασίας</div>
+            <div class="card-content">
                 <div class="form-row" style="margin-bottom: 0;">
                     <div class="form-group">
                         <label>Μήνας</label>
@@ -200,13 +192,12 @@
             </div>
         </div>
 
-        <div class="accordion" id="acc-leaves">
-            <div class="accordion-header" onclick="toggleAcc('acc-leaves')">🌴 Βήμα 2: Άδειες <span class="arrow">▼</span></div>
-            <div class="accordion-content">
+        <div class="card">
+            <div class="card-header">2. Καταχώρηση Άδειας (Προαιρετικό)</div>
+            <div class="card-content">
                 <div id="leaves-list-container"></div>
                 <div style="background:var(--input-bg); border:1px solid var(--border-color); border-radius:10px; padding:12px; margin-bottom:15px;">
-                    <label style="color:var(--primary); font-size:12px; text-transform:uppercase;">Νεα Καταχωρηση Αδειας</label>
-                    <div class="form-row" style="margin-top:8px; margin-bottom:10px;">
+                    <div class="form-row" style="margin-bottom:10px;">
                         <div class="form-group"><label>Από</label><input type="date" id="leave-from"></div>
                         <div class="form-group"><label>Έως</label><input type="date" id="leave-to"></div>
                     </div>
@@ -218,10 +209,9 @@
             </div>
         </div>
 
-        <div class="accordion" id="acc-shifts">
-            <div class="accordion-header" onclick="toggleAcc('acc-shifts')">🚒 Βήμα 3: Βάρδιες & Ρεπό <span class="arrow">▼</span></div>
-            <div class="accordion-content">
-                
+        <div class="card">
+            <div class="card-header" id="step3-header">Μήνας: Βάρδιες & Ρεπό</div>
+            <div class="card-content">
                 <div class="counter-box">
                     <span class="counter-label">Σύνολο 24ωρων Βαρδιών:</span>
                     <span class="counter-value" id="val-24-count">0</span>
@@ -243,9 +233,9 @@
             </div>
         </div>
 
-        <div class="accordion" id="acc-stats">
-            <div class="accordion-header" onclick="toggleAcc('acc-stats')">📊 Ετήσια Στατιστικά & Όρια <span class="arrow">▼</span></div>
-            <div class="accordion-content">
+        <div class="card">
+            <div class="card-header">📊 Ετήσια Στατιστικά & Όρια</div>
+            <div class="card-content">
                 <div class="stat-box"><span class="stat-label">Πρόσθετες Υπηρεσίες (Max 16)</span><span class="stat-value" id="stat-prosthetes">0 / 16</span></div>
                 <div class="stat-box"><span class="stat-label">Αποζημιώσεις Εκτός Έδρας (Max 90)</span><span class="stat-value" id="stat-ektos">0 / 90</span></div>
                 <div class="stat-box"><span class="stat-label">Σύνολο Ημερήσιων Έτους</span><span class="stat-value" id="stat-day">0</span></div>
@@ -253,9 +243,9 @@
             </div>
         </div>
 
-        <div class="accordion open" style="border-color: var(--primary);">
-            <div class="accordion-header" style="cursor: default;">💰 Απολογισμός Μήνα</div>
-            <div class="accordion-content" style="display: block;">
+        <div class="card" style="border-color: var(--primary);">
+            <div class="card-header" style="background: linear-gradient(135deg, var(--primary) 0%, #283593 100%);">💰 Απολογισμός Μήνα</div>
+            <div class="card-content">
                 <div class="stat-box"><span class="stat-label">Καθαρές Ημέρες Εργασίας:</span><span class="stat-value" id="res-eff-days">0</span></div>
                 <div class="stat-box"><span class="stat-label">Υποχρεωτικές Ώρες Α.Π.Σ.:</span><span class="stat-value" id="res-req-hours">0.0</span></div>
                 <div class="stat-box"><span class="stat-label">Σύνολο Ωρών Εργασίας + Αργίες:</span><span class="stat-value" id="res-work-hours">0</span></div>
@@ -273,17 +263,6 @@
                         <div class="money-text" style="color: #fff; font-size: 20px; border-top: 1px solid rgba(255,255,255,0.3); margin-top: 10px; padding-top: 10px;" id="res-money-total">Σύνολο: 0 €</div>
                     </div>
                 </div>
-            </div>
-        </div>
-
-        <div class="accordion" id="acc-manage">
-            <div class="accordion-header" onclick="toggleAcc('acc-manage')">⚙️ Διαχείριση & Backup <span class="arrow">▼</span></div>
-            <div class="accordion-content">
-                <button class="btn btn-outline" style="margin-bottom: 10px;" onclick="exportBackup()">📥 Εξαγωγή Αντιγράφου (Backup)</button>
-                <button class="btn btn-outline" style="margin-bottom: 20px;" onclick="document.getElementById('import-file').click()">📤 Εισαγωγή Αντιγράφου (Restore)</button>
-                <input type="file" id="import-file" style="display: none;" accept=".json" onchange="importBackup(event)">
-                <button class="btn btn-outline" style="margin-bottom: 10px; color: var(--warning); border-color: var(--warning);" onclick="clearMonth()">🧹 Καθαρισμός Φόρμας Μήνα</button>
-                <button class="btn btn-outline" style="color: var(--secondary); border-color: var(--secondary);" onclick="clearYear()">🚨 Διαγραφή Όλων Δεδομένων Έτους</button>
             </div>
         </div>
 
@@ -343,21 +322,24 @@
                 </div>
             </div>
 
-            <div id="btn-prostheti" class="btn-prostheti" onclick="mxClick('P', 'P')">Πρόσθετη Υπηρεσία</div>
-
-            <div class="comp-section" id="comp-wrapper">
-                <div class="modal-section-title" style="border:none; margin-top:0;">Αποζημιωσεις (Αντιπυρικη)</div>
+            <div style="background: rgba(0,0,0,0.02); padding: 12px; border-radius: 12px; margin: 15px 0; border: 1px solid var(--border-color);">
+                <div style="font-size: 11px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; margin-bottom: 10px; border-bottom: 1px dashed var(--border-color); padding-bottom: 4px;">Αποζημιωσεις / Προσθετη</div>
+                
                 <div class="switch-container" style="margin-bottom: 8px;">
-                    <span style="color: #fbc02d;">Ημερήσια (9,78€)</span>
+                    <span style="color: #fbc02d;">Εκτός έδρας Ημ. (9,78€)</span>
                     <label class="switch"><input type="checkbox" id="toggle-day" onchange="handleCompToggle('day')"><span class="slider"></span></label>
                 </div>
-                <div class="switch-container" style="margin-bottom: 0;">
-                    <span style="color: #1976d2;">Νυχτερινή (39,13€)</span>
+                <div class="switch-container" style="margin-bottom: 8px;">
+                    <span style="color: #1976d2;">Εκτός έδρας Νύχτα (39,13€)</span>
                     <label class="switch"><input type="checkbox" id="toggle-night" onchange="handleCompToggle('night')"><span class="slider"></span></label>
+                </div>
+                <div class="switch-container" style="margin-bottom: 0;">
+                    <span style="color: var(--holiday);">Πρόσθετη Υπηρεσία (55,00€)</span>
+                    <label class="switch"><input type="checkbox" id="toggle-prostheti" onchange="handleCompToggle('prostheti')"><span class="slider"></span></label>
                 </div>
             </div>
 
-            <div style="display: flex; gap: 10px; margin-top: 20px;">
+            <div style="display: flex; gap: 10px; margin-top: 10px;">
                 <button class="btn btn-outline" style="flex:1;" onclick="closeShiftModal()">Ακύρωση</button>
                 <button class="btn btn-green" style="flex:2;" onclick="saveDayData()">Αποθήκευση</button>
             </div>
@@ -366,6 +348,33 @@
         </div>
     </div>
 
+    <div id="settings-modal" class="modal-overlay">
+        <div class="modal-content">
+            <h3>⚙️ Διαχείριση & Backup</h3>
+            <div style="margin-top: 20px;">
+                <button class="btn btn-outline" style="margin-bottom: 10px;" onclick="exportBackup()">📥 Εξαγωγή Αντιγράφου (Backup)</button>
+                <button class="btn btn-outline" style="margin-bottom: 20px;" onclick="document.getElementById('import-file').click()">📤 Εισαγωγή Αντιγράφου (Restore)</button>
+                <input type="file" id="import-file" style="display: none;" accept=".json" onchange="importBackup(event)">
+                
+                <button class="btn btn-outline" style="margin-bottom: 10px; color: var(--warning); border-color: var(--warning);" onclick="clearMonth()">🧹 Καθαρισμός Μήνα & Αδειών</button>
+                <button class="btn btn-outline" style="margin-bottom: 20px; color: var(--secondary); border-color: var(--secondary);" onclick="clearYear()">🚨 Διαγραφή Όλων Δεδομένων</button>
+                
+                <button class="btn btn-outline" onclick="document.getElementById('settings-modal').style.display='none'; document.getElementById('terms-modal').style.display='flex'">📄 Όροι Χρήσης</button>
+                <button class="btn btn-green" style="margin-top: 15px;" onclick="document.getElementById('settings-modal').style.display='none'">Κλείσιμο</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="terms-modal" class="modal-overlay">
+        <div class="modal-content">
+            <h3>📄 Όροι Χρήσης</h3>
+            <p style="font-size: 13px; line-height: 1.5; color: var(--text-muted); text-align: justify; margin-bottom: 15px;">
+                Η εφαρμογή διατίθεται <strong>δωρεάν</strong>, αποθηκεύει τα δεδομένα τοπικά στη συσκευή σας και <strong>δεν αποτελεί επίσημη εφαρμογή του Π.Σ.</strong>.<br><br>
+                Τα αποτελέσματα είναι ενδεικτικά. Ο τελικός έλεγχος ανήκει στην Υπηρεσία.
+            </p>
+            <button class="btn btn-green" onclick="document.getElementById('terms-modal').style.display='none'">Κλείσιμο</button>
+        </div>
+    </div>
     <div id="update-modal" class="modal-overlay">
         <div class="modal-content" style="border-color: var(--success);">
             <h3 style="color: var(--success); border-bottom: none;">🔄 Διαθέσιμη Ενημέρωση</h3>
@@ -381,10 +390,9 @@
         let currentYear = new Date().getFullYear();
         let currentMonth = new Date().getMonth();
         
-        // Matrix Modal State
         let tempShift = 'none', tempRepos = [], tempRest = 'none', isProstheti = false, modalDay = null;
+        const monthNames = ['Ιανουάριος', 'Φεβρουάριος', 'Μάρτιος', 'Απρίλιος', 'Μάιος', 'Ιούνιος', 'Ιούλιος', 'Αύγουστος', 'Σεπτέμβριος', 'Οκτώβριος', 'Νοέμβριος', 'Δεκέμβριος'];
 
-        // Migrating old 'leaves' to 'leavePeriods' (backwards compatibility)
         if(!appData.leavePeriods) appData.leavePeriods = [];
         for(let y in appData) {
             if(y === 'leavePeriods') continue;
@@ -394,13 +402,17 @@
                         let dStr = `${y}-${String(parseInt(m)+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
                         appData.leavePeriods.push({start: dStr, end: dStr});
                     });
-                    appData[y][m].leaves = []; // clear old array
+                    appData[y][m].leaves = [];
                 }
             }
         }
 
         const yearSelect = document.getElementById('year');
-        for (let i = currentYear - 3; i <= currentYear + 5; i++) yearSelect.appendChild(new Option(i, i));
+        // Add years up to 2066 for the easter egg!
+        for (let i = currentYear - 3; i <= 2066; i++) {
+            if(i > currentYear + 5 && i !== 2066) continue; // Skip gap
+            yearSelect.appendChild(new Option(i, i));
+        }
         document.getElementById('month').value = currentMonth; yearSelect.value = currentYear;
 
         const themeBtn = document.getElementById('theme-btn');
@@ -410,7 +422,8 @@
         function toggleTheme() { isDark = !isDark; isDark ? applyDark() : applyLight(); localStorage.setItem('emode_theme', isDark ? 'dark' : 'light'); }
         function applyDark() { document.documentElement.setAttribute('data-theme', 'dark'); document.getElementById('theme-color-meta').content = "#121212"; themeBtn.innerText = "🌙"; }
         function applyLight() { document.documentElement.removeAttribute('data-theme'); document.getElementById('theme-color-meta').content = "#1a237e"; themeBtn.innerText = "☀️"; }
-        function toggleAcc(id) { document.getElementById(id).classList.toggle('open'); }
+        
+        function openSettings() { document.getElementById('settings-modal').style.display = 'flex'; }
 
         function showToast(msg) {
             const container = document.getElementById('toast-container');
@@ -426,13 +439,19 @@
             return appData[y][m];
         }
         function saveToLocal() { localStorage.setItem(CACHE_KEY, JSON.stringify(appData)); refreshUI(); }
-        function changeDate() { currentMonth = parseInt(document.getElementById('month').value); currentYear = parseInt(document.getElementById('year').value); refreshUI(); }
+        
+        function changeDate() { 
+            currentMonth = parseInt(document.getElementById('month').value); 
+            currentYear = parseInt(document.getElementById('year').value); 
+            if(currentYear === 2066) { showToast("Μέχρι το 2066 ελπίζω να έχουμε βγει στη σύνταξη! 🏖️"); }
+            refreshUI(); 
+        }
+        
         function toggleSpecial31() { getSafeData(currentYear, currentMonth).special31 = document.getElementById('toggle-31').checked; saveToLocal(); }
 
         // --- LEAVES LOGIC ---
         function addLeave() {
-            let from = document.getElementById('leave-from').value;
-            let to = document.getElementById('leave-to').value;
+            let from = document.getElementById('leave-from').value; let to = document.getElementById('leave-to').value;
             if(!from || !to) { showToast("Συμπληρώστε και τις δύο ημερομηνίες."); return; }
             if(new Date(to) < new Date(from)) { showToast("Η ημερομηνία λήξης είναι πριν την έναρξη!"); return; }
             appData.leavePeriods.push({start: from, end: to});
@@ -481,6 +500,7 @@
         const gr = (str) => str ? str.replace(/A/g, 'Α').replace(/B/g, 'Β').replace(/G/g, 'Γ') : '';
 
         function refreshUI() {
+            document.getElementById('step3-header').innerText = `${monthNames[currentMonth]} ${currentYear}: Βάρδιες & Ρεπό`;
             const data = getSafeData(currentYear, currentMonth);
             const totalDays = new Date(currentYear, currentMonth + 1, 0).getDate();
             
@@ -522,19 +542,18 @@
                         if(dayData.rest === '24') html += `<span class="txt-rest">🛏️ ΑΝΑΠ.</span><br>`;
                         else if (dayData.rest !== 'none') html += `<span class="txt-rest">🛏️ ${gr(dayData.rest)}</span><br>`;
                         
-                        if(dayData.prostheti) html += `<span class="txt-shift" style="color:var(--holiday);">ΠΡΟΣΘ.</span><br>`;
-                        
                         if(dayData.shift !== 'none' && dayData.shift !== '24') html += `<span class="txt-shift">Β: ${gr(dayData.shift)}</span><br>`;
                         else if(dayData.shift === '24') html += `<span class="txt-shift">24ωρο</span><br>`;
 
                         if(dayData.repos.length > 0) {
-                            if(dayData.repos.length === 3) html += `<span class="txt-repo">ΡΕΠΟ</span><br>`;
+                            if(dayData.repos.includes('24')) html += `<span class="txt-repo">ΡΕΠΟ 24Ω</span><br>`;
                             else html += `<span class="txt-repo">Ρ: ${gr(dayData.repos.join(''))}</span><br>`;
                         }
                         html += `</div>`;
 
-                        if(dayData.comp !== 'none') {
+                        if(dayData.comp !== 'none' || dayData.prostheti) {
                             html += `<div class="comp-dots">`;
+                            if(dayData.prostheti) html += `<div class="comp-dot" style="background-color: var(--holiday);"></div>`;
                             if(dayData.comp === 'day') html += `<div class="comp-dot dot-day"></div>`;
                             if(dayData.comp === 'night') html += `<div class="comp-dot dot-night"></div>`;
                             html += `</div>`;
@@ -551,7 +570,6 @@
 
         // --- MATRIX MODAL LOGIC ---
         const dayNames = ['Κυριακή', 'Δευτέρα', 'Τρίτη', 'Τετάρτη', 'Πέμπτη', 'Παρασκευή', 'Σάββατο'];
-        function isAntipyriki() { return currentMonth >= 4 && currentMonth <= 9; }
         function getBlocks(type, isArr) {
             let arr = isArr ? type : [type]; let res = [];
             if(arr.includes('A')) res.push('A'); if(arr.includes('B')) res.push('B'); if(arr.includes('G')) res.push('G');
@@ -562,10 +580,9 @@
 
         function openShiftModal(day) {
             modalDay = day;
-            
             let dw = new Date(currentYear, currentMonth, day).getDay();
             let hol = getHolidays(currentMonth, currentYear).find(h => h.day === day);
-            document.getElementById('modal-date-title').innerText = `${dayNames[dw]}, ${day}/${currentMonth+1}`;
+            document.getElementById('modal-date-title').innerText = `${dayNames[dw]}, ${day}/${currentMonth+1}/${currentYear}`;
             
             let hTitle = document.getElementById('modal-date-holiday');
             if(hol) { hTitle.innerText = `⭐ ${hol.name} ⭐`; hTitle.style.display = 'block'; }
@@ -576,9 +593,9 @@
             let dData = getSafeData(currentYear, currentMonth).days[day] || { shift: 'none', repos: [], rest: 'none', comp: 'none', prostheti: false };
             tempShift = dData.shift; tempRepos = [...dData.repos]; tempRest = dData.rest; isProstheti = dData.prostheti;
             
-            document.getElementById('comp-wrapper').style.display = isAntipyriki() ? 'block' : 'none';
             document.getElementById('toggle-day').checked = dData.comp === 'day';
             document.getElementById('toggle-night').checked = dData.comp === 'night';
+            document.getElementById('toggle-prostheti').checked = isProstheti;
             
             updateMatrixUI();
         }
@@ -590,8 +607,6 @@
         }
 
         function mxClick(row, val) {
-            if(row === 'P') { isProstheti = !isProstheti; updateMatrixUI(); return; }
-
             // Automatic Rest pairs & save
             if(row === 'e') {
                 if(val === 'A') { tempRest = 'AB'; tempShift='none'; tempRepos=[]; saveDayData(); return; }
@@ -617,18 +632,19 @@
                         else tempShift = sArr[0];
                     } else if(tempShift !== '24') tempShift = 'none';
                     
-                    tempRepos = tempRepos.filter(x => !sArr.includes(x));
+                    if(tempRepos.includes('24')) tempRepos = [];
+                    else tempRepos = tempRepos.filter(x => !sArr.includes(x));
                 }
             }
             
             if(row === 'r') {
                 if(val === '24') {
-                    if(tempRepos.length === 3) tempRepos = [];
-                    else { tempRepos = ['A','B','G']; tempShift = 'none'; tempRest = 'none'; }
+                    if(tempRepos.includes('24')) tempRepos = [];
+                    else { tempRepos = ['24']; tempShift = 'none'; tempRest = 'none'; }
                 } else {
-                    if(rArr.length === 3) rArr = [];
+                    if(rArr.includes('24')) rArr = [];
                     if(rArr.includes(val)) rArr = rArr.filter(x => x !== val);
-                    else rArr.push(val);
+                    else { rArr.push(val); if(rArr.length === 3) { rArr = ['24']; } }
                     tempRepos = rArr;
                     
                     let newS = getBlocks(tempShift, false).filter(x => !tempRepos.includes(x));
@@ -640,6 +656,12 @@
                 }
             }
             updateMatrixUI();
+        }
+
+        function handleCompToggle(changed) {
+            let tDay = document.getElementById('toggle-day'), tNight = document.getElementById('toggle-night');
+            if(changed === 'day' && tDay.checked) tNight.checked = false;
+            if(changed === 'night' && tNight.checked) tDay.checked = false;
         }
 
         function updateMatrixUI() {
@@ -659,15 +681,17 @@
             document.getElementById('mx-s-24').className = 'm-cell ' + (tempShift === '24' ? 'ticked' : '');
             ['A','B','G'].forEach(v => {
                 let cell = document.getElementById('mx-s-'+v);
-                cell.className = 'm-cell ' + ((sBlk.includes(v) || tempShift === '24') ? 'ticked' : '');
-                if(lockA && v === 'A') cell.classList.add('disabled');
+                cell.className = 'm-cell ' + (sBlk.includes(v) ? 'ticked' : '');
+                if(tempShift === '24' || (lockA && v === 'A')) cell.classList.add('disabled');
             });
 
             // Render Repo
-            let isR24 = (tempRepos.length === 3);
+            let isR24 = tempRepos.includes('24');
             document.getElementById('mx-r-24').className = 'm-cell ' + (isR24 ? 'ticked' : '');
             ['A','B','G'].forEach(v => {
-                document.getElementById('mx-r-'+v).className = 'm-cell ' + (tempRepos.includes(v) ? 'ticked' : '');
+                let cell = document.getElementById('mx-r-'+v);
+                cell.className = 'm-cell ' + (tempRepos.includes(v) ? 'ticked' : '');
+                if(isR24) cell.classList.add('disabled');
             });
 
             // Render Rest
@@ -685,14 +709,13 @@
             ['A','B','G'].forEach(v => {
                 let cell = document.getElementById('mx-e-'+v);
                 cell.className = 'm-cell ' + (getBlocks(tempRest, false).includes(v) ? 'ticked' : '');
-                if(!is31Special || (r16Count >= 1 && !getBlocks(tempRest, false).includes(v))) cell.classList.add('disabled');
+                if(tempRest === '24' || (!is31Special || (r16Count >= 1 && !getBlocks(tempRest, false).includes(v)))) cell.classList.add('disabled');
             });
 
-            document.getElementById('btn-prostheti').className = 'btn-prostheti ' + (isProstheti ? 'ticked' : '');
-
             // Compensations logic
+            isProstheti = document.getElementById('toggle-prostheti').checked;
             let canDay = ['24','A','B','AB','BG','AG'].includes(tempShift) || isProstheti;
-            let canNight = ['24','G','BG','AG'].includes(tempShift); // Prostheti usually day, if it's night they can toggle it manually? Actually, left it allowed for prostheti just in case, but typically night is specific. We'll allow night if G is involved. Let's keep it robust.
+            let canNight = ['24','G','BG','AG'].includes(tempShift) || isProstheti; 
             
             if(yest && yest.comp === 'night') { canDay = false; canNight = false; warn.innerText = "🔒 Μη διαθέσιμες αποζημιώσεις λόγω χθεσινής Νυχτερινής."; warn.style.display = 'block'; }
             let tDay = document.getElementById('toggle-day'), tNight = document.getElementById('toggle-night');
@@ -700,15 +723,11 @@
             if(!canDay) tDay.checked = false; if(!canNight) tNight.checked = false;
         }
 
-        function handleCompToggle(changed) {
-            let tDay = document.getElementById('toggle-day'), tNight = document.getElementById('toggle-night');
-            if(changed === 'day' && tDay.checked) tNight.checked = false;
-            if(changed === 'night' && tNight.checked) tDay.checked = false;
-        }
-
         function saveDayData() {
             let tDay = document.getElementById('toggle-day').checked, tNight = document.getElementById('toggle-night').checked;
             let comp = tDay ? 'day' : (tNight ? 'night' : 'none');
+            isProstheti = document.getElementById('toggle-prostheti').checked;
+
             let stats = calcYearlyStats();
             let cData = appData[currentYear][currentMonth].days[modalDay] || {comp:'none', prostheti: false};
             
@@ -721,7 +740,7 @@
             let ptsAdd = (comp === 'night' ? 2 : (comp === 'day' ? 1 : 0)), ptsRem = (cData.comp === 'night' ? 2 : (cData.comp === 'day' ? 1 : 0));
             if(stats.ektosEdras + ptsAdd - ptsRem > 90) { showToast("⚠️ Εξαντλήσατε το ετήσιο όριο 90 Εκτός Έδρας."); return; }
 
-            if(tempShift==='none' && tempRepos.length===0 && tempRest==='none' && !isProstheti) {
+            if(tempShift==='none' && tempRepos.length===0 && tempRest==='none' && !isProstheti && comp==='none') {
                 delete appData[currentYear][currentMonth].days[modalDay];
             } else {
                 appData[currentYear][currentMonth].days[modalDay] = { shift: tempShift, repos: [...tempRepos], rest: tempRest, comp: comp, prostheti: isProstheti };
@@ -791,17 +810,17 @@
             h.forEach(hol => { if(new Date(currentYear, currentMonth, hol.day).getDay() !== 0 && !isLeaveDay(currentYear, currentMonth, hol.day)) argies++; });
 
             let wHours = argies * 8, takenReposCount = 0, count24 = 0;
-            let cProstheti = 0, cProsthetiDay = 0, cDay = 0, cNight = 0;
+            let cProstheti = 0, cDay = 0, cNight = 0;
 
             for(let d in data.days) {
                 let s = data.days[d];
-                takenReposCount += s.repos.length;
+                takenReposCount += s.repos.includes('24') ? 3 : s.repos.length;
                 if(s.shift === '24') { wHours += 24; count24++; }
                 else if(['A','B','G'].includes(s.shift)) wHours += 8;
                 else if(['AB','BG','AG'].includes(s.shift)) wHours += 16;
                 
-                if(s.prostheti) { if(s.comp === 'day') cProsthetiDay++; else cProstheti++; }
-                if(s.comp === 'day' && !s.prostheti) cDay++; // If Prostheti + Day comp, it goes to cProsthetiDay
+                if(s.prostheti) cProstheti++;
+                if(s.comp === 'day') cDay++;
                 if(s.comp === 'night') cNight++;
             }
 
@@ -818,7 +837,7 @@
 
             // Money Logic
             let mPenth = actualPenthimera * 46;
-            let mP = (cProstheti * 55) + (cProsthetiDay * 64.78);
+            let mP = cProstheti * 55;
             let ektosMoney = (cDay * 9.78) + (cNight * 39.13); 
             let tot = mPenth + mP + ektosMoney;
 
@@ -846,17 +865,49 @@
         }
 
         // --- MANAGEMENT ---
-        function clearMonth() { if(confirm("⚠️ Σίγουρα θέλετε να διαγράψετε τα δεδομένα αυτού του μήνα;")) { delete appData[currentYear][currentMonth]; saveToLocal(); } }
-        function clearYear() { if(confirm("🚨 ΠΡΟΣΟΧΗ: Θα διαγραφούν ΟΛΑ τα δεδομένα του " + currentYear + ". Σίγουρα;")) { if(confirm("🚨 Οριστική διαγραφή;")) { appData[currentYear] = {}; saveToLocal(); } } }
-        function openTermsModal() { document.getElementById('terms-modal').style.display = 'flex'; }
-        function exportBackup() { const a = document.createElement('a'); a.href = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(appData)); a.download = `emode_backup_${new Date().toISOString().slice(0,10)}.json`; a.click(); }
+        function clearMonth() { 
+            if(confirm("⚠️ Σίγουρα θέλετε να διαγράψετε τα δεδομένα και τις άδειες αυτού του μήνα;")) { 
+                delete appData[currentYear][currentMonth]; 
+                
+                // Clear overlapping leaves for current month
+                let mStart = new Date(currentYear, currentMonth, 1).getTime();
+                let mEnd = new Date(currentYear, currentMonth + 1, 0, 23, 59, 59).getTime();
+                appData.leavePeriods = appData.leavePeriods.filter(lp => {
+                    let s = new Date(lp.start).getTime();
+                    let e = new Date(lp.end).getTime();
+                    return !(s <= mEnd && e >= mStart); // Keep only if it doesn't overlap
+                });
+
+                saveToLocal(); 
+                document.getElementById('settings-modal').style.display = 'none';
+                showToast("Ο μήνας καθαρίστηκε.");
+            } 
+        }
+        function clearYear() { 
+            if(confirm("🚨 ΠΡΟΣΟΧΗ: Θα διαγραφούν ΟΛΑ τα δεδομένα. Σίγουρα;")) { 
+                if(confirm("🚨 Οριστική διαγραφή;")) { 
+                    appData = { leavePeriods: [] }; 
+                    saveToLocal(); 
+                    document.getElementById('settings-modal').style.display = 'none';
+                    showToast("Όλα τα δεδομένα διαγράφηκαν.");
+                } 
+            } 
+        }
+        
+        function exportBackup() { const a = document.createElement('a'); a.href = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(appData)); a.download = `emode_backup_${new Date().toISOString().slice(0,10)}.json`; a.click(); document.getElementById('settings-modal').style.display = 'none'; }
         function importBackup(e) {
             const file = e.target.files[0]; if (!file) return;
             const r = new FileReader();
             r.onload = function(ev) {
                 try {
                     const imp = JSON.parse(ev.target.result);
-                    if(confirm("⚠️ Τα δεδομένα θα αντικατασταθούν! Συνέχεια;")) { appData = imp; saveToLocal(); showToast("✅ Το ιστορικό επανήλθε!"); }
+                    if(confirm("⚠️ Τα δεδομένα θα αντικατασταθούν! Συνέχεια;")) { 
+                        appData = imp; 
+                        if(!appData.leavePeriods) appData.leavePeriods = [];
+                        saveToLocal(); 
+                        document.getElementById('settings-modal').style.display = 'none';
+                        showToast("✅ Το ιστορικό επανήλθε!"); 
+                    }
                 } catch(err) { showToast("❌ Μη έγκυρο αρχείο backup."); }
                 e.target.value = "";
             }; r.readAsText(file);
