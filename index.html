@@ -389,11 +389,27 @@
 
     <div id="terms-modal" class="modal-overlay" onmousedown="if(event.target===this) this.style.display='none'">
         <div class="modal-content">
-            <h3>📄 Όροι Χρήσης</h3>
-            <p style="font-size: 13px; line-height: 1.5; color: var(--text-muted); text-align: justify; margin-bottom: 15px;">
-                Η εφαρμογή διατίθεται <strong>δωρεάν</strong>, αποθηκεύει τα δεδομένα τοπικά στη συσκευή σας και <strong>δεν αποτελεί επίσημη εφαρμογή του Π.Σ.</strong>.<br><br>
-                Τα αποτελέσματα είναι ενδεικτικά. Ο τελικός έλεγχος ανήκει στην Υπηρεσία.
-            </p>
+            <h3>📄 Όροι Χρήσης & Αποποίηση Ευθύνης</h3>
+            
+            <div style="font-size: 12px; line-height: 1.5; color: var(--text-muted); text-align: justify; margin-top: 15px; margin-bottom: 15px; max-height: 60vh; overflow-y: auto; padding-right: 5px;">
+                <p style="margin-bottom: 10px;">Η παρούσα εφαρμογή δημιουργήθηκε αποκλειστικά ως ανεξάρτητο βοηθητικό εργαλείο και <strong>δεν αποτελεί επίσημη εφαρμογή του Πυροσβεστικού Σώματος</strong> ή οποιουδήποτε άλλου κρατικού φορέα.</p>
+                
+                <ul style="padding-left: 15px; margin-bottom: 10px; display: flex; flex-direction: column; gap: 8px;">
+                    <li><strong>Χρήση & Αποτελέσματα:</strong> Οι υπολογισμοί, τα στατιστικά και οι οικονομικές εκτιμήσεις (π.χ. νυχτερινά, πενθήμερα, πρόσθετες) παρέχονται <strong>αποκλειστικά για ενδεικτική και πληροφοριακή χρήση</strong>. Ο δημιουργός της εφαρμογής δεν φέρει καμία νομική, πειθαρχική ή οικονομική ευθύνη για τυχόν σφάλματα στους υπολογισμούς, ασυμφωνίες ή παραλείψεις. Ο τελικός, επίσημος έλεγχος των υπηρεσιών και των αποζημιώσεων ανήκει αποκλειστικά στην Υπηρεσία σας.</li>
+                    
+                    <li><strong>Προστασία Δεδομένων:</strong> Η εφαρμογή σέβεται απόλυτα την ιδιωτικότητά σας. Όλα τα δεδομένα που καταχωρείτε αποθηκεύονται <strong>αποκλειστικά και μόνο τοπικά στη συσκευή σας</strong>. Δεν συλλέγονται, δεν μεταφέρονται σε εξωτερικούς διακομιστές (servers) και δεν μοιράζονται με τρίτους. Ο χρήστης είναι αποκλειστικά υπεύθυνος για την τήρηση αντιγράφων ασφαλείας (backup) των δεδομένων του μέσω των ρυθμίσεων.</li>
+                    
+                    <li><strong>Αποποίηση:</strong> Η εφαρμογή παρέχεται «ως έχει» (as is). Η χρήση της συνεπάγεται την πλήρη αποδοχή των παραπάνω όρων.</li>
+                </ul>
+
+                <div style="margin-top: 15px; padding-top: 15px; border-top: 1px dashed var(--border-color); text-align: center; font-size: 13px; background: rgba(26, 35, 126, 0.05); border-radius: 8px; padding: 10px;">
+                    <span style="font-size: 18px;">✉️</span><br>
+                    <strong>Επικοινωνία / Feedback</strong><br>
+                    Για οποιαδήποτε απορία, πρόταση βελτίωσης ή σχόλιο, μπορείτε να επικοινωνήσετε στο:<br>
+                    <a href="mailto:nikolisx@gmail.com" style="color: var(--primary); font-weight: 800; text-decoration: none; display: inline-block; margin-top: 5px;">nikolisx@gmail.com</a>
+                </div>
+            </div>
+
             <button class="btn btn-green" onclick="document.getElementById('terms-modal').style.display='none'">Κλείσιμο</button>
         </div>
     </div>
