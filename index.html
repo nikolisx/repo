@@ -94,7 +94,7 @@
         .txt-shift { color: var(--shift-color); }
         .txt-repo { color: var(--repo-color); }
         .txt-rest { color: var(--rest-color); font-size: 11px;}
-        .txt-prostheti { color: var(--holiday); font-size: 9px; margin-bottom: 1px; }
+        .txt-prostheti { color: var(--holiday); font-size: 10px; margin-bottom: 2px; font-weight: 900;}
         .comp-dots { position: absolute; bottom: 3px; display: flex; gap: 3px; justify-content: center; width: 100%; }
         .comp-dot { width: 6px; height: 6px; border-radius: 50%; }
         .dot-day { background-color: #fbc02d; }
@@ -493,7 +493,7 @@
 
         function removeLeaveFromModal(idx) {
             removeLeave(idx);
-            openYearlyLeaves(); // Ανανέωση του modal αμέσως μετά τη διαγραφή
+            openYearlyLeaves(); // Ανανεώνει το παράθυρο επιτόπου
         }
         
         function isLeaveDay(y, m, d) {
@@ -564,10 +564,9 @@
                         let e = new Date(lp.end).getTime();
                         if(s <= mEnd && e >= mStart) {
                             let pStr = `${lp.start.split('-').reverse().join('/')} - ${lp.end.split('-').reverse().join('/')}`;
-                            // Προσθήκη κουμπιού 🗑️ δίπλα σε κάθε περίοδο
-                            periodsHtml += `<li style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+                            periodsHtml += `<li style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px; padding:4px 0; border-bottom: 1px dashed var(--border-color);">
                                 <span>${pStr}</span>
-                                <button class="btn btn-danger" style="padding:2px 8px; border-radius:4px; font-size:10px;" onclick="removeLeaveFromModal(${idx})">🗑️</button>
+                                <button class="btn btn-danger" style="padding:4px 8px; border-radius:6px; font-size:12px; width:auto;" onclick="removeLeaveFromModal(${idx})">🗑️</button>
                             </li>`;
                         }
                     });
@@ -580,7 +579,7 @@
                 if(countM > 0) {
                     html += `<div style="margin-bottom: 10px; padding: 10px; background: var(--input-bg); border-radius: 8px; border: 1px solid var(--border-color);">
                         <strong style="color:var(--primary); font-size: 14px;">${monthNames[m]} ${currentYear} (Σύνολο: ${countM}ημ.)</strong>
-                        <ul style="margin-top: 5px; padding-left: 10px; font-size: 13px; color: var(--text-muted); list-style-type: none;">
+                        <ul style="margin-top: 5px; padding-left: 0; font-size: 13px; color: var(--text-muted); list-style-type: none;">
                         ${periodsHtml}
                         </ul></div>`;
                     totalYear += countM;
@@ -648,7 +647,7 @@
                         div.classList.add('has-data');
                         let html = `<div style="position:absolute; top:2px; left:4px; font-size:9px; opacity:0.3; font-weight:900;">${i}</div><div class="bubble-content" style="margin-top:5px;">`;
                         
-                        // Purple text for Prostheti Ergasi
+                        // ΜΩΒ ΠΡΟΣΘΕΤΗ ΕΡΓΑΣΙΑ
                         if(dayData.prostheti) html += `<div class="txt-prostheti">Πρόσθ.Εργ.</div>`;
 
                         if(dayData.rest === '24') html += `<span class="txt-rest">🛏️ ΑΝΑΠ.</span><br>`;
@@ -679,7 +678,7 @@
             }
         }
 
-        // --- SAFE BROOMS CLEANERS WITH CONFIRM PROMPTS ---
+        // --- SAFE BROOMS CLEANERS ---
         function clearLeavesBroom() {
             if(confirm("⚠️ Θέλετε σίγουρα να διαγράψετε όλες τις άδειες του τρέχοντος μήνα;")) {
                 let mStart = new Date(currentYear, currentMonth, 1).getTime();
@@ -706,7 +705,7 @@
             }
         }
 
-        // --- MODAL TICK BOX & DYNAMIC LOCKS LOGIC ---
+        // --- MODAL LOGIC ---
         function getBlocks(type, isArr) {
             let arr = isArr ? type : (type ? [type] : []); let res = [];
             if(arr.includes('A')) res.push('A'); if(arr.includes('B')) res.push('B'); if(arr.includes('G')) res.push('G');
@@ -742,8 +741,8 @@
             updateMatrixUI();
         }
 
+        // Μόνο αν ακυρώνεις χειροκίνητα
         function closeShiftModal(save = true) { 
-            // Αν κληθεί με false (Ακύρωση) απλά κλείνει
             document.getElementById('shift-modal').style.display = 'none'; 
         }
 
@@ -766,6 +765,9 @@
                     else if(val === '24') { 
                         tempRest = '24'; 
                         tempShift = 'none'; tempRepos = []; isProstheti = false;
+                        document.getElementById('toggle-prostheti').checked = false;
+                        document.getElementById('toggle-day').checked = false;
+                        document.getElementById('toggle-night').checked = false;
                         saveDayData(); // ΑΜΕΣΗ ΑΠΟΘΗΚΕΥΣΗ & ΚΛΕΙΣΙΜΟ
                         return;
                     }
@@ -807,7 +809,10 @@
                 if(val === '24') {
                     if(chk) { 
                         tempRepos = ['24']; 
-                        tempShift = 'none'; tempRest = 'none'; isProstheti = false; 
+                        tempShift = 'none'; tempRest = 'none'; isProstheti = false;
+                        document.getElementById('toggle-prostheti').checked = false;
+                        document.getElementById('toggle-day').checked = false;
+                        document.getElementById('toggle-night').checked = false;
                         saveDayData(); // ΑΜΕΣΗ ΑΠΟΘΗΚΕΥΣΗ & ΚΛΕΙΣΙΜΟ
                         return;
                     } else {
@@ -851,7 +856,6 @@
         function updateMatrixUI() {
             let warn = document.getElementById('modal-warning'); warn.style.display = 'none';
             
-            // --- ΧΘΕΣΙΝΗ ΗΜΕΡΑ (Safe Checks) ---
             let dtYest = new Date(currentYear, currentMonth, modalDay - 1);
             let yest = null;
             let dataYearYest = appData[dtYest.getFullYear()];
@@ -864,14 +868,12 @@
             let lockG_Yest = false;
             
             if(yest && yest.shift === '24') { 
-                lockA_Yest = true; 
-                lock24_Yest = true;
+                lockA_Yest = true; lock24_Yest = true;
                 warn.innerText = "🔒 Απαιτείται 8ωρο ανάπαυσης (A) μετά από 24ωρη βάρδια."; 
                 warn.style.display = 'block'; 
             }
             if(yest && (yest.shift === 'G' || yest.shift === 'BG' || yest.shift === 'AG')) {
-                lock24_Yest = true;
-                lockG_Yest = true;
+                lock24_Yest = true; lockG_Yest = true;
                 warn.innerText = "🔒 Λόγω χθεσινού νυχτερινού (Γ), απαγορεύεται η 24ωρη βάρδια σήμερα.";
                 warn.style.display = 'block';
             }
@@ -882,7 +884,6 @@
             let isE24 = (tempRest === '24');
             let is31Special = (new Date(currentYear, currentMonth+1, 0).getDate() === 31 && getSafeData(currentYear, currentMonth).special31);
 
-            // --- SHIFTS ---
             document.getElementById('tk-s-24').checked = isS24;
             document.getElementById('tk-s-24').disabled = lock24_Yest || isR24 || isE24;
             
@@ -893,14 +894,12 @@
                 
                 let forceDisable = isS24 || isR24 || isE24 || tempRepos.includes(v) || getBlocks(tempRest, false).includes(v);
                 if (v === 'A' && lockA_Yest) forceDisable = true;
-                // Condition 4
                 if (lockG_Yest && sBlk.includes('A') && v === 'G') forceDisable = true;
                 
                 cb.disabled = forceDisable;
                 cell.className = forceDisable ? 'tk-cell disabled' : 'tk-cell';
             });
 
-            // --- REPOS ---
             document.getElementById('tk-r-24').checked = isR24;
             document.getElementById('tk-r-24').disabled = isS24 || isE24 || sBlk.length > 0 || tempRest !== 'none';
             
@@ -914,7 +913,6 @@
                 cell.className = forceDisable ? 'tk-cell disabled' : 'tk-cell';
             });
 
-            // --- REST ---
             document.getElementById('tk-e-24').checked = isE24;
             document.getElementById('tk-e-24').disabled = isS24 || isR24 || sBlk.length > 0 || tempRepos.length > 0;
             
@@ -933,8 +931,7 @@
                 }
             });
 
-            // --- ANTIPYRKI PERIOD VALIDATION (MAY 1 TO OCT 31) ---
-            let isAntipyrki = (currentMonth >= 4 && currentMonth <= 9); // May=4, Oct=9
+            let isAntipyrki = (currentMonth >= 4 && currentMonth <= 9); 
             let tPros = document.getElementById('toggle-prostheti');
             let prosContainer = tPros.closest('.switch-container');
             
@@ -952,7 +949,6 @@
                 else { tPros.disabled = false; tPros.checked = isProstheti; }
             }
 
-            // COMPENSATIONS LOCK
             let canDay = ['24','A','B','AB','BG','AG'].includes(tempShift) || isProstheti;
             let canNight = ['24','G','BG','AG'].includes(tempShift) || isProstheti; 
             
@@ -962,8 +958,10 @@
             if(!canDay) tDay.checked = false; if(!canNight) tNight.checked = false;
         }
 
+        // Η αποθήκευση λειτουργεί αυτόματα!
         function saveDayData() {
-            let tDay = document.getElementById('toggle-day').checked, tNight = document.getElementById('toggle-night').checked;
+            let tDay = document.getElementById('toggle-day').checked;
+            let tNight = document.getElementById('toggle-night').checked;
             let comp = tDay ? 'day' : (tNight ? 'night' : 'none');
             isProstheti = document.getElementById('toggle-prostheti').checked;
 
@@ -986,10 +984,10 @@
                 dataMonth.days[modalDay] = { shift: tempShift, repos: [...tempRepos], rest: tempRest, comp: comp, prostheti: isProstheti };
             }
             saveToLocal(); 
-            closeShiftModal(true); // Close after successful save
+            closeShiftModal(true); 
         }
 
-        // --- CALCULATIONS & STATS (BULLETPROOF) ---
+        // --- CALCULATIONS (SAFE VERSION) ---
         function calcYearlyStats() {
             let pTotal = 0, ektos = 0, dTotal = 0, nTotal = 0;
             if(appData[currentYear]) {
@@ -1015,7 +1013,8 @@
             document.getElementById('stat-prosthetes').className = `stat-value ${yStats.prosthetesTotal >= 16 ? 'danger' : ''}`;
             document.getElementById('stat-ektos').innerText = `${yStats.ektosEdras} / 90`;
             document.getElementById('stat-ektos').className = `stat-value ${yStats.ektosEdras >= 90 ? 'danger' : ''}`;
-            document.getElementById('stat-day').innerText = yStats.days; document.getElementById('stat-night').innerText = yStats.nights;
+            document.getElementById('stat-day').innerText = yStats.days; 
+            document.getElementById('stat-night').innerText = yStats.nights;
 
             let data = getSafeData(currentYear, currentMonth);
             
@@ -1028,7 +1027,6 @@
                     if(d.rest && ['AB','BG','AG'].includes(d.rest)) r16++;
                 }
             }
-            document.getElementById('current-month-leaves-count').innerText = leavesInMonth;
 
             let is31Special = (totalDays === 31 && data.special31);
             let req24 = 2, req16 = is31Special ? 1 : 0;
