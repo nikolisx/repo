@@ -7,7 +7,7 @@
     
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#1a237e" id="theme-color-meta">
-    <link class="apple-touch-icon" href="icon-512.png">
+    <link rel="apple-touch-icon" href="icon-512.png">
     
     <style>
         :root {
@@ -94,6 +94,7 @@
         .txt-shift { color: var(--shift-color); }
         .txt-repo { color: var(--repo-color); }
         .txt-rest { color: var(--rest-color); font-size: 11px;}
+        .txt-prostheti { color: var(--holiday); font-size: 9px; margin-bottom: 1px; }
         .comp-dots { position: absolute; bottom: 3px; display: flex; gap: 3px; justify-content: center; width: 100%; }
         .comp-dot { width: 6px; height: 6px; border-radius: 50%; }
         .dot-day { background-color: #fbc02d; }
@@ -146,7 +147,7 @@
         .info-text { font-size: 12px; color: var(--secondary); font-weight: 600; text-align: center; margin-bottom: 10px; display: none; background: rgba(211,47,47,0.1); padding: 8px; border-radius: 8px;}
 
         @keyframes popIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-        @keyframes fadeIn { from { opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         @keyframes toastIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes toastOut { from { opacity: 1; } to { opacity: 0; } }
     </style>
@@ -292,7 +293,7 @@
 
     <div id="toast-container"></div>
 
-    <div id="easter-egg-modal" class="modal-overlay" onclick="if(event.target===this) closeEasterEgg()">
+    <div id="easter-egg-modal" class="modal-overlay" onmousedown="if(event.target===this) closeEasterEgg()">
         <div class="modal-content" style="border-color: var(--secondary); text-align: center;">
             <div style="font-size: 40px; margin-bottom: 10px;">🏖️</div>
             <h3 style="color: var(--secondary); border-bottom: none;">Σοβαρά ρε συνάδελφε;</h3>
@@ -301,7 +302,7 @@
         </div>
     </div>
 
-    <div id="yearly-leaves-modal" class="modal-overlay" onclick="if(event.target===this) this.style.display='none'">
+    <div id="yearly-leaves-modal" class="modal-overlay" onmousedown="if(event.target===this) this.style.display='none'">
         <div class="modal-content">
             <h3>👁️ Ιστορικό Αδειών Έτους</h3>
             <div id="yearly-leaves-content" style="margin-top: 15px; margin-bottom: 15px; max-height: 50vh; overflow-y: auto;"></div>
@@ -309,7 +310,7 @@
         </div>
     </div>
 
-    <div id="shift-modal" class="modal-overlay" onclick="if(event.target===this) closeShiftModal()">
+    <div id="shift-modal" class="modal-overlay" onmousedown="if(event.target===this) saveDayData()">
         <div class="modal-content">
             <h3 id="modal-date-title">Δευτέρα, 15/05</h3>
             <div id="modal-date-holiday" class="modal-subtitle" style="display:none;"></div>
@@ -364,14 +365,14 @@
             </div>
 
             <div style="display: flex; gap: 10px; margin-top: 10px;">
-                <button class="btn btn-outline" style="flex:1;" onclick="closeShiftModal()">Ακύρωση</button>
+                <button class="btn btn-outline" style="flex:1;" onclick="closeShiftModal(false)">Ακύρωση</button>
                 <button class="btn btn-green" style="flex:2;" onclick="saveDayData()">Αποθήκευση</button>
             </div>
             <button class="btn btn-danger" style="margin-top: 10px;" onclick="clearModalDay()">🗑️ Καθαρισμός Ημέρας</button>
         </div>
     </div>
 
-    <div id="settings-modal" class="modal-overlay" onclick="if(event.target===this) this.style.display='none'">
+    <div id="settings-modal" class="modal-overlay" onmousedown="if(event.target===this) this.style.display='none'">
         <div class="modal-content">
             <h3>⚙️ Διαχείριση & Backup</h3>
             <div style="margin-top: 20px;">
@@ -386,7 +387,7 @@
         </div>
     </div>
 
-    <div id="terms-modal" class="modal-overlay" onclick="if(event.target===this) this.style.display='none'">
+    <div id="terms-modal" class="modal-overlay" onmousedown="if(event.target===this) this.style.display='none'">
         <div class="modal-content">
             <h3>📄 Όροι Χρήσης</h3>
             <p style="font-size: 13px; line-height: 1.5; color: var(--text-muted); text-align: justify; margin-bottom: 15px;">
@@ -432,7 +433,7 @@
             container.appendChild(t); setTimeout(() => { if(t.parentElement) t.remove(); }, 3000);
         }
 
-        // --- DATA MANAGEMENT ---
+        // --- DATA MANAGEMENT (SAFE) ---
         function getSafeData(y, m) {
             if(!appData[y]) appData[y] = {};
             if(!appData[y][m]) appData[y][m] = { days: {}, special31: false };
@@ -485,10 +486,18 @@
             }
         }
         
-        function removeLeave(idx) { appData.leavePeriods.splice(idx, 1); saveToLocal(); }
+        function removeLeave(idx) { 
+            appData.leavePeriods.splice(idx, 1); 
+            saveToLocal(); 
+        }
+
+        function removeLeaveFromModal(idx) {
+            removeLeave(idx);
+            openYearlyLeaves(); // Ανανέωση του modal αμέσως μετά τη διαγραφή
+        }
         
         function isLeaveDay(y, m, d) {
-            if(!appData.leavePeriods) return false;
+            if(!appData.leavePeriods || appData.leavePeriods.length === 0) return false;
             let checkD = new Date(y, m, d, 12, 0, 0).getTime();
             for(let lp of appData.leavePeriods) {
                 let s = new Date(lp.start); s.setHours(0,0,0,0);
@@ -514,18 +523,20 @@
             let mStart = new Date(currentYear, currentMonth, 1).getTime();
             let mEnd = new Date(currentYear, currentMonth + 1, 0, 23, 59, 59).getTime();
 
-            appData.leavePeriods.forEach((lp, idx) => {
-                let s = new Date(lp.start).getTime();
-                let e = new Date(lp.end).getTime();
-                if(s <= mEnd && e >= mStart) {
-                    let sStr = lp.start.split('-').reverse().join('/'); 
-                    let eStr = lp.end.split('-').reverse().join('/');
-                    html += `<div style="display:flex; justify-content:space-between; align-items:center; background:var(--input-bg); padding:10px; border-radius:8px; margin-bottom:8px; border:1px solid var(--border-color); font-size:13px;">
-                        <span>Από: <b>${sStr}</b><br>Έως: <b>${eStr}</b></span>
-                        <button class="btn btn-danger" style="width:40px; height:40px; padding:0; display:flex; align-items:center; justify-content:center;" onclick="removeLeave(${idx})">🗑</button>
-                    </div>`;
-                }
-            });
+            if (appData.leavePeriods) {
+                appData.leavePeriods.forEach((lp, idx) => {
+                    let s = new Date(lp.start).getTime();
+                    let e = new Date(lp.end).getTime();
+                    if(s <= mEnd && e >= mStart) {
+                        let sStr = lp.start.split('-').reverse().join('/'); 
+                        let eStr = lp.end.split('-').reverse().join('/');
+                        html += `<div style="display:flex; justify-content:space-between; align-items:center; background:var(--input-bg); padding:10px; border-radius:8px; margin-bottom:8px; border:1px solid var(--border-color); font-size:13px;">
+                            <span>Από: <b>${sStr}</b><br>Έως: <b>${eStr}</b></span>
+                            <button class="btn btn-danger" style="width:40px; height:40px; padding:0; display:flex; align-items:center; justify-content:center;" onclick="removeLeave(${idx})">🗑</button>
+                        </div>`;
+                    }
+                });
+            }
             document.getElementById('leaves-list-container').innerHTML = html;
 
             let annualCount = getAnnualLeaveCount(currentYear);
@@ -542,17 +553,25 @@
             for(let m=0; m<12; m++) {
                 let dInM = new Date(currentYear, m+1, 0).getDate();
                 let countM = 0;
-                let periodsM = [];
+                let periodsHtml = '';
+                
                 let mStart = new Date(currentYear, m, 1).getTime();
                 let mEnd = new Date(currentYear, m+1, 0, 23, 59, 59).getTime();
                 
-                appData.leavePeriods.forEach(lp => {
-                    let s = new Date(lp.start).getTime();
-                    let e = new Date(lp.end).getTime();
-                    if(s <= mEnd && e >= mStart) {
-                        periodsM.push(`${lp.start.split('-').reverse().join('/')} - ${lp.end.split('-').reverse().join('/')}`);
-                    }
-                });
+                if (appData.leavePeriods) {
+                    appData.leavePeriods.forEach((lp, idx) => {
+                        let s = new Date(lp.start).getTime();
+                        let e = new Date(lp.end).getTime();
+                        if(s <= mEnd && e >= mStart) {
+                            let pStr = `${lp.start.split('-').reverse().join('/')} - ${lp.end.split('-').reverse().join('/')}`;
+                            // Προσθήκη κουμπιού 🗑️ δίπλα σε κάθε περίοδο
+                            periodsHtml += `<li style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+                                <span>${pStr}</span>
+                                <button class="btn btn-danger" style="padding:2px 8px; border-radius:4px; font-size:10px;" onclick="removeLeaveFromModal(${idx})">🗑️</button>
+                            </li>`;
+                        }
+                    });
+                }
 
                 for(let d=1; d<=dInM; d++) {
                     if(isLeaveDay(currentYear, m, d)) countM++;
@@ -561,9 +580,9 @@
                 if(countM > 0) {
                     html += `<div style="margin-bottom: 10px; padding: 10px; background: var(--input-bg); border-radius: 8px; border: 1px solid var(--border-color);">
                         <strong style="color:var(--primary); font-size: 14px;">${monthNames[m]} ${currentYear} (Σύνολο: ${countM}ημ.)</strong>
-                        <ul style="margin-top: 5px; padding-left: 20px; font-size: 13px; color: var(--text-muted);">`;
-                    [...new Set(periodsM)].forEach(p => { html += `<li>${p}</li>`; });
-                    html += `</ul></div>`;
+                        <ul style="margin-top: 5px; padding-left: 10px; font-size: 13px; color: var(--text-muted); list-style-type: none;">
+                        ${periodsHtml}
+                        </ul></div>`;
                     totalYear += countM;
                 }
             }
@@ -618,7 +637,7 @@
                 if (h.find(x=>x.day===i)) div.classList.add('holiday');
                 
                 let dayData = data.days[i] || { shift: 'none', repos: [], rest: 'none', comp: 'none', prostheti: false };
-                let hasD = dayData.shift !== 'none' || dayData.repos.length > 0 || dayData.rest !== 'none' || dayData.prostheti;
+                let hasD = dayData.shift !== 'none' || (dayData.repos && dayData.repos.length > 0) || dayData.rest !== 'none' || dayData.prostheti;
                 let isLeave = isLeaveDay(currentYear, currentMonth, i);
                 
                 if(isLeave) {
@@ -629,21 +648,23 @@
                         div.classList.add('has-data');
                         let html = `<div style="position:absolute; top:2px; left:4px; font-size:9px; opacity:0.3; font-weight:900;">${i}</div><div class="bubble-content" style="margin-top:5px;">`;
                         
+                        // Purple text for Prostheti Ergasi
+                        if(dayData.prostheti) html += `<div class="txt-prostheti">Πρόσθ.Εργ.</div>`;
+
                         if(dayData.rest === '24') html += `<span class="txt-rest">🛏️ ΑΝΑΠ.</span><br>`;
-                        else if (dayData.rest !== 'none') html += `<span class="txt-rest">🛏️ ${gr(dayData.rest)}</span><br>`;
+                        else if (dayData.rest && dayData.rest !== 'none') html += `<span class="txt-rest">🛏️ ${gr(dayData.rest)}</span><br>`;
                         
-                        if(dayData.shift !== 'none' && dayData.shift !== '24') html += `<span class="txt-shift">Β: ${gr(dayData.shift)}</span><br>`;
+                        if(dayData.shift && dayData.shift !== 'none' && dayData.shift !== '24') html += `<span class="txt-shift">Β: ${gr(dayData.shift)}</span><br>`;
                         else if(dayData.shift === '24') html += `<span class="txt-shift">24ωρο</span><br>`;
 
-                        if(dayData.repos.length > 0) {
+                        if(dayData.repos && dayData.repos.length > 0) {
                             if(dayData.repos.includes('24')) html += `<span class="txt-repo">ΡΕΠΟ 24Ω</span><br>`;
                             else html += `<span class="txt-repo">Ρ: ${gr(dayData.repos.join(''))}</span><br>`;
                         }
                         html += `</div>`;
 
-                        if(dayData.comp !== 'none' || dayData.prostheti) {
+                        if(dayData.comp && dayData.comp !== 'none') {
                             html += `<div class="comp-dots">`;
-                            if(dayData.prostheti) html += `<div class="comp-dot" style="background-color: var(--holiday);"></div>`;
                             if(dayData.comp === 'day') html += `<div class="comp-dot dot-day"></div>`;
                             if(dayData.comp === 'night') html += `<div class="comp-dot dot-night"></div>`;
                             html += `</div>`;
@@ -663,11 +684,13 @@
             if(confirm("⚠️ Θέλετε σίγουρα να διαγράψετε όλες τις άδειες του τρέχοντος μήνα;")) {
                 let mStart = new Date(currentYear, currentMonth, 1).getTime();
                 let mEnd = new Date(currentYear, currentMonth + 1, 0, 23, 59, 59).getTime();
-                appData.leavePeriods = appData.leavePeriods.filter(lp => {
-                    let s = new Date(lp.start).getTime();
-                    let e = new Date(lp.end).getTime();
-                    return !(s <= mEnd && e >= mStart); 
-                });
+                if (appData.leavePeriods) {
+                    appData.leavePeriods = appData.leavePeriods.filter(lp => {
+                        let s = new Date(lp.start).getTime();
+                        let e = new Date(lp.end).getTime();
+                        return !(s <= mEnd && e >= mStart); 
+                    });
+                }
                 saveToLocal();
                 showToast("🧹🌴 Οι άδειες αυτού του μήνα διαγράφηκαν!");
             }
@@ -685,7 +708,7 @@
 
         // --- MODAL TICK BOX & DYNAMIC LOCKS LOGIC ---
         function getBlocks(type, isArr) {
-            let arr = isArr ? type : [type]; let res = [];
+            let arr = isArr ? type : (type ? [type] : []); let res = [];
             if(arr.includes('A')) res.push('A'); if(arr.includes('B')) res.push('B'); if(arr.includes('G')) res.push('G');
             if(arr.includes('AB')) res.push('A','B'); if(arr.includes('BG')) res.push('B','G'); if(arr.includes('AG')) res.push('A','G');
             if(arr.includes('24')) res.push('24');
@@ -704,30 +727,49 @@
 
             document.getElementById('shift-modal').style.display = 'flex';
             
-            let dData = getSafeData(currentYear, currentMonth).days[day] || { shift: 'none', repos: [], rest: 'none', comp: 'none', prostheti: false };
-            tempShift = dData.shift; tempRepos = [...dData.repos]; tempRest = dData.rest; isProstheti = dData.prostheti;
+            let dataMonth = getSafeData(currentYear, currentMonth);
+            let dData = dataMonth.days[day] || { shift: 'none', repos: [], rest: 'none', comp: 'none', prostheti: false };
             
-            document.getElementById('toggle-day').checked = dData.comp === 'day';
-            document.getElementById('toggle-night').checked = dData.comp === 'night';
+            tempShift = dData.shift || 'none'; 
+            tempRepos = dData.repos ? [...dData.repos] : []; 
+            tempRest = dData.rest || 'none'; 
+            isProstheti = dData.prostheti || false;
+            
+            document.getElementById('toggle-day').checked = (dData.comp === 'day');
+            document.getElementById('toggle-night').checked = (dData.comp === 'night');
             document.getElementById('toggle-prostheti').checked = isProstheti;
             
             updateMatrixUI();
         }
 
-        function closeShiftModal() { document.getElementById('shift-modal').style.display = 'none'; }
+        function closeShiftModal(save = true) { 
+            // Αν κληθεί με false (Ακύρωση) απλά κλείνει
+            document.getElementById('shift-modal').style.display = 'none'; 
+        }
+
         function clearModalDay() {
-            if(appData[currentYear][currentMonth].days[modalDay]) { delete appData[currentYear][currentMonth].days[modalDay]; saveToLocal(); }
-            closeShiftModal(); showToast("Η ημέρα καθαρίστηκε επιτυχώς!");
+            let dataMonth = getSafeData(currentYear, currentMonth);
+            if(dataMonth.days[modalDay]) { 
+                delete dataMonth.days[modalDay]; 
+                saveToLocal(); 
+            }
+            closeShiftModal(false); 
+            showToast("Η ημέρα καθαρίστηκε επιτυχώς!");
         }
 
         function tkClick(row, val) {
             if(row === 'e') {
-                if(document.getElementById('tk-e-'+val).checked) {
+                let chk = document.getElementById('tk-e-'+val).checked;
+                if(chk) {
                     if(val === 'A') tempRest = 'AB';
                     else if(val === 'B' || val === 'G') tempRest = 'BG';
-                    else if(val === '24') tempRest = '24';
-                    tempShift='none'; tempRepos=[];
-                    saveDayData(); return;
+                    else if(val === '24') { 
+                        tempRest = '24'; 
+                        tempShift = 'none'; tempRepos = []; isProstheti = false;
+                        saveDayData(); // ΑΜΕΣΗ ΑΠΟΘΗΚΕΥΣΗ & ΚΛΕΙΣΙΜΟ
+                        return;
+                    }
+                    if(val !== '24') { tempShift='none'; tempRepos=[]; }
                 } else {
                     tempRest = 'none';
                 }
@@ -763,8 +805,14 @@
             if(row === 'r') {
                 let chk = document.getElementById('tk-r-'+val).checked;
                 if(val === '24') {
-                    tempRepos = chk ? ['24'] : [];
-                    if(chk) { tempShift = 'none'; tempRest = 'none'; isProstheti = false; }
+                    if(chk) { 
+                        tempRepos = ['24']; 
+                        tempShift = 'none'; tempRest = 'none'; isProstheti = false; 
+                        saveDayData(); // ΑΜΕΣΗ ΑΠΟΘΗΚΕΥΣΗ & ΚΛΕΙΣΙΜΟ
+                        return;
+                    } else {
+                        tempRepos = [];
+                    }
                 } else {
                     rArr = rArr.filter(x => x !== '24');
                     if(chk) {
@@ -791,7 +839,7 @@
             
             if(changed === 'prostheti') {
                 isProstheti = tPros.checked;
-                if(isProstheti && (tempShift === '24' || tempRepos.includes('24' ) || tempRest === '24')) {
+                if(isProstheti && (tempShift === '24' || tempRepos.includes('24') || tempRest === '24')) {
                     tempShift = 'none'; tempRepos = []; tempRest = 'none';
                 }
             }
@@ -802,13 +850,15 @@
 
         function updateMatrixUI() {
             let warn = document.getElementById('modal-warning'); warn.style.display = 'none';
+            
+            // --- ΧΘΕΣΙΝΗ ΗΜΕΡΑ (Safe Checks) ---
             let dtYest = new Date(currentYear, currentMonth, modalDay - 1);
             let yest = null;
-            if(appData[dtYest.getFullYear()] && appData[dtYest.getFullYear()][dtYest.getMonth()] && appData[dtYest.getFullYear()][dtYest.getMonth()].days) {
-                yest = appData[dtYest.getFullYear()][dtYest.getMonth()].days[dtYest.getDate()];
+            let dataYearYest = appData[dtYest.getFullYear()];
+            if(dataYearYest && dataYearYest[dtYest.getMonth()] && dataYearYest[dtYest.getMonth()].days) {
+                yest = dataYearYest[dtYest.getMonth()].days[dtYest.getDate()];
             }
             
-            // --- 24-HOUR LIMITS (YESTERDAY RULES) ---
             let lockA_Yest = false;
             let lock24_Yest = false;
             let lockG_Yest = false;
@@ -832,7 +882,7 @@
             let isE24 = (tempRest === '24');
             let is31Special = (new Date(currentYear, currentMonth+1, 0).getDate() === 31 && getSafeData(currentYear, currentMonth).special31);
 
-            // --- REAL-TIME INTERLOCK LOCKDOWN (SHIFTS VS REPOS VS REST) ---
+            // --- SHIFTS ---
             document.getElementById('tk-s-24').checked = isS24;
             document.getElementById('tk-s-24').disabled = lock24_Yest || isR24 || isE24;
             
@@ -843,14 +893,14 @@
                 
                 let forceDisable = isS24 || isR24 || isE24 || tempRepos.includes(v) || getBlocks(tempRest, false).includes(v);
                 if (v === 'A' && lockA_Yest) forceDisable = true;
-                
-                // Enforce Condition 4: Yesterday Γ + Today A checked -> block current Γ from being checked
+                // Condition 4
                 if (lockG_Yest && sBlk.includes('A') && v === 'G') forceDisable = true;
                 
                 cb.disabled = forceDisable;
                 cell.className = forceDisable ? 'tk-cell disabled' : 'tk-cell';
             });
 
+            // --- REPOS ---
             document.getElementById('tk-r-24').checked = isR24;
             document.getElementById('tk-r-24').disabled = isS24 || isE24 || sBlk.length > 0 || tempRest !== 'none';
             
@@ -864,6 +914,7 @@
                 cell.className = forceDisable ? 'tk-cell disabled' : 'tk-cell';
             });
 
+            // --- REST ---
             document.getElementById('tk-e-24').checked = isE24;
             document.getElementById('tk-e-24').disabled = isS24 || isR24 || sBlk.length > 0 || tempRepos.length > 0;
             
@@ -901,6 +952,7 @@
                 else { tPros.disabled = false; tPros.checked = isProstheti; }
             }
 
+            // COMPENSATIONS LOCK
             let canDay = ['24','A','B','AB','BG','AG'].includes(tempShift) || isProstheti;
             let canNight = ['24','G','BG','AG'].includes(tempShift) || isProstheti; 
             
@@ -916,26 +968,28 @@
             isProstheti = document.getElementById('toggle-prostheti').checked;
 
             let stats = calcYearlyStats();
-            let cData = appData[currentYear][currentMonth].days[modalDay] || {comp:'none', prostheti: false};
+            let dataMonth = getSafeData(currentYear, currentMonth); 
+            let cData = dataMonth.days[modalDay] || {comp:'none', prostheti: false};
             
             if(isProstheti && !cData.prostheti) {
                 if(stats.prosthetesTotal >= 16) { showToast("⚠️ Εξαντλήσατε το ετήσιο όριο 16 Πρόσθετων."); return; }
-                let monthP = Object.values(appData[currentYear][currentMonth].days).filter(d=>d.prostheti).length;
+                let monthP = Object.values(dataMonth.days).filter(d => d && d.prostheti).length;
                 if(monthP >= 4) { showToast("⚠️ Εξαντλήσατε το μηνιαίο όριο 4 Πρόσθετων."); return; }
             }
             
             let ptsAdd = (comp === 'night' ? 2 : (comp === 'day' ? 1 : 0)), ptsRem = (cData.comp === 'night' ? 2 : (cData.comp === 'day' ? 1 : 0));
             if(stats.ektosEdras + ptsAdd - ptsRem > 90) { showToast("⚠️ Εξαντλήσατε το ετήσιο όριο 90 Εκτός Έδρας."); return; }
 
-            if(tempShift==='none' && tempRepos.length===0 && tempRest==='none' && !isProstheti && comp==='none') {
-                delete appData[currentYear][currentMonth].days[modalDay];
+            if(tempShift==='none' && (!tempRepos || tempRepos.length===0) && tempRest==='none' && !isProstheti && comp==='none') {
+                delete dataMonth.days[modalDay];
             } else {
-                appData[currentYear][currentMonth].days[modalDay] = { shift: tempShift, repos: [...tempRepos], rest: tempRest, comp: comp, prostheti: isProstheti };
+                dataMonth.days[modalDay] = { shift: tempShift, repos: [...tempRepos], rest: tempRest, comp: comp, prostheti: isProstheti };
             }
-            saveToLocal(); closeShiftModal();
+            saveToLocal(); 
+            closeShiftModal(true); // Close after successful save
         }
 
-        // --- CALCULATIONS & STATS ---
+        // --- CALCULATIONS & STATS (BULLETPROOF) ---
         function calcYearlyStats() {
             let pTotal = 0, ektos = 0, dTotal = 0, nTotal = 0;
             if(appData[currentYear]) {
@@ -943,9 +997,11 @@
                     if(appData[currentYear][m] && appData[currentYear][m].days) {
                         for(let d in appData[currentYear][m].days) {
                             let s = appData[currentYear][m].days[d];
-                            if(s.prostheti) pTotal++;
-                            if(s.comp === 'day') { ektos += 1; dTotal++; }
-                            if(s.comp === 'night') { ektos += 2; nTotal++; }
+                            if(s) {
+                                if(s.prostheti) pTotal++;
+                                if(s.comp === 'day') { ektos += 1; dTotal++; }
+                                if(s.comp === 'night') { ektos += 2; nTotal++; }
+                            }
                         }
                     }
                 }
@@ -969,7 +1025,7 @@
                 let d = data.days[i];
                 if(d) {
                     if(d.rest === '24') r24++;
-                    if(['AB','BG','AG'].includes(d.rest)) r16++;
+                    if(d.rest && ['AB','BG','AG'].includes(d.rest)) r16++;
                 }
             }
             document.getElementById('current-month-leaves-count').innerText = leavesInMonth;
@@ -1003,14 +1059,17 @@
 
             for(let d in data.days) {
                 let s = data.days[d];
-                takenReposCount += s.repos.includes('24') ? 3 : s.repos.length;
-                if(s.shift === '24') { wHours += 24; count24++; }
-                else if(['A','B','G'].includes(s.shift)) wHours += 8;
-                else if(['AB','BG','AG'].includes(s.shift)) wHours += 16;
-                
-                if(s.prostheti) cProstheti++;
-                if(s.comp === 'day') cDay++;
-                if(s.comp === 'night') cNight++;
+                if(s) {
+                    if (s.repos) takenReposCount += s.repos.includes('24') ? 3 : s.repos.length;
+                    
+                    if(s.shift === '24') { wHours += 24; count24++; }
+                    else if(s.shift && ['A','B','G'].includes(s.shift)) wHours += 8;
+                    else if(s.shift && ['AB','BG','AG'].includes(s.shift)) wHours += 16;
+                    
+                    if(s.prostheti) cProstheti++;
+                    if(s.comp === 'day') cDay++;
+                    if(s.comp === 'night') cNight++;
+                }
             }
 
             document.getElementById('val-24-count').innerText = count24;
@@ -1024,7 +1083,7 @@
             document.getElementById('res-repos').innerText = finalRepos > 0 ? "+" + finalRepos.toFixed(2) : finalRepos.toFixed(2);
             document.getElementById('final-box').classList.toggle('negative', finalRepos < 0);
 
-            // --- NYCHTERINA MATRIX MATH (ACCURATE TO LEAVES) ---
+            // --- MONEY CALCS ---
             let mPenth = actualPenthimera * 46;
             let mP = cProstheti * 55;
             let ektosMoney = (cDay * 9.78) + (cNight * 39.13); 
@@ -1035,7 +1094,7 @@
             } else {
                 let cleanDays = totalDays - leavesInMonth;
                 let factor = Math.floor(cleanDays / 2);
-                nychterinaMoney = factor * 26.64; // Correct factor
+                nychterinaMoney = factor * 26.64; 
             }
 
             let tot = mPenth + mP + ektosMoney + nychterinaMoney;
